@@ -60,7 +60,6 @@ Mallard::Mallard(int argc, char* argv[]) {
     SDL_DestroyTexture(title_screen_texture);
     SDL_RenderPresent(renderer);
     
-    SDL_FreeSurface(title_screen);
     Duck *duck;
     duck = new Duck(40, 50);
     // The window is open: enter program loop (see SDL_PollEvent)
