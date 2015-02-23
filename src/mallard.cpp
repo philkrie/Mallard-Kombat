@@ -24,7 +24,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     
     
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_ShowCursor(0);         // Initialize SDL2
+    //SDL_ShowCursor(0);         // Initialize SDL2
     
 
 
@@ -71,16 +71,32 @@ Mallard::Mallard(int argc, char* argv[]) {
     // Clean up
 }
 
+void Mallard::input(){
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+            exit = true;
+            SDL_Quit();
+        }
+    }
+}
+
+void Mallard::update(){
+    
+}
+
+void Mallard::render(){
+    
+}
+
 void Mallard::execute() {
     
-    /*while(!exit) {
+    while(!exit) {
         input();
         update();
         render();
         SDL_Delay(10);
-    }*/
-
-    SDL_Delay(3000);
+    }
     std::cout << "preparing to Quit" << std::endl;
     SDL_DestroyWindow(window);
     SDL_Quit();
