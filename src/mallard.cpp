@@ -31,17 +31,17 @@ Mallard::Mallard(int argc, char* argv[]) {
    renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED |
                                  SDL_RENDERER_PRESENTVSYNC );
     SDL_Surface *temp;
-    temp  = SDL_LoadBMP("/resources/images/single_duck.bmp");
+    temp  = SDL_LoadBMP("/resources/images/title_screen.bmp");
     if (temp == NULL) {
         std::cout << SDL_GetError() << std::endl;
     }
-    SDL_Surface *sprite = SDL_ConvertSurfaceFormat(temp, SDL_PIXELFORMAT_RGBA8888
+    SDL_Surface *title_screen = SDL_ConvertSurfaceFormat(temp, SDL_PIXELFORMAT_RGBA8888
                                                    , 0);
     SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer,
-                                                         sprite);
+                                                         title_screen);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
-    SDL_FreeSurface(temp);
+    SDL_FreeSurface(title_screen);
     Duck *duck;
     duck = new Duck(40, 50);
     // The window is open: enter program loop (see SDL_PollEvent)
