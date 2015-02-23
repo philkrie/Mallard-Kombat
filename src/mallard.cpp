@@ -21,7 +21,7 @@ enum LButtonSprite
 };
 
 Mallard::Mallard(int argc, char* argv[]) {
-    
+    exit = false;
     
     SDL_Init(SDL_INIT_EVERYTHING);
     //SDL_ShowCursor(0);         // Initialize SDL2
@@ -72,13 +72,27 @@ Mallard::Mallard(int argc, char* argv[]) {
 }
 
 void Mallard::input(){
+    int x, y;
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_MOUSEBUTTONDOWN) {
-            exit = true;
-            SDL_Quit();
+        if (event.type == SDL_MOUSEMOTION) {
+            SDL_GetMouseState(&x, &y);
+            
+        }
+        if (event.type == SDL_MOUSEBUTTONDOWN){
+            std::cout << "clicked anywhere" << std::endl;
+            SDL_GetMouseState(&x, &y);
+            if ((465 < x && x < 535) && (410 < y && y < 430)) {
+                std::cout << "clicked inside" << std::endl;
+
+                exit = true;
+                SDL_Quit();
+                std::cout << "x: " << x << std::endl;
+                std::cout << "y: " << y << std::endl;
+            }
         }
     }
+    
 }
 
 void Mallard::update(){
