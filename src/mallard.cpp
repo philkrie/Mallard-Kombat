@@ -8,6 +8,18 @@
 const int Mallard::SCREEN_WIDTH = 640;
 const int Mallard::SCREEN_HEIGHT = 480;
 
+const int BUTTON_WIDTH = 300;
+const int BUTTON_HEIGHT = 200;
+const int TOTAL_BUTTONS = 4;
+
+enum LButtonSprite
+{
+    START = 0,
+    OPTIONS = 1,
+    CREDITS = 2,
+    QUIT = 3,
+};
+
 Mallard::Mallard(int argc, char* argv[]) {
     
     SDL_Window *window;                    // Declare a pointer
@@ -30,17 +42,21 @@ Mallard::Mallard(int argc, char* argv[]) {
     // Check that the window was successfully made
    renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED |
                                  SDL_RENDERER_PRESENTVSYNC );
-    SDL_Surface *temp;
-    temp  = SDL_LoadBMP("/resources/images/title_screen.bmp");
-    if (temp == NULL) {
+    
+    
+    // Creating the title screen
+    SDL_Surface *title_screen = SDL_LoadBMP("/resources/images/title_screen.bmp");
+    if (title_screen == NULL) {
+        // this happens if title_screen's LoadBMP failed
         std::cout << SDL_GetError() << std::endl;
     }
-    SDL_Surface *title_screen = SDL_ConvertSurfaceFormat(temp, SDL_PIXELFORMAT_RGBA8888
-                                                   , 0);
-    SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer,
-                                                         title_screen);
+    SDL_Surface *title_screen_surface = SDL_ConvertSurfaceFormat(temp, SDL_PIXELFORMAT_RGBA8888, 0);
+    
+    SDL_Texture * title_screen_texture = SDL_CreateTextureFromSurface(renderer, title_screen);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
+    
+    
     SDL_FreeSurface(title_screen);
     Duck *duck;
     duck = new Duck(40, 50);
@@ -54,7 +70,7 @@ Mallard::Mallard(int argc, char* argv[]) {
 }
 
 void Mallard::execute() {
-
+    
     /*while(!exit) {
         input();
         update();
