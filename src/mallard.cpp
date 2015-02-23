@@ -80,15 +80,10 @@ void Mallard::input(){
             
         }
         if (event.type == SDL_MOUSEBUTTONDOWN){
-            std::cout << "clicked anywhere" << std::endl;
             SDL_GetMouseState(&x, &y);
             if ((465 < x && x < 535) && (410 < y && y < 430)) {
-                std::cout << "clicked inside" << std::endl;
-
                 exit = true;
                 SDL_Quit();
-                std::cout << "x: " << x << std::endl;
-                std::cout << "y: " << y << std::endl;
             }
         }
     }
