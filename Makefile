@@ -1,4 +1,4 @@
-CXX = clang++
+CXX = g++
 SDL = -framework SDL2
 # If your compiler is a bit older you may need to change -std=c++11 to -std=c++0x
 INCLUDES = -I/Library/Frameworks/SDL2_ttf.framework/Headers
