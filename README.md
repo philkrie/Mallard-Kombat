@@ -1,21 +1,15 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This README documents the steps necessary to get our application up and running.
 
 ### What is this repository for? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* Holds the source code and media necessary to make Mallard Kombat
 
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* Summary of set up: 
+* Dependencies: SDL2, SDL_image, SDL_mixer, SDL_ttf
 
 ### Contribution guidelines ###
 
@@ -25,5 +19,4 @@ This README would normally document whatever steps are necessary to get your app
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* Repo owner or any of the admins
