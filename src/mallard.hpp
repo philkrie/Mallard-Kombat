@@ -27,6 +27,7 @@ public:
     void update();
     void render();
     void clean_up();
+    bool exit;
 };
 
 #endif
