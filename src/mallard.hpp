@@ -23,7 +23,9 @@ public:
 
     Mallard(int argc, char *argv[]);
     void execute();
+    void input();
     void update();
+    void render();
     void clean_up();
 };
 
