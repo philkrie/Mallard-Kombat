@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include "mallard.hpp"
+#include "duck.hpp"
 
 /* Screen resolution */
 const int Mallard::SCREEN_WIDTH = 640;
@@ -11,10 +12,9 @@ Mallard::Mallard(int argc, char* argv[]) {
     
     SDL_Window *window;                    // Declare a pointer
     
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_EVERYTHING);
     SDL_ShowCursor(0);         // Initialize SDL2
     
-
 
 
 
@@ -26,10 +26,24 @@ Mallard::Mallard(int argc, char* argv[]) {
                               480,                               // height, in pixels
                               SDL_WINDOW_SHOWN);                 // flags - see below
 
-    
+    SDL_Renderer *renderer;
     // Check that the window was successfully made
-   
-    
+   renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED |
+                                 SDL_RENDERER_PRESENTVSYNC );
+    SDL_Surface *temp;
+    temp  = SDL_LoadBMP("/resources/images/single_duck.bmp");
+    if (temp == NULL) {
+        std::cout << SDL_GetError() << std::endl;
+    }
+    SDL_Surface *sprite = SDL_ConvertSurfaceFormat(temp, SDL_PIXELFORMAT_RGBA8888
+                                                   , 0);
+    SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer,
+                                                         sprite);
+    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    SDL_RenderPresent(renderer);
+    SDL_FreeSurface(temp);
+    Duck *duck;
+    duck = new Duck(40, 50);
     // The window is open: enter program loop (see SDL_PollEvent)
     
      // Pause execution for 3000 milliseconds, for example
@@ -48,9 +62,9 @@ void Mallard::execute() {
         SDL_Delay(10);
     }*/
 
-
     SDL_Delay(3000);
+    std::cout << "preparing to Quit" << std::endl;
     SDL_DestroyWindow(window);
     SDL_Quit();
-
+    std::cout << "successfully Quit" << std::endl;
 }
