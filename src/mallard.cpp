@@ -22,7 +22,6 @@ enum LButtonSprite
 
 Mallard::Mallard(int argc, char* argv[]) {
     
-    SDL_Window *window;                    // Declare a pointer
     
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_ShowCursor(0);         // Initialize SDL2
@@ -31,7 +30,7 @@ Mallard::Mallard(int argc, char* argv[]) {
 
 
     // Create an application window with the following settings:
-    window = SDL_CreateWindow( "MALLARD KOMBAT",                  // window title
+    this->window = SDL_CreateWindow( "MALLARD KOMBAT",                  // window title
                               SDL_WINDOWPOS_UNDEFINED,           // initial x position
                               SDL_WINDOWPOS_UNDEFINED,           // initial y position
                               640,                               // width, in pixels
@@ -50,12 +49,16 @@ Mallard::Mallard(int argc, char* argv[]) {
         // this happens if title_screen's LoadBMP failed
         std::cout << SDL_GetError() << std::endl;
     }
-    SDL_Surface *title_screen_surface = SDL_ConvertSurfaceFormat(temp, SDL_PIXELFORMAT_RGBA8888, 0);
+    SDL_Surface *title_screen_surface = SDL_ConvertSurfaceFormat(title_screen, SDL_PIXELFORMAT_RGBA8888, 0);
     
     SDL_Texture * title_screen_texture = SDL_CreateTextureFromSurface(renderer, title_screen);
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
-    SDL_RenderPresent(renderer);
     
+    SDL_FreeSurface(title_screen);
+
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, title_screen_texture, NULL, NULL);
+    SDL_DestroyTexture(title_screen_texture);
+    SDL_RenderPresent(renderer);
     
     SDL_FreeSurface(title_screen);
     Duck *duck;
