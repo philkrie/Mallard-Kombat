@@ -1,19 +1,30 @@
-CXX = g++
-SDL = -framework SDL2
-# If your compiler is a bit older you may need to change -std=c++11 to -std=c++0x
-INCLUDES = -I/Library/Frameworks/SDL2_ttf.framework/Headers
-LIBS = -L/full/path/dylib
-CXXFLAGS = -Wall -c -std=c++11 
-LDFLAGS = $(SDL) $(TTF)
-EXE = SDL_Lesson0
+BINARY          := mallard
+SRCS            := $(wildcard src/*.cpp)
+OBJS            := $(SRCS:.cpp=.o)
 
-all: $(EXE)
+DEBUG           := -g
 
-$(EXE): main.o
-	$(CXX) $(LDFLAGS) $(INCLUDES) $< -o $@
+SDL_INCLUDE     := `sdl2-config --cflags`
+SDL_LIB         := `sdl2-config --libs` -lSDL2_ttf -lSDL2_mixer
 
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@
+CPPFLAGS        += $(SDL_INCLUDE)
+CXXFLAGS        += $(DEBUG) -Wall -std=c++11
+LDFLAGS         += $(SDL_LIB)
+
+.PHONY: all clean
+
+all: $(BINARY)
+
+$(BINARY): $(OBJS)
+	$(LINK.cc) $(OBJS) -o $(BINARY) $(LDFLAGS)
+
+.depend: $(SRCS)
+	@- $(RM) .depend
+	@- $(g++) $(CXXFLAGS) -MM $^ | sed -E 's|^([^ ])|src/\1|' > .depend;
+
+-include .depend
 
 clean:
-	rm *.o && rm $(EXE)
+	@- $(RM) $(BINARY)
+	@- $(RM) $(OBJS)
+	@- $(RM) .depend
