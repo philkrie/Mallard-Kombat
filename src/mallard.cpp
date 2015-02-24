@@ -1,6 +1,3 @@
-#include <iostream>
-#include <SDL2/SDL.h>
-#include <stdio.h>
 #include "mallard.hpp"
 #include "duck.hpp"
 
@@ -8,75 +5,98 @@
 const int Mallard::SCREEN_WIDTH = 640;
 const int Mallard::SCREEN_HEIGHT = 480;
 
-const int BUTTON_WIDTH = 300;
-const int BUTTON_HEIGHT = 200;
-const int TOTAL_BUTTONS = 4;
-
-enum LButtonSprite
-{
-    START = 0,
-    OPTIONS = 1,
-    CREDITS = 2,
-    QUIT = 3,
-};
-
 Mallard::Mallard(int argc, char* argv[]) {
+    exit = false;
     
-    
-    SDL_Init(SDL_INIT_EVERYTHING);
-    //SDL_ShowCursor(0);         // Initialize SDL2
+    SDL_Init(SDL_INIT_EVERYTHING); // Initialize SDL2
     
 
 
 
     // Create an application window with the following settings:
-    this->window = SDL_CreateWindow( "MALLARD KOMBAT",                  // window title
+    this->window = SDL_CreateWindow( "MALLARD KOMBAT",           // window title
                               SDL_WINDOWPOS_UNDEFINED,           // initial x position
                               SDL_WINDOWPOS_UNDEFINED,           // initial y position
                               640,                               // width, in pixels
                               480,                               // height, in pixels
                               SDL_WINDOW_SHOWN);                 // flags - see below
 
-    SDL_Renderer *renderer;
     // Check that the window was successfully made
-   renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED |
+    renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED |
                                  SDL_RENDERER_PRESENTVSYNC );
+    path = "/resources/images/";
+    //TS stands for TitleScreens
+    std::string TS[5] = {
+    "title_screen",
+    "title_screen_start",
+    "title_screen_options",
+    "title_screen_credits",
+    "title_screen_quit",
+    };
+    // Creating the title screens
     
+    //TSS stands for TitleScreenSurfaces
     
-    // Creating the title screen
-    SDL_Surface *title_screen = SDL_LoadBMP("/resources/images/title_screen.bmp");
-    if (title_screen == NULL) {
-        // this happens if title_screen's LoadBMP failed
-        std::cout << SDL_GetError() << std::endl;
+    for (int i=0; i < 5; i++) {
+        std::string filepath = path + TS[i] + ".bmp";
+        char *temp = (char*)filepath.c_str();
+        /*
+         the following arrays all hold various states of the 
+         surfaces and textures rendering process
+         */
+        TSS[i] = SDL_LoadBMP(temp);
+        CTSS[i] = SDL_ConvertSurfaceFormat(TSS[i], SDL_PIXELFORMAT_RGBA8888, 0);
+        TST[i] = SDL_CreateTextureFromSurface(renderer, CTSS[i]);
+        SDL_FreeSurface(CTSS[i]);
     }
-    SDL_Surface *title_screen_surface = SDL_ConvertSurfaceFormat(title_screen, SDL_PIXELFORMAT_RGBA8888, 0);
     
-    SDL_Texture * title_screen_texture = SDL_CreateTextureFromSurface(renderer, title_screen);
-    
-    SDL_FreeSurface(title_screen);
+    //SDL_FreeSurface(title_screen);
 
     SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, title_screen_texture, NULL, NULL);
-    SDL_DestroyTexture(title_screen_texture);
+    SDL_RenderCopy(renderer, TST[0], NULL, NULL); // base title screen
     SDL_RenderPresent(renderer);
     
     Duck *duck;
     duck = new Duck(40, 50);
-    // The window is open: enter program loop (see SDL_PollEvent)
-    
-     // Pause execution for 3000 milliseconds, for example
-    
-    // Close and destroy the window
-    
-    // Clean up
 }
 
 void Mallard::input(){
+    int x, y;
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_MOUSEMOTION){
+            SDL_GetMouseState(&x, &y);
+            bool on_start = (450 < x && x < 550) && (275 < y && y < 300);
+            bool on_options = (435 < x && x < 565) && (320 < y && y < 345);
+            bool on_credits = (435 < x && x < 565) && (365 < y && y < 385);
+            bool on_quit = (465 < x && x < 535) && (410 < y && y < 430);
+            if (on_start) {
+                SDL_RenderCopy(renderer, TST[1], NULL, NULL);
+                SDL_RenderPresent(renderer);
+            }
+            else if (on_options) {
+                SDL_RenderCopy(renderer, TST[2], NULL, NULL);
+                SDL_RenderPresent(renderer);
+            }
+            else if (on_credits) {
+                SDL_RenderCopy(renderer, TST[3], NULL, NULL);
+                SDL_RenderPresent(renderer);
+            }
+            else if (on_quit) {
+                SDL_RenderCopy(renderer, TST[4], NULL, NULL);
+                SDL_RenderPresent(renderer);
+                SDL_PollEvent(&event);
+            }else{
+                SDL_RenderCopy(renderer, TST[0], NULL, NULL);
+                SDL_RenderPresent(renderer);
+            }
+        }
         if (event.type == SDL_MOUSEBUTTONDOWN) {
-            exit = true;
-            SDL_Quit();
+            SDL_GetMouseState(&x, &y);
+            bool on_quit = (465 < x && x < 535) && (410 < y && y < 430);
+            if (on_quit) {
+                exit = true;
+            }
         }
     }
 }
@@ -98,7 +118,15 @@ void Mallard::execute() {
         SDL_Delay(10);
     }
     std::cout << "preparing to Quit" << std::endl;
+    clean_up();
+    std::cout << "successfully Quit" << std::endl;
+}
+
+void Mallard::clean_up(){
+    for (int i=0; i < 5; i++) {
+        SDL_DestroyTexture(TST[i]);
+    }
+    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    std::cout << "successfully Quit" << std::endl;
 }
