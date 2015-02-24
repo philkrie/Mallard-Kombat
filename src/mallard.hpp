@@ -27,6 +27,14 @@ public:
     SDL_Surface *CTSS[5]; // CTSS stands for ConvertedTitleScreenSurfaces
     SDL_Texture *TST[5];  // TST stands for TextureSurface
     
+    
+    // bools for the title screen
+    
+    bool on_start;
+    bool on_options;
+    bool on_credits;
+    bool on_quit;
+    void getBools(int, int);
     // Sounds
     
     Mix_Chunk *quack;

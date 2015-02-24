@@ -61,43 +61,24 @@ Mallard::Mallard(int argc, char* argv[]) {
     SDL_RenderPresent(renderer);
 }
 
+void Mallard::getBools(int x, int y){
+    on_start = (450 < x && x < 550) && (275 < y && y < 300);
+    on_options = (435 < x && x < 565) && (320 < y && y < 345);
+    on_credits = (435 < x && x < 565) && (365 < y && y < 385);
+    on_quit = (465 < x && x < 535) && (410 < y && y < 430);
+}
+
 void Mallard::input(){
     int x, y;
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_MOUSEMOTION){
             SDL_GetMouseState(&x, &y);
-            bool on_start = (450 < x && x < 550) && (275 < y && y < 300);
-            bool on_options = (435 < x && x < 565) && (320 < y && y < 345);
-            bool on_credits = (435 < x && x < 565) && (365 < y && y < 385);
-            bool on_quit = (465 < x && x < 535) && (410 < y && y < 430);
-            if (on_start) {
-                SDL_RenderCopy(renderer, TST[1], NULL, NULL);
-                SDL_RenderPresent(renderer);
-            }
-            else if (on_options) {
-                SDL_RenderCopy(renderer, TST[2], NULL, NULL);
-                SDL_RenderPresent(renderer);
-            }
-            else if (on_credits) {
-                SDL_RenderCopy(renderer, TST[3], NULL, NULL);
-                SDL_RenderPresent(renderer);
-            }
-            else if (on_quit) {
-                SDL_RenderCopy(renderer, TST[4], NULL, NULL);
-                SDL_RenderPresent(renderer);
-                SDL_PollEvent(&event);
-            }else{
-                SDL_RenderCopy(renderer, TST[0], NULL, NULL);
-                SDL_RenderPresent(renderer);
-            }
+            getBools(x,y);
         }
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             SDL_GetMouseState(&x, &y);
-            bool on_start = (450 < x && x < 550) && (275 < y && y < 300);
-            bool on_options = (435 < x && x < 565) && (320 < y && y < 345);
-            bool on_credits = (435 < x && x < 565) && (365 < y && y < 385);
-            bool on_quit = (465 < x && x < 535) && (410 < y && y < 430);
+            getBools(x,y);
             if (on_start) {
                 Mix_PlayChannel(-1, quack, 0);
             }
@@ -105,15 +86,36 @@ void Mallard::input(){
                 exit = true;
             }
         }
+        if (event.type == SDL_QUIT) {
+            exit = true;
+        }
     }
 }
 
 void Mallard::update(){
-    
+
 }
 
 void Mallard::render(){
-    
+    if (on_start) {
+        SDL_RenderCopy(renderer, TST[1], NULL, NULL);
+        SDL_RenderPresent(renderer);
+    }
+    else if (on_options) {
+        SDL_RenderCopy(renderer, TST[2], NULL, NULL);
+        SDL_RenderPresent(renderer);
+    }
+    else if (on_credits) {
+        SDL_RenderCopy(renderer, TST[3], NULL, NULL);
+        SDL_RenderPresent(renderer);
+    }
+    else if (on_quit) {
+        SDL_RenderCopy(renderer, TST[4], NULL, NULL);
+        SDL_RenderPresent(renderer);
+    }else{
+        SDL_RenderCopy(renderer, TST[0], NULL, NULL);
+        SDL_RenderPresent(renderer);
+    }
 }
 
 void Mallard::execute() {
