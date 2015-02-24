@@ -24,10 +24,6 @@ Mallard::Mallard(int argc, char* argv[]) {
     // Check that the window was successfully made
     renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED |
                                  SDL_RENDERER_PRESENTVSYNC );
-    
-    // Sounds
-    Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
-    quack = Mix_LoadWAV("resources/sounds/quack.wav");
     path = "/resources/images/";
     //TS stands for TitleScreens
     std::string TS[5] = {
@@ -59,6 +55,9 @@ Mallard::Mallard(int argc, char* argv[]) {
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, TST[0], NULL, NULL); // base title screen
     SDL_RenderPresent(renderer);
+    
+    Duck *duck;
+    duck = new Duck(40, 50);
 }
 
 void Mallard::input(){
@@ -94,13 +93,7 @@ void Mallard::input(){
         }
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             SDL_GetMouseState(&x, &y);
-            bool on_start = (450 < x && x < 550) && (275 < y && y < 300);
-            bool on_options = (435 < x && x < 565) && (320 < y && y < 345);
-            bool on_credits = (435 < x && x < 565) && (365 < y && y < 385);
             bool on_quit = (465 < x && x < 535) && (410 < y && y < 430);
-            if (on_start) {
-                Mix_PlayChannel(-1, quack, 0);
-            }
             if (on_quit) {
                 exit = true;
             }
@@ -133,7 +126,6 @@ void Mallard::clean_up(){
     for (int i=0; i < 5; i++) {
         SDL_DestroyTexture(TST[i]);
     }
-    Mix_CloseAudio();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
