@@ -19,8 +19,12 @@ public:
     static const int SCREEN_HEIGHT;
 
     SDL_Window* window;                     // holds window properties
-
-
+    SDL_Renderer *renderer;
+    std::string path;
+    
+    SDL_Surface *TSS[5]; // TSS stands for TitleScreenSurfaces
+    SDL_Surface *CTSS[5]; // CTSS stands for ConvertedTitleScreenSurfaces
+    SDL_Texture *TST[5]; // TST stands for TextureSurface
     Mallard(int argc, char *argv[]);
     void execute();
     void input();
