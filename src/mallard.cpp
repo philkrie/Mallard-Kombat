@@ -82,16 +82,19 @@ void Mallard::input(){
                 SDL_RenderCopy(renderer, TST[1], NULL, NULL);
                 SDL_RenderPresent(renderer);
             }
-            if (on_options) {
+            else if (on_options) {
                 SDL_RenderCopy(renderer, TST[2], NULL, NULL);
                 SDL_RenderPresent(renderer);
             }
-            if (on_credits) {
+            else if (on_credits) {
                 SDL_RenderCopy(renderer, TST[3], NULL, NULL);
                 SDL_RenderPresent(renderer);
             }
-            if (on_quit) {
+            else if (on_quit) {
                 SDL_RenderCopy(renderer, TST[4], NULL, NULL);
+                SDL_RenderPresent(renderer);
+            }else{
+                SDL_RenderCopy(renderer, TST[0], NULL, NULL);
                 SDL_RenderPresent(renderer);
             }
         }
