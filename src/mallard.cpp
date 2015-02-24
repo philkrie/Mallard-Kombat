@@ -10,28 +10,32 @@ Mallard::Mallard(int argc, char* argv[]) {
     
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize SDL2
     
-
-
-
+    
+    
+    
     // Create an application window with the following settings:
     this->window = SDL_CreateWindow( "MALLARD KOMBAT",           // window title
-                              SDL_WINDOWPOS_UNDEFINED,           // initial x position
-                              SDL_WINDOWPOS_UNDEFINED,           // initial y position
-                              640,                               // width, in pixels
-                              480,                               // height, in pixels
-                              SDL_WINDOW_SHOWN);                 // flags - see below
-
+                                    SDL_WINDOWPOS_UNDEFINED,           // initial x position
+                                    SDL_WINDOWPOS_UNDEFINED,           // initial y position
+                                    640,                               // width, in pixels
+                                    480,                               // height, in pixels
+                                    SDL_WINDOW_SHOWN);                 // flags - see below
+    
     // Check that the window was successfully made
     renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED |
-                                 SDL_RENDERER_PRESENTVSYNC );
+                                  SDL_RENDERER_PRESENTVSYNC );
+    
+    // Sounds
+    Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
+    quack = Mix_LoadWAV("resources/sounds/quack.wav");
     path = "/resources/images/";
     //TS stands for TitleScreens
     std::string TS[5] = {
-    "title_screen",
-    "title_screen_start",
-    "title_screen_options",
-    "title_screen_credits",
-    "title_screen_quit",
+        "title_screen",
+        "title_screen_start",
+        "title_screen_options",
+        "title_screen_credits",
+        "title_screen_quit",
     };
     // Creating the title screens
     
@@ -41,7 +45,7 @@ Mallard::Mallard(int argc, char* argv[]) {
         std::string filepath = path + TS[i] + ".bmp";
         char *temp = (char*)filepath.c_str();
         /*
-         the following arrays all hold various states of the 
+         the following arrays all hold various states of the
          surfaces and textures rendering process
          */
         TSS[i] = SDL_LoadBMP(temp);
@@ -51,13 +55,10 @@ Mallard::Mallard(int argc, char* argv[]) {
     }
     
     //SDL_FreeSurface(title_screen);
-
+    
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, TST[0], NULL, NULL); // base title screen
     SDL_RenderPresent(renderer);
-    
-    Duck *duck;
-    duck = new Duck(40, 50);
 }
 
 void Mallard::input(){
@@ -93,7 +94,13 @@ void Mallard::input(){
         }
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             SDL_GetMouseState(&x, &y);
+            bool on_start = (450 < x && x < 550) && (275 < y && y < 300);
+            bool on_options = (435 < x && x < 565) && (320 < y && y < 345);
+            bool on_credits = (435 < x && x < 565) && (365 < y && y < 385);
             bool on_quit = (465 < x && x < 535) && (410 < y && y < 430);
+            if (on_start) {
+                Mix_PlayChannel(-1, quack, 0);
+            }
             if (on_quit) {
                 exit = true;
             }
@@ -126,6 +133,7 @@ void Mallard::clean_up(){
     for (int i=0; i < 5; i++) {
         SDL_DestroyTexture(TST[i]);
     }
+    Mix_CloseAudio();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
