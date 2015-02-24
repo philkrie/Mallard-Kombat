@@ -17,14 +17,19 @@ public:
     // Screen resolution
     static const int SCREEN_WIDTH;
     static const int SCREEN_HEIGHT;
-
-    SDL_Window* window;                     // holds window properties
-    SDL_Renderer *renderer;
-    std::string path;
     
-    SDL_Surface *TSS[5]; // TSS stands for TitleScreenSurfaces
+    // Window and renderer
+    SDL_Window* window;
+    SDL_Renderer *renderer;
+    std::string path; // path to the image files
+    
+    SDL_Surface *TSS[5];  // TSS stands for TitleScreenSurfaces
     SDL_Surface *CTSS[5]; // CTSS stands for ConvertedTitleScreenSurfaces
-    SDL_Texture *TST[5]; // TST stands for TextureSurface
+    SDL_Texture *TST[5];  // TST stands for TextureSurface
+    
+    // Sounds
+    
+    Mix_Chunk *quack;
     Mallard(int argc, char *argv[]);
     void execute();
     void input();
