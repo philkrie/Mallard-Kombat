@@ -1,6 +1,3 @@
-#include <iostream>
-#include <SDL2/SDL.h>
-#include <stdio.h>
 #include "mallard.hpp"
 #include "duck.hpp"
 
@@ -8,25 +5,16 @@
 const int Mallard::SCREEN_WIDTH = 640;
 const int Mallard::SCREEN_HEIGHT = 480;
 
-enum LButtonSprite
-{
-    START = 0,
-    OPTIONS = 1,
-    CREDITS = 2,
-    QUIT = 3,
-};
-
 Mallard::Mallard(int argc, char* argv[]) {
     exit = false;
     
-    SDL_Init(SDL_INIT_EVERYTHING);
-    //SDL_ShowCursor(0);         // Initialize SDL2
+    SDL_Init(SDL_INIT_EVERYTHING); // Initialize SDL2
     
 
 
 
     // Create an application window with the following settings:
-    this->window = SDL_CreateWindow( "MALLARD KOMBAT",                  // window title
+    this->window = SDL_CreateWindow( "MALLARD KOMBAT",           // window title
                               SDL_WINDOWPOS_UNDEFINED,           // initial x position
                               SDL_WINDOWPOS_UNDEFINED,           // initial y position
                               640,                               // width, in pixels
@@ -52,6 +40,10 @@ Mallard::Mallard(int argc, char* argv[]) {
     for (int i=0; i < 5; i++) {
         std::string filepath = path + TS[i] + ".bmp";
         char *temp = (char*)filepath.c_str();
+        /*
+         the following arrays all hold various states of the 
+         surfaces and textures rendering process
+         */
         TSS[i] = SDL_LoadBMP(temp);
         CTSS[i] = SDL_ConvertSurfaceFormat(TSS[i], SDL_PIXELFORMAT_RGBA8888, 0);
         TST[i] = SDL_CreateTextureFromSurface(renderer, CTSS[i]);
@@ -61,7 +53,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     //SDL_FreeSurface(title_screen);
 
     SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, TST[0], NULL, NULL);
+    SDL_RenderCopy(renderer, TST[0], NULL, NULL); // base title screen
     SDL_RenderPresent(renderer);
     
     Duck *duck;
@@ -93,16 +85,20 @@ void Mallard::input(){
             else if (on_quit) {
                 SDL_RenderCopy(renderer, TST[4], NULL, NULL);
                 SDL_RenderPresent(renderer);
+                SDL_PollEvent(&event);
             }else{
                 SDL_RenderCopy(renderer, TST[0], NULL, NULL);
                 SDL_RenderPresent(renderer);
             }
         }
         if (event.type == SDL_MOUSEBUTTONDOWN) {
-            exit = true;
+            SDL_GetMouseState(&x, &y);
+            bool on_quit = (465 < x && x < 535) && (410 < y && y < 430);
+            if (on_quit) {
+                exit = true;
+            }
         }
     }
-    
 }
 
 void Mallard::update(){
