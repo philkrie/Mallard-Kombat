@@ -2,7 +2,7 @@ BINARY          := mallard
 SRCS            := $(wildcard src/*.cpp)
 OBJS            := $(SRCS:.cpp=.o)
 
-DEBUG           := -g
+#DEBUG           := -g
 
 SDL_INCLUDE     := `sdl2-config --cflags`
 SDL_LIB         := `sdl2-config --libs` -lSDL2_ttf -lSDL2_mixer
