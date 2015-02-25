@@ -86,13 +86,13 @@ void Mallard::input(){
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             SDL_GetMouseState(&x, &y);
             getBools(x,y);
-            if (on_start && title_visible) {
+            if (on_start) {
                 title_visible = false;
                 SDL_RenderClear(renderer);
                 Mix_PlayChannel(-1, quack, 0);
                 first_stage_visible = true;
             }
-            if (on_quit && title_visible) {
+            if (on_quit) {
                 exit = true;
             }
         }
