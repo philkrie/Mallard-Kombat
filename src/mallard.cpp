@@ -14,12 +14,12 @@ Mallard::Mallard(int argc, char* argv[]) {
 
 
     // Create an application window with the following settings:
-    this->window = SDL_CreateWindow( "MALLARD KOMBAT",           // window title
-                              SDL_WINDOWPOS_UNDEFINED,           // initial x position
-                              SDL_WINDOWPOS_UNDEFINED,           // initial y position
-                              640,                               // width, in pixels
-                              480,                               // height, in pixels
-                              SDL_WINDOW_SHOWN);                 // flags - see below
+    this->window = SDL_CreateWindow( "MALLARD KOMBAT",   // window title
+                              SDL_WINDOWPOS_UNDEFINED,   // initial x position
+                              SDL_WINDOWPOS_UNDEFINED,   // initial y position
+                              640,                       // width, in pixels
+                              480,                       // height, in pixels
+                              SDL_WINDOW_SHOWN);         // flags - see below
 
     // Check that the window was successfully made
     renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED |
@@ -54,11 +54,18 @@ Mallard::Mallard(int argc, char* argv[]) {
         SDL_FreeSurface(CTSS[i]);
     }
     
-    //SDL_FreeSurface(title_screen);
-
+    first_stage_surface = SDL_LoadBMP("/resources/images/placeholder.bmp");
+    first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
+    first_stage_texture = SDL_CreateTextureFromSurface(renderer, first_stage_surface);
+    
+    
+    SDL_Surface *duckSurface = SDL_LoadBMP("/resources/images/single_duck.bmp");
+    duckSurface = SDL_ConvertSurfaceFormat(duckSurface, SDL_PIXELFORMAT_RGBA8888, 0);
+    SDL_Texture *duckTexture = SDL_CreateTextureFromSurface(renderer, duckSurface);
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, TST[0], NULL, NULL); // base title screen
     SDL_RenderPresent(renderer);
+    title_visible = true;
 }
 
 void Mallard::getBools(int x, int y){
@@ -80,6 +87,8 @@ void Mallard::input(){
             SDL_GetMouseState(&x, &y);
             getBools(x,y);
             if (on_start) {
+                title_visible = false;
+                SDL_RenderClear(renderer);
                 Mix_PlayChannel(-1, quack, 0);
             }
             if (on_quit) {
@@ -96,7 +105,7 @@ void Mallard::update(){
 
 }
 
-void Mallard::render(){
+void Mallard::render_title_screen(){
     if (on_start) {
         SDL_RenderCopy(renderer, TST[1], NULL, NULL);
         SDL_RenderPresent(renderer);
@@ -115,6 +124,20 @@ void Mallard::render(){
     }else{
         SDL_RenderCopy(renderer, TST[0], NULL, NULL);
         SDL_RenderPresent(renderer);
+    }
+}
+
+void Mallard::render_first_stage(){
+    SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
+    SDL_RenderPresent(renderer);
+}
+
+void Mallard::render(){
+    if (title_visible) {
+        render_title_screen();
+    }
+    if (first_stage_visible) {
+        render_first_stage();
     }
 }
 
