@@ -5,7 +5,7 @@ OBJS            := $(SRCS:.cpp=.o)
 #DEBUG           := -g
 
 SDL_INCLUDE     := `sdl2-config --cflags`
-SDL_LIB         := `sdl2-config --libs` -lSDL2_ttf -lSDL2_mixer
+SDL_LIB         := `sdl2-config --libs` -lSDL2_ttf -lSDL2_mixer -lSDL2_image
 
 CPPFLAGS        += $(SDL_INCLUDE)
 CXXFLAGS        += $(DEBUG) -Wall -std=c++11
