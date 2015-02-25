@@ -29,7 +29,10 @@ public:
     
     SDL_Surface *first_stage_surface;
     SDL_Texture *first_stage_texture;
+    SDL_Surface *duckSurface;
+    SDL_Texture *duckTexture;
     
+    SDL_Rect scaler;
     // bools for the title screen
     
     bool on_start;
