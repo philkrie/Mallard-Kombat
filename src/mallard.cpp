@@ -28,7 +28,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     // Sounds
     Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
     quack = Mix_LoadWAV("resources/sounds/quack.wav");
-    path = "/resources/images/";
+    path = "resources/images/";
     //TS stands for TitleScreens
     std::string TS[5] = {
     "title_screen",
