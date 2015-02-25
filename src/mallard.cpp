@@ -54,14 +54,14 @@ Mallard::Mallard(int argc, char* argv[]) {
         SDL_FreeSurface(CTSS[i]);
     }
     
-    first_stage_surface = SDL_LoadBMP("/resources/images/placeholder.bmp");
+    first_stage_surface = SDL_LoadBMP("resources/images/placeholder.bmp");
     first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
     first_stage_texture = SDL_CreateTextureFromSurface(renderer, first_stage_surface);
     
     
-    SDL_Surface *duckSurface = SDL_LoadBMP("/resources/images/single_duck.bmp");
+    duckSurface = SDL_LoadBMP("resources/images/single_duck.bmp");
     duckSurface = SDL_ConvertSurfaceFormat(duckSurface, SDL_PIXELFORMAT_RGBA8888, 0);
-    SDL_Texture *duckTexture = SDL_CreateTextureFromSurface(renderer, duckSurface);
+    duckTexture = SDL_CreateTextureFromSurface(renderer, duckSurface);
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, TST[0], NULL, NULL); // base title screen
     SDL_RenderPresent(renderer);
@@ -90,6 +90,7 @@ void Mallard::input(){
                 title_visible = false;
                 SDL_RenderClear(renderer);
                 Mix_PlayChannel(-1, quack, 0);
+                first_stage_visible = true;
             }
             if (on_quit) {
                 exit = true;
@@ -128,7 +129,13 @@ void Mallard::render_title_screen(){
 }
 
 void Mallard::render_first_stage(){
+    scaler.x = 0;
+    scaler.y = 0;
+    scaler.w = 34*5;
+    scaler.h = 34*5;
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
+    SDL_RenderCopy(renderer, duckTexture, NULL, &scaler);
+
     SDL_RenderPresent(renderer);
 }
 
@@ -158,6 +165,8 @@ void Mallard::clean_up(){
     for (int i=0; i < 5; i++) {
         SDL_DestroyTexture(TST[i]);
     }
+    SDL_DestroyTexture(duckTexture);
+    SDL_DestroyTexture(first_stage_texture);
     Mix_CloseAudio();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
