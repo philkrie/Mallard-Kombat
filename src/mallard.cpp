@@ -111,24 +111,20 @@ void Mallard::input(){
                     }
                     break;
                 case SDLK_LEFT:
-                    if (xspeed > -5) {
+                    if (xspeed > -20) {
                         xspeed--;
                     }else{
-                        xspeed = -5;
+                        xspeed = -20;
                     }
                     break;
                 case SDLK_RIGHT:
-                    if (xspeed < 5) {
+                    if (xspeed < 20) {
                         xspeed++;
                     }else{
-                        xspeed = 5;
+                        xspeed = 20;
                     }
-=======
-                    scalar.x -= 10;
                     break;
-                case SDLK_RIGHT:
-                    scalar.x += 10;
-                    break;
+
                 case SDLK_DOWN:
                     scalar.y += 10;
                     break;
@@ -141,9 +137,7 @@ void Mallard::input(){
     if(jumping){
             if (scalar.y <= 350){
                 scalar.y -= yspeed;
-                std::cout << "up" << std::endl;
                 yspeed--;
-                std::cout << yspeed << std::endl;
             }
             if (scalar.y > 350){
                 scalar.y = 350;
@@ -152,7 +146,6 @@ void Mallard::input(){
 
             if (scalar.y == 0){
                 jumping = false;
-                std::cout << "done" << std::endl;
             }
         }
 
