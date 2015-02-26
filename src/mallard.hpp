@@ -32,7 +32,7 @@ public:
     SDL_Surface *duckSurface;
     SDL_Texture *duckTexture;
     
-    SDL_Rect scaler;
+    SDL_Rect scalar;
     // bools for the title screen
     
     bool on_start;
@@ -42,8 +42,8 @@ public:
     bool jumping;
     void getBools(int, int);
 
-    int yspeed;
-    int xspeed;
+    double yspeed;
+    double xspeed;
     
     // bools for which screen is visible
     bool title_visible;

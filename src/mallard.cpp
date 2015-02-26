@@ -58,8 +58,8 @@ Mallard::Mallard(int argc, char* argv[]) {
     first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
     first_stage_texture = SDL_CreateTextureFromSurface(renderer, first_stage_surface);
     
-    scaler.x = 0;
-    scaler.y = 350;
+    scalar.x = 0;
+    scalar.y = 350;
     jumping = false;
     yspeed = 0;
     duckSurface = SDL_LoadBMP("resources/images/single_duck.bmp");
@@ -111,35 +111,41 @@ void Mallard::input(){
                     }
                     break;
                 case SDLK_LEFT:
-                    scaler.x -= 10;
+                    if (xspeed > -5) {
+                        xspeed--;
+                    }else{
+                        xspeed = -5;
+                    }
                     break;
                 case SDLK_RIGHT:
-                    scaler.x += 10;
+                    if (xspeed < 5) {
+                        xspeed++;
+                    }else{
+                        xspeed = 5;
+                    }
                     break;
                 case SDLK_DOWN:
-                    scaler.y += 10;
+                    scalar.y += 10;
                     break;
                 default:
                     break;
             }
         }
 
-        
-
     }
     if(jumping){
-            if (scaler.y <= 350){
-                scaler.y -= yspeed;
+            if (scalar.y <= 350){
+                scalar.y -= yspeed;
                 std::cout << "up" << std::endl;
                 yspeed--;
                 std::cout << yspeed << std::endl;
             }
-            if (scaler.y > 350){
-                scaler.y = 350;
+            if (scalar.y > 350){
+                scalar.y = 350;
                 jumping = false;
             }
 
-            if (scaler.y == 0){
+            if (scalar.y == 0){
                 jumping = false;
                 std::cout << "done" << std::endl;
             }
@@ -149,7 +155,10 @@ void Mallard::input(){
 
 
 void Mallard::update(){
-
+    scalar.x += xspeed;
+    if (scalar.y == 350) {
+        xspeed = xspeed * 0.9;
+    }
 }
 
 void Mallard::render_title_screen(){
@@ -176,11 +185,11 @@ void Mallard::render_title_screen(){
 
 void Mallard::jump(){
     int speed = 20;
-    scaler.y -= speed;
+    scalar.y -= speed;
     speed--;
     
     for (int i = 0; i < 20; i++){
-        scaler.y += speed;
+        scalar.y += speed;
         speed++;
     } 
 }
@@ -189,10 +198,10 @@ void Mallard::render_first_stage(){
     
     int scaling_factor = 5;
 
-    scaler.w = 34*scaling_factor;
-    scaler.h = 24*scaling_factor;
+    scalar.w = 34*scaling_factor;
+    scalar.h = 24*scaling_factor;
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
-    SDL_RenderCopy(renderer, duckTexture, NULL, &scaler);
+    SDL_RenderCopy(renderer, duckTexture, NULL, &scalar);
 
     SDL_RenderPresent(renderer);
 }
