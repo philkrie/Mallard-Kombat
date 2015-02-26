@@ -60,6 +60,8 @@ Mallard::Mallard(int argc, char* argv[]) {
     
     scaler.x = 0;
     scaler.y = 350;
+    jumping = false;
+    yspeed = 0;
     duckSurface = SDL_LoadBMP("resources/images/single_duck.bmp");
     duckSurface = SDL_ConvertSurfaceFormat(duckSurface, SDL_PIXELFORMAT_RGBA8888, 0);
     duckTexture = SDL_CreateTextureFromSurface(renderer, duckSurface);
@@ -103,7 +105,10 @@ void Mallard::input(){
         if (event.type == SDL_KEYDOWN && first_stage_visible) {
             switch (event.key.keysym.sym) {
                 case SDLK_UP:
-                    scaler.y -= 10;
+                    if (!jumping){
+                        yspeed = 19;
+                        jumping = true;
+                    }
                     break;
                 case SDLK_LEFT:
                     scaler.x -= 10;
@@ -119,8 +124,29 @@ void Mallard::input(){
             }
         }
 
+        
+
     }
+    if(jumping){
+            if (scaler.y <= 350){
+                scaler.y -= yspeed;
+                std::cout << "up" << std::endl;
+                yspeed--;
+                std::cout << yspeed << std::endl;
+            }
+            if (scaler.y > 350){
+                scaler.y = 350;
+                jumping = false;
+            }
+
+            if (scaler.y == 0){
+                jumping = false;
+                std::cout << "done" << std::endl;
+            }
+        }
+
 }
+
 
 void Mallard::update(){
 
@@ -146,6 +172,17 @@ void Mallard::render_title_screen(){
         SDL_RenderCopy(renderer, TST[0], NULL, NULL);
         SDL_RenderPresent(renderer);
     }
+}
+
+void Mallard::jump(){
+    int speed = 20;
+    scaler.y -= speed;
+    speed--;
+    
+    for (int i = 0; i < 20; i++){
+        scaler.y += speed;
+        speed++;
+    } 
 }
 
 void Mallard::render_first_stage(){
