@@ -12,11 +12,11 @@ Duck::Duck(int new_x, int new_y){
     y = new_y;
 }
 
-int Duck::get_x() const{
+int Duck::get_x(){
     return x;
 }
 
-int Duck::get_y() const{
+int Duck::get_y(){
     return y;
 }
 
@@ -26,24 +26,20 @@ void Duck::set_y(int new_y){
     if(y < 0)
         y = 0;
 }
-/*
-void Duck::yspeed(int new_y){
+
+void Duck::set_y_speed(int new_y){
     y += new_y;
     
     if (y < 0)
         y = 0;
 }
 
-void Duck::xspeed(int new_x){
+void Duck::set_x_speed(int new_x){
     x += new_x;
     if (x < 0)
         x = 0;
 }
 
 void Duck::jump(){
-    this.yspeed = 20;
+    set_y_speed(20);
 }
-
-while(Duck.get_y() != 480){
-    yspeed--;
-}*/

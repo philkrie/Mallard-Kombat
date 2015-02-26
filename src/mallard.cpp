@@ -54,7 +54,7 @@ Mallard::Mallard(int argc, char* argv[]) {
         SDL_FreeSurface(CTSS[i]);
     }
     
-    first_stage_surface = SDL_LoadBMP("resources/images/placeholder.bmp");
+    first_stage_surface = SDL_LoadBMP("resources/images/stage.bmp");
     first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
     first_stage_texture = SDL_CreateTextureFromSurface(renderer, first_stage_surface);
     
@@ -129,10 +129,12 @@ void Mallard::render_title_screen(){
 }
 
 void Mallard::render_first_stage(){
+    
+    int scaling_factor = 5;
     scaler.x = 0;
-    scaler.y = 0;
-    scaler.w = 34*5;
-    scaler.h = 34*5;
+    scaler.y = 350;
+    scaler.w = 34*scaling_factor;
+    scaler.h = 24*scaling_factor;
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
     SDL_RenderCopy(renderer, duckTexture, NULL, &scaler);
 
