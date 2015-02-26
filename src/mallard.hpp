@@ -32,7 +32,7 @@ public:
     SDL_Surface *duckSurface;
     SDL_Texture *duckTexture;
     
-    SDL_Rect scaler;
+    SDL_Rect scalar;
     // bools for the title screen
     
     bool on_start;
