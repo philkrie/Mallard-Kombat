@@ -123,6 +123,11 @@ void Mallard::input(){
                     }else{
                         xspeed = 5;
                     }
+=======
+                    scalar.x -= 10;
+                    break;
+                case SDLK_RIGHT:
+                    scalar.x += 10;
                     break;
                 case SDLK_DOWN:
                     scalar.y += 10;
