@@ -39,7 +39,11 @@ public:
     bool on_options;
     bool on_credits;
     bool on_quit;
+    bool jumping;
     void getBools(int, int);
+
+    int yspeed;
+    int xspeed;
     
     // bools for which screen is visible
     bool title_visible;
@@ -58,6 +62,7 @@ public:
     void update();
     void render();
     void clean_up();
+    void jump();
     bool exit;
 };
 
