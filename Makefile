@@ -10,6 +10,8 @@ SDL_LIB         := `sdl2-config --libs` -lSDL2_ttf -lSDL2_mixer -lSDL2_image
 CPPFLAGS        += $(SDL_INCLUDE)
 CXXFLAGS        += $(DEBUG) -Wall -std=c++11
 LDFLAGS         += $(SDL_LIB)
+CXXFLAGS += -I/usr/local/include
+LDFLAGS += -L/usr/local/lib
 
 .PHONY: all clean
 
