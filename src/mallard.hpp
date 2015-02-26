@@ -42,8 +42,8 @@ public:
     bool jumping;
     void getBools(int, int);
 
-    int yspeed;
-    int xspeed;
+    double yspeed;
+    double xspeed;
     
     // bools for which screen is visible
     bool title_visible;
