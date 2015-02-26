@@ -58,7 +58,8 @@ Mallard::Mallard(int argc, char* argv[]) {
     first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
     first_stage_texture = SDL_CreateTextureFromSurface(renderer, first_stage_surface);
     
-    
+    scaler.x = 0;
+    scaler.y = 350;
     duckSurface = SDL_LoadBMP("resources/images/single_duck.bmp");
     duckSurface = SDL_ConvertSurfaceFormat(duckSurface, SDL_PIXELFORMAT_RGBA8888, 0);
     duckTexture = SDL_CreateTextureFromSurface(renderer, duckSurface);
@@ -102,13 +103,22 @@ void Mallard::input(){
         if (event.type == SDL_KEYDOWN && first_stage_visible) {
             switch (event.key.keysym.sym) {
                 case SDLK_UP:
-                    std::cout << "UP KEY PRESSED" << std::endl;
+                    scaler.y -= 10;
                     break;
-                    
+                case SDLK_LEFT:
+                    scaler.x -= 10;
+                    break;
+                case SDLK_RIGHT:
+                    scaler.x += 10;
+                    break;
+                case SDLK_DOWN:
+                    scaler.y += 10;
+                    break;
                 default:
                     break;
             }
         }
+
     }
 }
 
@@ -141,8 +151,7 @@ void Mallard::render_title_screen(){
 void Mallard::render_first_stage(){
     
     int scaling_factor = 5;
-    scaler.x = 0;
-    scaler.y = 350;
+
     scaler.w = 34*scaling_factor;
     scaler.h = 24*scaling_factor;
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
