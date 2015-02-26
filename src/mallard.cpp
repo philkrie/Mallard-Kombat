@@ -99,6 +99,16 @@ void Mallard::input(){
         if (event.type == SDL_QUIT) {
             exit = true;
         }
+        if (event.type == SDL_KEYDOWN && first_stage_visible) {
+            switch (event.key.keysym.sym) {
+                case SDLK_UP:
+                    std::cout << "UP KEY PRESSED" << std::endl;
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
     }
 }
 
