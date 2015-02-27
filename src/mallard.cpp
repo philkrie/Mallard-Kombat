@@ -153,8 +153,8 @@ void Mallard::input(){
 
 
 void Mallard::update(){
-    if (scalar.x < 0) {
-        scalar.x = 0;
+    if (scalar.x > 800) {
+        scalar.x = -200;
     }
     scalar.x += xspeed;
     if (scalar.y == 350) {
