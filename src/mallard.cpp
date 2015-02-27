@@ -111,17 +111,17 @@ void Mallard::input(){
                     }
                     break;
                 case SDLK_LEFT:
-                    if (xspeed > -20) {
-                        xspeed--;
+                    if (xspeed > -10) {
+                        xspeed-=3;
                     }else{
-                        xspeed = -20;
+                        xspeed = -10;
                     }
                     break;
                 case SDLK_RIGHT:
-                    if (xspeed < 20) {
-                        xspeed++;
+                    if (xspeed < 10) {
+                        xspeed+=3;
                     }else{
-                        xspeed = 20;
+                        xspeed = 10;
                     }
                     break;
 
@@ -153,9 +153,12 @@ void Mallard::input(){
 
 
 void Mallard::update(){
+    if (scalar.x < 0) {
+        scalar.x = 0;
+    }
     scalar.x += xspeed;
     if (scalar.y == 350) {
-        xspeed = xspeed * 0.9;
+        //xspeed = xspeed * 0.9;
     }
 }
 
@@ -183,6 +186,7 @@ void Mallard::render_title_screen(){
 
 void Mallard::jump(){
     int speed = 20;
+    Mix_PlayChannel(-1, quack, 0);
     scalar.y -= speed;
     speed--;
     
