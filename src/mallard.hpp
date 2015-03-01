@@ -37,7 +37,7 @@ public:
     
     SDL_Rect footballScalar;
     
-    SDL_Rect scalar;
+    SDL_Rect duckScalar;
     // bools for the title screen
     
     bool on_start;

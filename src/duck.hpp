@@ -7,6 +7,11 @@
 #ifndef DUCK_HPP
 #define DUCK_HPP
 
+#include <SDL2/SDL.h>                       // SDL library
+#include <SDL2/SDL_ttf.h>                   // SDL font library
+#include <SDL2/SDL_mixer.h>                 // SDL sound library
+#include <SDL2/SDL_image.h>
+
 class Duck{
 private:
     int x;
@@ -24,7 +29,7 @@ public:
     
     SDL_Surface *duckSurface;
     SDL_Texture *duckTexture;
-    
+    SDL_Rect duckScalar;
     void jump();
     void renderDuck();
     void shootFootball();

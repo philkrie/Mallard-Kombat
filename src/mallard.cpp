@@ -63,8 +63,8 @@ Mallard::Mallard(int argc, char* argv[]) {
     footballTexture = SDL_CreateTextureFromSurface(renderer, footballSurface);
     footballVisible = false;
     
-    scalar.x = 0;
-    scalar.y = 350;
+    duckScalar.x = 0;
+    duckScalar.y = 350;
     jumping = false;
     yspeed = 0;
     duckSurface = SDL_LoadBMP("resources/images/single_duck.bmp");
@@ -134,7 +134,7 @@ void Mallard::input(){
                     break;
 
                 case SDLK_DOWN:
-                    scalar.y += 10;
+                    duckScalar.y += 10;
                     break;
                 case SDLK_SPACE:
                     shootFootball();
@@ -145,16 +145,16 @@ void Mallard::input(){
 
     }
     if(jumping){
-            if (scalar.y <= 350){
-                scalar.y -= yspeed;
+            if (duckScalar.y <= 350){
+                duckScalar.y -= yspeed;
                 yspeed--;
             }
-            if (scalar.y > 350){
-                scalar.y = 350;
+            if (duckScalar.y > 350){
+                duckScalar.y = 350;
                 jumping = false;
             }
 
-            if (scalar.y == 0){
+            if (duckScalar.y == 0){
                 jumping = false;
             }
         }
@@ -163,11 +163,11 @@ void Mallard::input(){
 
 
 void Mallard::update(){
-    if (scalar.x > 800) {
-        scalar.x = -200;
+    if (duckScalar.x > 800) {
+        duckScalar.x = -200;
     }
-    scalar.x += xspeed;
-    if (scalar.y == 350) {
+    duckScalar.x += xspeed;
+    if (duckScalar.y == 350) {
         //xspeed = xspeed * 0.9;
     }
 }
@@ -197,48 +197,39 @@ void Mallard::render_title_screen(){
 void Mallard::jump(){
     int speed = 20;
     Mix_PlayChannel(-1, quack, 0);
-    scalar.y -= speed;
+    duckScalar.y -= speed;
     speed--;
     
     for (int i = 0; i < 20; i++){
-        scalar.y += speed;
+        duckScalar.y += speed;
         speed++;
     } 
 }
 
 void Mallard::shootFootball(){
-    footballScalar.x = scalar.x+90;
-    footballScalar.y = scalar.y-30;
+    // initial position of the football
+    // near the duck's mouth
+    footballScalar.x = duckScalar.x+90;
+    footballScalar.y = duckScalar.y-30;
     footballScalar.w = 100;
     footballScalar.h = 100;
     footballVisible = true;
-    std::cout << "this is running" << std::endl;
 }
 
 void Mallard::render_first_stage(){
     
     int scaling_factor = 5;
+    //width and height get scaled by scaling_factor
+    duckScalar.w = 34*scaling_factor;
+    duckScalar.h = 24*scaling_factor;
 
-    scalar.w = 34*scaling_factor;
-    scalar.h = 24*scaling_factor;
-    /*
-    footballScalar.x = scalar.x;
-    footballScalar.y = scalar.y;
-    footballScalar.w = scalar.w;
-    footballScalar.h = scalar.h;
-    */
     
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
-    SDL_RenderCopy(renderer, duckTexture, NULL, &scalar);
+    SDL_RenderCopy(renderer, duckTexture, NULL, &duckScalar);
     if (footballVisible) {
         footballScalar.x +=10;
         SDL_RenderCopy(renderer, footballTexture, NULL, &footballScalar);
     }
-
-    /*
-    if (footballVisible) {
-        renderFootball();
-    }*/
     SDL_RenderPresent(renderer);
 }
 
