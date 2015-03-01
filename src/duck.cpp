@@ -22,9 +22,6 @@ int Duck::get_y(){
 
 void Duck::set_y(int new_y){
     y = new_y;
-    
-    if(y < 0)
-        y = 0;
 }
 
 void Duck::set_y_speed(int new_y){
@@ -41,5 +38,11 @@ void Duck::set_x_speed(int new_x){
 }
 
 void Duck::jump(){
-    set_y_speed(20);
+    int speed = 20;
+    scalar.y -= speed;
+    speed--;
+    for (int i = 0; i < 20; i++) {
+        scalar.y += speed;
+        speed++;
+    }
 }

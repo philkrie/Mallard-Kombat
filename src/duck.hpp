@@ -19,9 +19,19 @@ public:
     int get_y();
     void set_x(int new_x);
     void set_y(int new_y);
-    void set_x_speed(int new_x);
-    void set_y_speed(int new_y);
+    void set_xspeed(int new_x);
+    void set_yspeed(int new_y);
+    
+    SDL_Surface *duckSurface;
+    SDL_Texture *duckTexture;
+    
     void jump();
+    void renderDuck();
+    void shootFootball();
+    void renderFootball();
+    
+    Mix_Chunk *quack;
+    
 };
 
 
