@@ -58,6 +58,11 @@ Mallard::Mallard(int argc, char* argv[]) {
     first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
     first_stage_texture = SDL_CreateTextureFromSurface(renderer, first_stage_surface);
     
+    footballSurface = SDL_LoadBMP("resources/images/football.bmp");
+    footballSurface = SDL_ConvertSurfaceFormat(footballSurface, SDL_PIXELFORMAT_RGBA8888, 0);
+    footballTexture = SDL_CreateTextureFromSurface(renderer, footballSurface);
+    footballVisible = false;
+    
     scalar.x = 0;
     scalar.y = 350;
     jumping = false;
@@ -76,6 +81,9 @@ void Mallard::getBools(int x, int y){
     on_options = (435 < x && x < 565) && (320 < y && y < 345);
     on_credits = (435 < x && x < 565) && (365 < y && y < 385);
     on_quit = (465 < x && x < 535) && (410 < y && y < 430);
+}
+
+void footballFly(){
 }
 
 void Mallard::input(){
@@ -128,6 +136,8 @@ void Mallard::input(){
                 case SDLK_DOWN:
                     scalar.y += 10;
                     break;
+                case SDLK_SPACE:
+                    shootFootball();
                 default:
                     break;
             }
@@ -196,15 +206,39 @@ void Mallard::jump(){
     } 
 }
 
+void Mallard::shootFootball(){
+    footballScalar.x = scalar.x+90;
+    footballScalar.y = scalar.y-30;
+    footballScalar.w = 100;
+    footballScalar.h = 100;
+    footballVisible = true;
+    std::cout << "this is running" << std::endl;
+}
+
 void Mallard::render_first_stage(){
     
     int scaling_factor = 5;
 
     scalar.w = 34*scaling_factor;
     scalar.h = 24*scaling_factor;
+    /*
+    footballScalar.x = scalar.x;
+    footballScalar.y = scalar.y;
+    footballScalar.w = scalar.w;
+    footballScalar.h = scalar.h;
+    */
+    
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
     SDL_RenderCopy(renderer, duckTexture, NULL, &scalar);
+    if (footballVisible) {
+        footballScalar.x +=10;
+        SDL_RenderCopy(renderer, footballTexture, NULL, &footballScalar);
+    }
 
+    /*
+    if (footballVisible) {
+        renderFootball();
+    }*/
     SDL_RenderPresent(renderer);
 }
 
