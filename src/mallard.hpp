@@ -1,7 +1,3 @@
-/*
- *  Pong class declaration
- */
-
 #ifndef MALLARD_HPP
 #define MALLARD_HPP
 
@@ -35,9 +31,12 @@ public:
     SDL_Surface *footballSurface;
     SDL_Texture *footballTexture;
     
-    SDL_Rect footballScalar;
+    SDL_Surface *beaverSurface;
+    SDL_Texture *beaverTexture;
     
+    SDL_Rect footballScalar;
     SDL_Rect duckScalar;
+    SDL_Rect beaverScalar;
     // bools for the title screen
     
     bool on_start;
@@ -49,7 +48,7 @@ public:
     
     //bools for the first stage
     bool footballVisible;
-
+    bool footballFlying;
     double yspeed;
     double xspeed;
     
