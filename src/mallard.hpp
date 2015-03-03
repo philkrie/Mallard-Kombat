@@ -32,7 +32,12 @@ public:
     SDL_Surface *duckSurface;
     SDL_Texture *duckTexture;
     
-    SDL_Rect scalar;
+    SDL_Surface *footballSurface;
+    SDL_Texture *footballTexture;
+    
+    SDL_Rect footballScalar;
+    
+    SDL_Rect duckScalar;
     // bools for the title screen
     
     bool on_start;
@@ -41,6 +46,9 @@ public:
     bool on_quit;
     bool jumping;
     void getBools(int, int);
+    
+    //bools for the first stage
+    bool footballVisible;
 
     double yspeed;
     double xspeed;
@@ -53,6 +61,12 @@ public:
     void render_title_screen();
     void render_first_stage();
     
+    // duck functions
+    void jump();
+    void shootFootball();
+    void renderFootball();
+    
+    
     // Sounds
     
     Mix_Chunk *quack;
@@ -62,7 +76,6 @@ public:
     void update();
     void render();
     void clean_up();
-    void jump();
     bool exit;
 };
 
