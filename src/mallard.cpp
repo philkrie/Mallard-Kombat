@@ -58,8 +58,13 @@ Mallard::Mallard(int argc, char* argv[]) {
     first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
     first_stage_texture = SDL_CreateTextureFromSurface(renderer, first_stage_surface);
     
-    scalar.x = 0;
-    scalar.y = 350;
+    footballSurface = SDL_LoadBMP("resources/images/football.bmp");
+    footballSurface = SDL_ConvertSurfaceFormat(footballSurface, SDL_PIXELFORMAT_RGBA8888, 0);
+    footballTexture = SDL_CreateTextureFromSurface(renderer, footballSurface);
+    footballVisible = false;
+    
+    duckScalar.x = 0;
+    duckScalar.y = 350;
     jumping = false;
     yspeed = 0;
     duckSurface = SDL_LoadBMP("resources/images/single_duck.bmp");
@@ -76,6 +81,9 @@ void Mallard::getBools(int x, int y){
     on_options = (435 < x && x < 565) && (320 < y && y < 345);
     on_credits = (435 < x && x < 565) && (365 < y && y < 385);
     on_quit = (465 < x && x < 535) && (410 < y && y < 430);
+}
+
+void footballFly(){
 }
 
 void Mallard::input(){
@@ -111,37 +119,43 @@ void Mallard::input(){
                     }
                     break;
                 case SDLK_LEFT:
-                    scalar.x -= 10;
+                    if (xspeed > -10) {
+                        xspeed-=3;
+                    }else{
+                        xspeed = -10;
+                    }
                     break;
                 case SDLK_RIGHT:
-                    scalar.x += 10;
+                    if (xspeed < 10) {
+                        xspeed+=3;
+                    }else{
+                        xspeed = 10;
+                    }
                     break;
+
                 case SDLK_DOWN:
-                    scalar.y += 10;
+                    duckScalar.y += 10;
                     break;
+                case SDLK_SPACE:
+                    shootFootball();
                 default:
                     break;
             }
         }
 
-        
-
     }
     if(jumping){
-            if (scalar.y <= 350){
-                scalar.y -= yspeed;
-                std::cout << "up" << std::endl;
+            if (duckScalar.y <= 350){
+                duckScalar.y -= yspeed;
                 yspeed--;
-                std::cout << yspeed << std::endl;
             }
-            if (scalar.y > 350){
-                scalar.y = 350;
+            if (duckScalar.y > 350){
+                duckScalar.y = 350;
                 jumping = false;
             }
 
-            if (scalar.y == 0){
+            if (duckScalar.y == 0){
                 jumping = false;
-                std::cout << "done" << std::endl;
             }
         }
 
@@ -149,7 +163,13 @@ void Mallard::input(){
 
 
 void Mallard::update(){
-
+    if (duckScalar.x > 800) {
+        duckScalar.x = -200;
+    }
+    duckScalar.x += xspeed;
+    if (duckScalar.y == 350) {
+        //xspeed = xspeed * 0.9;
+    }
 }
 
 void Mallard::render_title_screen(){
@@ -176,24 +196,40 @@ void Mallard::render_title_screen(){
 
 void Mallard::jump(){
     int speed = 20;
-    scalar.y -= speed;
+    Mix_PlayChannel(-1, quack, 0);
+    duckScalar.y -= speed;
     speed--;
     
     for (int i = 0; i < 20; i++){
-        scalar.y += speed;
+        duckScalar.y += speed;
         speed++;
     } 
+}
+
+void Mallard::shootFootball(){
+    // initial position of the football
+    // near the duck's mouth
+    footballScalar.x = duckScalar.x+90;
+    footballScalar.y = duckScalar.y-30;
+    footballScalar.w = 100;
+    footballScalar.h = 100;
+    footballVisible = true;
 }
 
 void Mallard::render_first_stage(){
     
     int scaling_factor = 5;
+    //width and height get scaled by scaling_factor
+    duckScalar.w = 34*scaling_factor;
+    duckScalar.h = 24*scaling_factor;
 
-    scalar.w = 34*scaling_factor;
-    scalar.h = 24*scaling_factor;
+    
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
-    SDL_RenderCopy(renderer, duckTexture, NULL, &scalar);
-
+    SDL_RenderCopy(renderer, duckTexture, NULL, &duckScalar);
+    if (footballVisible) {
+        footballScalar.x +=10;
+        SDL_RenderCopy(renderer, footballTexture, NULL, &footballScalar);
+    }
     SDL_RenderPresent(renderer);
 }
 
