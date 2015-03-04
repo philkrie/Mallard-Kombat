@@ -1,7 +1,3 @@
-/*
- *  Pong class declaration
- */
-
 #ifndef MALLARD_HPP
 #define MALLARD_HPP
 

@@ -17,8 +17,8 @@ Mallard::Mallard(int argc, char* argv[]) {
     this->window = SDL_CreateWindow( "MALLARD KOMBAT",   // window title
                               SDL_WINDOWPOS_UNDEFINED,   // initial x position
                               SDL_WINDOWPOS_UNDEFINED,   // initial y position
-                              640,                       // width, in pixels
-                              480,                       // height, in pixels
+                              SCREEN_WIDTH,              // width,  in pixels
+                              SCREEN_HEIGHT,             // height, in pixels
                               SDL_WINDOW_SHOWN);         // flags - see below
 
     // Check that the window was successfully made
@@ -99,9 +99,6 @@ void Mallard::getBools(int x, int y){
     on_options = (435 < x && x < 565) && (320 < y && y < 345);
     on_credits = (435 < x && x < 565) && (365 < y && y < 385);
     on_quit = (465 < x && x < 535) && (410 < y && y < 430);
-}
-
-void footballFly(){
 }
 
 void Mallard::input(){
