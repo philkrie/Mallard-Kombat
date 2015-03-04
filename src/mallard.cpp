@@ -53,6 +53,25 @@ Mallard::Mallard(int argc, char* argv[]) {
         TST[i] = SDL_CreateTextureFromSurface(renderer, CTSS[i]);
         SDL_FreeSurface(CTSS[i]);
     }
+
+    std::string DS[3] = {
+    "single_duck",
+    "double_duck",
+    "triple_duck",
+    };
+
+    for (int i=0; i < 3; i++) {
+        std::string filepath = path + DS[i] + ".bmp";
+        char *temp = (char*)filepath.c_str();
+        /*
+         the following arrays all hold various states of the 
+         surfaces and textures rendering process
+         */
+        DSS[i] = SDL_LoadBMP(temp);
+        CDSS[i] = SDL_ConvertSurfaceFormat(DSS[i], SDL_PIXELFORMAT_RGBA8888, 0);
+        DST[i] = SDL_CreateTextureFromSurface(renderer, CDSS[i]);
+        SDL_FreeSurface(CDSS[i]);
+    }
     
     first_stage_surface = SDL_LoadBMP("resources/images/stage.bmp");
     first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
@@ -68,9 +87,8 @@ Mallard::Mallard(int argc, char* argv[]) {
     duckScalar.y = 350;
     jumping = false;
     yspeed = 0;
-    duckSurface = SDL_LoadBMP("resources/images/single_duck.bmp");
-    duckSurface = SDL_ConvertSurfaceFormat(duckSurface, SDL_PIXELFORMAT_RGBA8888, 0);
-    duckTexture = SDL_CreateTextureFromSurface(renderer, duckSurface);
+    count = 0;
+   
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, TST[0], NULL, NULL); // base title screen
     SDL_RenderPresent(renderer);
@@ -167,6 +185,10 @@ void Mallard::update(){
         duckScalar.x = -200;
     }
     duckScalar.x += xspeed;
+    if (duckScalar.y == 350) {
+        //xspeed = xspeed * 0.9;
+    }
+   
 }
 
 void Mallard::render_title_screen(){
@@ -222,11 +244,28 @@ void Mallard::render_first_stage(){
 
     
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
-    SDL_RenderCopy(renderer, duckTexture, NULL, &duckScalar);
+
+    count++;
     if (footballVisible) {
         footballScalar.x +=10;
         SDL_RenderCopy(renderer, footballTexture, NULL, &footballScalar);
+        SDL_RenderCopy(renderer, DST[1], NULL, &duckScalar);
+        if (footballScalar.x > 640){
+            footballVisible = false;
+        }
     }
+    
+    else if (count <= 20){
+        SDL_RenderCopy(renderer, DST[2], NULL, &duckScalar);
+    }
+    else if (count < 40){
+        SDL_RenderCopy(renderer, DST[0], NULL, &duckScalar);
+    }
+    if (count == 40){
+        count = 0;
+    }
+
+    
     SDL_RenderPresent(renderer);
 }
 

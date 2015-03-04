@@ -22,6 +22,10 @@ public:
     SDL_Surface *TSS[5];  // TSS stands for TitleScreenSurfaces
     SDL_Surface *CTSS[5]; // CTSS stands for ConvertedTitleScreenSurfaces
     SDL_Texture *TST[5];  // TST stands for TextureSurface
+
+    SDL_Surface *DSS[3];  // TSS stands for TitleScreenSurfaces
+    SDL_Surface *CDSS[3]; // CTSS stands for ConvertedTitleScreenSurfaces
+    SDL_Texture *DST[3];  // TST stands for TextureSurface
     
     SDL_Surface *first_stage_surface;
     SDL_Texture *first_stage_texture;
@@ -45,6 +49,7 @@ public:
     bool on_quit;
     bool jumping;
     void getBools(int, int);
+    int count;
     
     //bools for the first stage
     bool footballVisible;
