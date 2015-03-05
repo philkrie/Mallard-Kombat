@@ -88,6 +88,8 @@ Mallard::Mallard(int argc, char* argv[]) {
     beaverVisible = true;
     duckScalar.x = 0;
     duckScalar.y = 350;
+    beaverScalar.x = 500;
+    beaverScalar.y = 370;
     jumping = false;
     yspeed = 0;
     count = 0;
@@ -172,7 +174,7 @@ void Mallard::input(){
 void Mallard::update(){
     if (first_stage_visible) {
         if (didCollide(footballScalar, beaverScalar)) {
-            beaverVisible = false;
+            beaverScalar.y = beaverRespawn();
         }
     }
     if (duckScalar.x > 800) {
@@ -236,8 +238,7 @@ void Mallard::render_first_stage(){
     duckScalar.w = 34*duck_scaling_factor;
     duckScalar.h = 24*duck_scaling_factor;
 
-    beaverScalar.x = 500;
-    beaverScalar.y = 370;
+    
     
     beaverScalar.w = 15*beaver_scaling_factor;
     beaverScalar.h = 15*beaver_scaling_factor;
@@ -269,6 +270,13 @@ void Mallard::render_first_stage(){
 
     
     SDL_RenderPresent(renderer);
+}
+
+int Mallard::beaverRespawn(){
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine generator(seed);
+    std::uniform_int_distribution<int> distribution(200,350);
+    return distribution(generator);
 }
 
 bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )

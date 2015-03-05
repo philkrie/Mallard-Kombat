@@ -7,6 +7,8 @@
 #include <SDL2/SDL_image.h>
 
 #include <iostream>
+#include <chrono>
+#include <random>
 
 class Mallard {
 public:
@@ -69,6 +71,9 @@ public:
     void jump();
     void shootFootball();
     void renderFootball();
+    
+    // beaver functions
+    int beaverRespawn();
     
     //collision function
     bool didCollide(SDL_Rect, SDL_Rect);
