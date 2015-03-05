@@ -82,6 +82,10 @@ Mallard::Mallard(int argc, char* argv[]) {
     footballTexture = SDL_CreateTextureFromSurface(renderer, footballSurface);
     footballVisible = false;
     
+    beaverSurface = SDL_LoadBMP("resources/images/beaver.bmp");
+    beaverSurface = SDL_ConvertSurfaceFormat(beaverSurface, SDL_PIXELFORMAT_RGBA8888, 0);
+    beaverTexture = SDL_CreateTextureFromSurface(renderer, beaverSurface);
+    
     duckScalar.x = 0;
     duckScalar.y = 350;
     jumping = false;
@@ -152,7 +156,10 @@ void Mallard::input(){
                     duckScalar.y += 10;
                     break;
                 case SDLK_SPACE:
-                    shootFootball();
+                    if (!footballVisible) {
+                        Mix_PlayChannel(-1, quack, 0);
+                        shootFootball();
+                    }
                 default:
                     break;
             }
@@ -178,6 +185,13 @@ void Mallard::input(){
 
 
 void Mallard::update(){
+    std::cout << footballScalar.x << ", " << footballScalar.y << std::endl;
+    if (first_stage_visible) {
+        if (didCollide(duckScalar, beaverScalar)) {
+            std::cout << "they collided" << std::endl;
+        }
+    }
+    
     if (duckScalar.x > 800) {
         duckScalar.x = -200;
     }
@@ -185,7 +199,7 @@ void Mallard::update(){
     if (duckScalar.y == 350) {
         //xspeed = xspeed * 0.9;
     }
-   
+    
 }
 
 void Mallard::render_title_screen(){
@@ -212,7 +226,6 @@ void Mallard::render_title_screen(){
 
 void Mallard::jump(){
     int speed = 20;
-    Mix_PlayChannel(-1, quack, 0);
     duckScalar.y -= speed;
     speed--;
     
@@ -239,9 +252,14 @@ void Mallard::render_first_stage(){
     duckScalar.w = 34*scaling_factor;
     duckScalar.h = 24*scaling_factor;
 
+    beaverScalar.x = 300;
+    beaverScalar.y = 300;
+    
+    beaverScalar.w = 20*scaling_factor;
+    beaverScalar.h = 20*scaling_factor;
     
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
-
+    SDL_RenderCopy(renderer, beaverTexture, NULL, &beaverScalar);
     count++;
     if (footballVisible) {
         footballScalar.x +=10;
@@ -264,6 +282,60 @@ void Mallard::render_first_stage(){
 
     
     SDL_RenderPresent(renderer);
+}
+
+bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )
+{
+    //The sides of the rectangles
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+    
+    
+    
+    //Calculate the sides of rect A
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+    
+    //Calculate the sides of rect B
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB = b.y + b.h;
+    //If any of the sides from A are outside of B
+    
+    
+    std::cout << leftA << ", " << leftB << std::endl;
+    std::cout << rightA << ", " << rightB << std::endl;
+    std::cout << topA << ", " << topB << std::endl;
+    std::cout << bottomA << ", " << bottomB << std::endl;
+    
+    
+    if( bottomA <= topB )
+    {
+        return false;
+    }
+    
+    if( topA >= bottomB )
+    {
+        return false;
+    }
+    
+    if( rightA <= leftB )
+    {
+        return false;
+    }
+    
+    if( leftA >= rightB )
+    {
+        return false;
+    }
+    
+    //If none of the sides from A are outside B
+    return true;
 }
 
 void Mallard::render(){
@@ -294,6 +366,7 @@ void Mallard::clean_up(){
     }
     SDL_DestroyTexture(duckTexture);
     SDL_DestroyTexture(first_stage_texture);
+    SDL_DestroyTexture(beaverTexture);
     Mix_CloseAudio();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

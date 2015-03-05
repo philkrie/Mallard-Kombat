@@ -35,8 +35,11 @@ public:
     SDL_Surface *footballSurface;
     SDL_Texture *footballTexture;
     
-    SDL_Rect footballScalar;
+    SDL_Surface *beaverSurface;
+    SDL_Texture *beaverTexture;
     
+    SDL_Rect footballScalar;
+    SDL_Rect beaverScalar;
     SDL_Rect duckScalar;
     // bools for the title screen
     
@@ -67,6 +70,8 @@ public:
     void shootFootball();
     void renderFootball();
     
+    //collision function
+    bool didCollide(SDL_Rect, SDL_Rect);
     
     // Sounds
     
