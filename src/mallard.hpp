@@ -53,14 +53,14 @@ public:
     
     //bools for the first stage
     bool footballVisible;
-
+    bool beaverVisible;
+    
     double yspeed;
     double xspeed;
     
     // bools for which screen is visible
     bool title_visible;
     bool first_stage_visible;
-    
     // render functions
     void render_title_screen();
     void render_first_stage();
