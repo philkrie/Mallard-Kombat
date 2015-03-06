@@ -10,6 +10,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     exit = false;
     
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize SDL2
+
     
     
     
@@ -91,6 +92,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     }
     //Loads individual image as texture
     SDL_Texture* loadTexture( std::string path );
+
     
     first_stage_surface = IMG_Load("resources/images/field2.jpg");
     first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
@@ -158,6 +160,7 @@ void Mallard::input(){
                 SDL_RenderClear(renderer);
                 Mix_PlayChannel(-1, quack, 0);
                 first_stage_visible = true;
+                SDL_ShowCursor(0);
             }
             if (on_quit && title_visible) {
                 exit = true;
