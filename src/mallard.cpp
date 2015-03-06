@@ -239,7 +239,9 @@ void Mallard::update(){
             // ^ need to hide the footballScalar so it doesn't
             // mess around with where the beaver currently is
             score += 420;
-            std::string tempscore = std::to_string(score);
+            std::string tempscore = "Score: ";
+            tempscore += std::to_string(score);
+            swagRect.w = 150;
             swag = renderText(tempscore, font_name, font_color, 72, renderer);
             beaverRespawn();
             beaverScalar.x += 50;
