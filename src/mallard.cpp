@@ -237,9 +237,7 @@ void Mallard::update(){
             footballScalar.y = 1000;
             // ^ need to hide the footballScalar so it doesn't
             // mess around with where the beaver currently is
-            if (gameBreaker > 0) {
-                score += 420;
-            }
+            score += 420;
             std::string tempscore = std::to_string(score);
             swag = renderText(tempscore, font_name, font_color, 72, renderer);
             beaverScalar.y = beaverRespawn();
@@ -258,15 +256,15 @@ void Mallard::update(){
             gameBreaker++;
         }
         
-        if ((didCollide(duckScalar, beaverScalar) && gameBreaker > 1) ||
-            beaverScalar.x < 0) {
+        if (didCollide(duckScalar, beaverScalar) && gameBreaker > 1) {
             swag = renderText("YOU FUCKING LOSER, YOU LOST", font_name, font_color, 72, renderer);
             isDuckDead = true;
             swagRect.w = 500;
             //exit = true;
         }
         
-        beaverScalar.y = beaverStartPoint + 50 * sin(beaverScalar.x * PI/30);
+        //beaverScalar.y = 50 * sin(beaverCount*PI/90);
+        beaverScalar.y = 240 + 50 * sin(beaverScalar.x * PI/30);
     }
 }
 
@@ -348,7 +346,7 @@ void Mallard::render_first_stage(){
         }
     }
     if (isDuckDead) {
-        SDL_RenderCopy(renderer, DST[3], NULL, &duckScalar);
+        //SDL_RenderCopy(renderer, DST[3], NULL, &duckScalar);
     }
     
     else if (count <= 15){
@@ -370,8 +368,7 @@ void Mallard::render_first_stage(){
 int Mallard::beaverRespawn(){
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
-    std::uniform_int_distribution<int> distribution(50,430);
-    beaverStartPoint = distribution(generator);
+    std::uniform_int_distribution<int> distribution(200,350);
     return distribution(generator);
 }
 
