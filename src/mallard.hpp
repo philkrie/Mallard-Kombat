@@ -9,6 +9,9 @@
 #include <iostream>
 #include <chrono>
 #include <random>
+#include <cmath>
+
+#define PI 3.141592653
 
 class Mallard {
 public:
@@ -35,9 +38,9 @@ public:
     SDL_Surface *CTSS[5]; // CTSS stands for ConvertedTitleScreenSurfaces
     SDL_Texture *TST[5];  // TST stands for TextureSurface
 
-    SDL_Surface *DSS[3];  // TSS stands for TitleScreenSurfaces
-    SDL_Surface *CDSS[3]; // CTSS stands for ConvertedTitleScreenSurfaces
-    SDL_Texture *DST[3];  // TST stands for TextureSurface
+    SDL_Surface *DSS[4];  // TSS stands for TitleScreenSurfaces
+    SDL_Surface *CDSS[4]; // CTSS stands for ConvertedTitleScreenSurfaces
+    SDL_Texture *DST[4];  // TST stands for TextureSurface
     
     SDL_Surface *first_stage_surface;
     SDL_Texture *first_stage_texture;
@@ -62,17 +65,19 @@ public:
     bool jumping;
     void getBools(int, int);
     int count;
+    int beaverCount;
     
     //bools for the first stage
     bool footballVisible;
     bool beaverVisible;
-    
+    bool isDuckDead;
     double yspeed;
     double xspeed;
     
     // bools for which screen is visible
     bool title_visible;
     bool first_stage_visible;
+    bool paused;
     // render functions
     void render_title_screen();
     void render_first_stage();
@@ -87,10 +92,13 @@ public:
     
     //collision function
     bool didCollide(SDL_Rect, SDL_Rect);
+    int gameBreaker;
+    // ^ this is necessary for the game to run
     
     // Sounds
     
     Mix_Chunk *quack;
+    
     Mallard(int argc, char *argv[]);
     void execute();
     void input();
