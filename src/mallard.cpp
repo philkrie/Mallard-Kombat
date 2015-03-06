@@ -86,8 +86,10 @@ Mallard::Mallard(int argc, char* argv[]) {
         DST[i] = SDL_CreateTextureFromSurface(renderer, CDSS[i]);
         SDL_FreeSurface(CDSS[i]);
     }
-    
-    first_stage_surface = SDL_LoadBMP("resources/images/stage.bmp");
+    //Loads individual image as texture
+    SDL_Texture* loadTexture( std::string path );
+
+    first_stage_surface = IMG_Load("resources/images/field2.jpg");
     first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
     first_stage_texture = SDL_CreateTextureFromSurface(renderer, first_stage_surface);
     
@@ -157,16 +159,28 @@ void Mallard::input(){
         if (event.type == SDL_QUIT) {
             exit = true;
         }
+        if (event.type == SDL_MOUSEMOTION){
+                SDL_GetMouseState(NULL, &duckScalar.y);
+                if (duckScalar.y < 0) {
+                    duckScalar.y = 0;
+                }
+                if (duckScalar.y > 400) {
+                    duckScalar.y = 400;
+                }
+        }
+
         if (event.type == SDL_KEYDOWN && first_stage_visible) {
+            
             switch (event.key.keysym.sym) {
                 case SDLK_UP:
-                    if (!jumping){
-                        yspeed = 19;
-                        jumping = true;
+                    if (duckScalar.y != 0){
+                        duckScalar.y -= 50;
                     }
                     break;
                 case SDLK_DOWN:
-                    duckScalar.y += 10;
+                    if (duckScalar.y != 400){
+                        duckScalar.y += 50;
+                    }
                     break;
                 case SDLK_SPACE:
                     if (!footballVisible) {
@@ -203,13 +217,8 @@ void Mallard::update(){
             beaverScalar.y = beaverRespawn();
         }
     }
-    if (duckScalar.x > 800) {
-        duckScalar.x = -200;
-    }
-    duckScalar.x += xspeed;
-    if (duckScalar.y == 350) {
-        //xspeed = xspeed * 0.9;
-    }
+    std::cout << duckScalar.y << std::endl;
+
     
 }
 
