@@ -5,26 +5,41 @@
 const int Mallard::SCREEN_WIDTH = 640;
 const int Mallard::SCREEN_HEIGHT = 480;
 
+
 Mallard::Mallard(int argc, char* argv[]) {
     exit = false;
     
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize SDL2
 
     
-
-
-
+    
+    
     // Create an application window with the following settings:
     this->window = SDL_CreateWindow( "MALLARD KOMBAT",   // window title
-                              SDL_WINDOWPOS_UNDEFINED,   // initial x position
-                              SDL_WINDOWPOS_UNDEFINED,   // initial y position
-                              SCREEN_WIDTH,              // width,  in pixels
-                              SCREEN_HEIGHT,             // height, in pixels
-                              SDL_WINDOW_SHOWN);         // flags - see below
-
+                                    SDL_WINDOWPOS_UNDEFINED,   // initial x position
+                                    SDL_WINDOWPOS_UNDEFINED,   // initial y position
+                                    SCREEN_WIDTH,              // width,  in pixels
+                                    SCREEN_HEIGHT,             // height, in pixels
+                                    SDL_WINDOW_SHOWN);         // flags - see below
+    
     // Check that the window was successfully made
     renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED |
-                                 SDL_RENDERER_PRESENTVSYNC );
+                                  SDL_RENDERER_PRESENTVSYNC );
+    
+    
+    TTF_Init();
+    font = TTF_OpenFont("resources/fonts/comic_sans.ttf", 72);
+    
+    font_color = {0, 0, 0, 0};
+    font_name = "resources/fonts/comic_sans.ttf";
+    
+    swag = renderText("SWAG", font_name, font_color, 72, renderer);
+    swagRect.x = 100;
+    swagRect.y = 100;
+    swagRect.w = 50;
+    swagRect.h = 50;
+    score = 0;
+    
     
     // Sounds
     Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
@@ -32,11 +47,11 @@ Mallard::Mallard(int argc, char* argv[]) {
     path = "resources/images/";
     //TS stands for TitleScreens
     std::string TS[5] = {
-    "title_screen",
-    "title_screen_start",
-    "title_screen_options",
-    "title_screen_credits",
-    "title_screen_quit",
+        "title_screen",
+        "title_screen_start",
+        "title_screen_options",
+        "title_screen_credits",
+        "title_screen_quit",
     };
     // Creating the title screens
     
@@ -46,7 +61,7 @@ Mallard::Mallard(int argc, char* argv[]) {
         std::string filepath = path + TS[i] + ".bmp";
         char *temp = (char*)filepath.c_str();
         /*
-         the following arrays all hold various states of the 
+         the following arrays all hold various states of the
          surfaces and textures rendering process
          */
         TSS[i] = SDL_LoadBMP(temp);
@@ -54,18 +69,20 @@ Mallard::Mallard(int argc, char* argv[]) {
         TST[i] = SDL_CreateTextureFromSurface(renderer, CTSS[i]);
         SDL_FreeSurface(CTSS[i]);
     }
-
-    std::string DS[3] = {
-    "single_duck",
-    "double_duck",
-    "triple_duck",
+    
+    
+    std::string DS[4] = {
+        "single_duck",
+        "double_duck",
+        "triple_duck",
+        "quadruple_duck",
     };
-
-    for (int i=0; i < 3; i++) {
+    
+    for (int i=0; i < 4; i++) {
         std::string filepath = path + DS[i] + ".bmp";
         char *temp = (char*)filepath.c_str();
         /*
-         the following arrays all hold various states of the 
+         the following arrays all hold various states of the
          surfaces and textures rendering process
          */
         DSS[i] = SDL_LoadBMP(temp);
@@ -76,7 +93,8 @@ Mallard::Mallard(int argc, char* argv[]) {
     //Loads individual image as texture
     SDL_Texture* loadTexture( std::string path );
 
-    first_stage_surface = IMG_Load("resources/images/field3.jpg");
+    
+    first_stage_surface = IMG_Load("resources/images/field2.jpg");
     first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
     first_stage_texture = SDL_CreateTextureFromSurface(renderer, first_stage_surface);
     
@@ -91,16 +109,20 @@ Mallard::Mallard(int argc, char* argv[]) {
     beaverVisible = true;
     duckScalar.x = 0;
     duckScalar.y = 350;
+    isDuckDead = false;
     beaverScalar.x = 500;
     beaverScalar.y = 370;
     jumping = false;
     yspeed = 0;
     count = 0;
-   
+    beaverCount = 0;
+    
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, TST[0], NULL, NULL); // base title screen
     SDL_RenderPresent(renderer);
     title_visible = true;
+    paused = false;
+    gameBreaker = false;
 }
 
 void Mallard::getBools(int x, int y){
@@ -108,6 +130,18 @@ void Mallard::getBools(int x, int y){
     on_options = (435 < x && x < 565) && (320 < y && y < 345);
     on_credits = (435 < x && x < 565) && (365 < y && y < 385);
     on_quit = (465 < x && x < 535) && (410 < y && y < 430);
+}
+
+SDL_Texture* Mallard::renderText(const std::string &message, const std::string &fontFile, SDL_Color color, int fontSize, SDL_Renderer *renderer) {
+    TTF_Font *font = TTF_OpenFont(fontFile.c_str(), fontSize);
+    
+    SDL_Surface *surf = TTF_RenderText_Blended(font, message.c_str(), color);
+    
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surf);
+    
+    SDL_FreeSurface(surf);
+    TTF_CloseFont(font);
+    return texture;
 }
 
 void Mallard::input(){
@@ -135,19 +169,21 @@ void Mallard::input(){
         if (event.type == SDL_QUIT) {
             exit = true;
         }
-        if (event.type == SDL_MOUSEMOTION){
-                SDL_GetMouseState(NULL, &duckScalar.y);
-                if (duckScalar.y < 0) {
-                    duckScalar.y = 0;
-                }
-                if (duckScalar.y > 400) {
-                    duckScalar.y = 400;
-                }
+        if (event.type == SDL_MOUSEMOTION && !isDuckDead){
+            SDL_GetMouseState(NULL, &duckScalar.y);
+            if (duckScalar.y < 0) {
+                duckScalar.y = 0;
+            }
+            if (duckScalar.y > 400) {
+                duckScalar.y = 400;
+            }
         }
-
-        if (event.type == SDL_KEYDOWN && first_stage_visible) {
+        
+        if (event.type == SDL_KEYDOWN && first_stage_visible && !isDuckDead) {
             
             switch (event.key.keysym.sym) {
+                case SDLK_p:
+                    paused = true;
                 case SDLK_UP:
                     if (duckScalar.y != 0){
                         duckScalar.y -= 50;
@@ -167,55 +203,98 @@ void Mallard::input(){
                     break;
             }
         }
-
+        
     }
     if(jumping){
-            if (duckScalar.y <= 350){
-                duckScalar.y -= yspeed;
-                yspeed--;
-            }
-            if (duckScalar.y > 350){
-                duckScalar.y = 350;
-                jumping = false;
-            }
-
-            if (duckScalar.y == 0){
-                jumping = false;
-            }
+        if (duckScalar.y <= 350){
+            duckScalar.y -= yspeed;
+            yspeed--;
         }
-
+        if (duckScalar.y > 350){
+            duckScalar.y = 350;
+            jumping = false;
+        }
+        
+        if (duckScalar.y == 0){
+            jumping = false;
+        }
+    }
+    
 }
 
 
 void Mallard::update(){
-    if (first_stage_visible) {
-        if (didCollide(footballScalar, beaverScalar)) {
-            beaverScalar.y = beaverRespawn();
+    while (paused) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_KEYDOWN) {
+                if (event.key.keysym.sym == SDLK_p) {
+                    paused = false;
+                }
+            }
         }
     }
-    std::cout << duckScalar.y << std::endl;
-
-    
+    if (first_stage_visible) {
+        if (didCollide(footballScalar, beaverScalar)) {
+            footballScalar.x = 1000;
+            footballScalar.y = 1000;
+            // ^ need to hide the footballScalar so it doesn't
+            // mess around with where the beaver currently is
+            score += 420;
+            std::string tempscore = std::to_string(score);
+            swag = renderText(tempscore, font_name, font_color, 72, renderer);
+            beaverScalar.y = beaverRespawn();
+            beaverScalar.x += 50;
+        }
+        beaverScalar.x -= 1;
+        
+        
+        
+        /*
+         * warning: the following two if statements are incredibly hacky
+         * warning: it is super shitty code but i don't know how else
+         * warning: to solve it, and i really don't care at the moment
+         */
+        if (didCollide(duckScalar, beaverScalar)) {
+            gameBreaker++;
+        }
+        
+        if (didCollide(duckScalar, beaverScalar) && gameBreaker > 1) {
+            swag = renderText("YOU FUCKING LOSER, YOU LOST", font_name, font_color, 72, renderer);
+            isDuckDead = true;
+            swagRect.w = 500;
+            //exit = true;
+        }
+        
+        //beaverScalar.y = 50 * sin(beaverCount*PI/90);
+        beaverScalar.y = 240 + 50 * sin(beaverScalar.x * PI/30);
+    }
 }
 
 void Mallard::render_title_screen(){
+    
     if (on_start) {
         SDL_RenderCopy(renderer, TST[1], NULL, NULL);
+        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }
     else if (on_options) {
         SDL_RenderCopy(renderer, TST[2], NULL, NULL);
+        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }
     else if (on_credits) {
         SDL_RenderCopy(renderer, TST[3], NULL, NULL);
+        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }
     else if (on_quit) {
         SDL_RenderCopy(renderer, TST[4], NULL, NULL);
+        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }else{
         SDL_RenderCopy(renderer, TST[0], NULL, NULL);
+        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }
 }
@@ -228,7 +307,7 @@ void Mallard::jump(){
     for (int i = 0; i < 20; i++){
         duckScalar.y += speed;
         speed++;
-    } 
+    }
 }
 
 void Mallard::shootFootball(){
@@ -242,24 +321,25 @@ void Mallard::shootFootball(){
 }
 
 void Mallard::render_first_stage(){
-    
+    SDL_ShowCursor(0);
     int duck_scaling_factor = 3;
     int beaver_scaling_factor = 5;
     //width and height get scaled by scaling_factor
     duckScalar.w = 34*duck_scaling_factor;
     duckScalar.h = 24*duck_scaling_factor;
-
     
     
     beaverScalar.w = 15*beaver_scaling_factor;
     beaverScalar.h = 15*beaver_scaling_factor;
     
+    
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
     if (beaverVisible) {
         SDL_RenderCopy(renderer, beaverTexture, NULL, &beaverScalar);
-
+        
     }
     count++;
+    beaverCount++;
     if (footballVisible) {
         footballScalar.x +=10;
         SDL_RenderCopy(renderer, footballTexture, NULL, &footballScalar);
@@ -268,17 +348,22 @@ void Mallard::render_first_stage(){
             footballVisible = false;
         }
     }
+    if (isDuckDead) {
+        SDL_RenderCopy(renderer, DST[3], NULL, &duckScalar);
+    }
     
-    else if (count <= 20){
+    else if (count <= 15){
         SDL_RenderCopy(renderer, DST[2], NULL, &duckScalar);
     }
-    else if (count < 40){
+    else if (count < 30){
         SDL_RenderCopy(renderer, DST[0], NULL, &duckScalar);
     }
-    if (count == 40){
-        count = 0;
-    }
-
+    
+    count = count%30;
+    
+    swagRect.x = 50;
+    swagRect.y = 50;
+    SDL_RenderCopy(renderer, swag, NULL, &swagRect);
     
     SDL_RenderPresent(renderer);
 }
