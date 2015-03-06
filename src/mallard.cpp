@@ -137,21 +137,6 @@ void Mallard::input(){
                         jumping = true;
                     }
                     break;
-                case SDLK_LEFT:
-                    if (xspeed > -10) {
-                        xspeed-=3;
-                    }else{
-                        xspeed = -10;
-                    }
-                    break;
-                case SDLK_RIGHT:
-                    if (xspeed < 10) {
-                        xspeed+=3;
-                    }else{
-                        xspeed = 10;
-                    }
-                    break;
-
                 case SDLK_DOWN:
                     duckScalar.y += 10;
                     break;
@@ -364,7 +349,6 @@ void Mallard::clean_up(){
     for (int i=0; i < 5; i++) {
         SDL_DestroyTexture(TST[i]);
     }
-    SDL_DestroyTexture(duckTexture);
     SDL_DestroyTexture(first_stage_texture);
     SDL_DestroyTexture(beaverTexture);
     Mix_CloseAudio();
