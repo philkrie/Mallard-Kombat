@@ -9,7 +9,6 @@ Mallard::Mallard(int argc, char* argv[]) {
     exit = false;
     
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize SDL2
-    
 
 
 
@@ -24,6 +23,20 @@ Mallard::Mallard(int argc, char* argv[]) {
     // Check that the window was successfully made
     renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED |
                                  SDL_RENDERER_PRESENTVSYNC );
+    
+    
+    TTF_Init();
+    font = TTF_OpenFont("resources/fonts/comic_sans.ttf", 72);
+
+    font_color = {0, 0, 0, 0};
+    font_name = "resources/fonts/comic_sans.ttf";
+    
+    swag = renderText("SWAG", font_name, font_color, 72, renderer);
+    swagRect.x = 100;
+    swagRect.y = 100;
+    swagRect.w = 50;
+    swagRect.h = 50;
+    
     
     // Sounds
     Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
@@ -53,7 +66,8 @@ Mallard::Mallard(int argc, char* argv[]) {
         TST[i] = SDL_CreateTextureFromSurface(renderer, CTSS[i]);
         SDL_FreeSurface(CTSS[i]);
     }
-
+    
+    
     std::string DS[3] = {
     "single_duck",
     "double_duck",
@@ -105,6 +119,18 @@ void Mallard::getBools(int x, int y){
     on_options = (435 < x && x < 565) && (320 < y && y < 345);
     on_credits = (435 < x && x < 565) && (365 < y && y < 385);
     on_quit = (465 < x && x < 535) && (410 < y && y < 430);
+}
+
+SDL_Texture* Mallard::renderText(const std::string &message, const std::string &fontFile, SDL_Color color, int fontSize, SDL_Renderer *renderer) {
+    TTF_Font *font = TTF_OpenFont(fontFile.c_str(), fontSize);
+    
+    SDL_Surface *surf = TTF_RenderText_Blended(font, message.c_str(), color);
+    
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surf);
+    
+    SDL_FreeSurface(surf);
+    TTF_CloseFont(font);
+    return texture;
 }
 
 void Mallard::input(){
@@ -188,6 +214,7 @@ void Mallard::update(){
 }
 
 void Mallard::render_title_screen(){
+    
     if (on_start) {
         SDL_RenderCopy(renderer, TST[1], NULL, NULL);
         SDL_RenderPresent(renderer);
@@ -205,6 +232,7 @@ void Mallard::render_title_screen(){
         SDL_RenderPresent(renderer);
     }else{
         SDL_RenderCopy(renderer, TST[0], NULL, NULL);
+        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }
 }
