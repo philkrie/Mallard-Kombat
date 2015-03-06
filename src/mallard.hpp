@@ -88,7 +88,7 @@ public:
     void renderFootball();
     
     // beaver functions
-    int beaverRespawn();
+    void beaverRespawn();
     int beaverStartPoint;
     
     //collision function

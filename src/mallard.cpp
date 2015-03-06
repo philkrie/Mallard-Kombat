@@ -121,6 +121,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     title_visible = true;
     paused = false;
     gameBreaker = false;
+    beaverStartPoint = 240;
 }
 
 void Mallard::getBools(int x, int y){
@@ -240,7 +241,7 @@ void Mallard::update(){
             score += 420;
             std::string tempscore = std::to_string(score);
             swag = renderText(tempscore, font_name, font_color, 72, renderer);
-            beaverScalar.y = beaverRespawn();
+            beaverRespawn();
             beaverScalar.x += 50;
         }
         beaverScalar.x -= 1;
@@ -263,8 +264,7 @@ void Mallard::update(){
             //exit = true;
         }
         
-        //beaverScalar.y = 50 * sin(beaverCount*PI/90);
-        beaverScalar.y = 240 + 50 * sin(beaverScalar.x * PI/30);
+        beaverScalar.y = beaverStartPoint + 50 * sin(beaverScalar.x * PI/30);
     }
 }
 
@@ -345,8 +345,8 @@ void Mallard::render_first_stage(){
             footballVisible = false;
         }
     }
-    if (isDuckDead) {
-        //SDL_RenderCopy(renderer, DST[3], NULL, &duckScalar);
+    else if (isDuckDead) {
+        SDL_RenderCopy(renderer, DST[3], NULL, &duckScalar);
     }
     
     else if (count <= 15){
@@ -365,11 +365,11 @@ void Mallard::render_first_stage(){
     SDL_RenderPresent(renderer);
 }
 
-int Mallard::beaverRespawn(){
+void Mallard::beaverRespawn(){
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
-    std::uniform_int_distribution<int> distribution(200,350);
-    return distribution(generator);
+    std::uniform_int_distribution<int> distribution(50,430);
+    beaverStartPoint = distribution(generator);
 }
 
 bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )
