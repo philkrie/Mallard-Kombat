@@ -36,6 +36,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     swagRect.y = 100;
     swagRect.w = 50;
     swagRect.h = 50;
+    score = 0;
     
     
     // Sounds
@@ -147,6 +148,7 @@ void Mallard::input(){
             SDL_GetMouseState(&x, &y);
             getBools(x,y);
             if (on_start && title_visible) {
+                //swag =
                 title_visible = false;
                 SDL_RenderClear(renderer);
                 Mix_PlayChannel(-1, quack, 0);
@@ -214,30 +216,35 @@ void Mallard::input(){
 void Mallard::update(){
     if (first_stage_visible) {
         if (didCollide(footballScalar, beaverScalar)) {
+            footballScalar.x = 500;
+            score += 420;
+            std::string tempscore = std::to_string(score);
+            swag = renderText(tempscore, font_name, font_color, 72, renderer);
             beaverScalar.y = beaverRespawn();
         }
     }
-    std::cout << duckScalar.y << std::endl;
-
-    
 }
 
 void Mallard::render_title_screen(){
     
     if (on_start) {
         SDL_RenderCopy(renderer, TST[1], NULL, NULL);
+        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }
     else if (on_options) {
         SDL_RenderCopy(renderer, TST[2], NULL, NULL);
+        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }
     else if (on_credits) {
         SDL_RenderCopy(renderer, TST[3], NULL, NULL);
+        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }
     else if (on_quit) {
         SDL_RenderCopy(renderer, TST[4], NULL, NULL);
+        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }else{
         SDL_RenderCopy(renderer, TST[0], NULL, NULL);
@@ -268,14 +275,13 @@ void Mallard::shootFootball(){
 }
 
 void Mallard::render_first_stage(){
-    
+    SDL_ShowCursor(0);
     int duck_scaling_factor = 3;
     int beaver_scaling_factor = 5;
     //width and height get scaled by scaling_factor
     duckScalar.w = 34*duck_scaling_factor;
     duckScalar.h = 24*duck_scaling_factor;
 
-    
     
     beaverScalar.w = 15*beaver_scaling_factor;
     beaverScalar.h = 15*beaver_scaling_factor;
@@ -295,17 +301,18 @@ void Mallard::render_first_stage(){
         }
     }
     
-    else if (count <= 20){
+    else if (count <= 15){
         SDL_RenderCopy(renderer, DST[2], NULL, &duckScalar);
     }
-    else if (count < 40){
+    else if (count < 30){
         SDL_RenderCopy(renderer, DST[0], NULL, &duckScalar);
     }
-    if (count == 40){
-        count = 0;
-    }
-
+    count = count%30;
     
+    swagRect.x = 50;
+    swagRect.y = 50;
+    SDL_RenderCopy(renderer, swag, NULL, &swagRect);
+
     SDL_RenderPresent(renderer);
 }
 

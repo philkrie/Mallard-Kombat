@@ -29,6 +29,7 @@ public:
     SDL_Surface *surfswag;
     SDL_Texture *renderText(const std::string&, const std::string&, SDL_Color, int, SDL_Renderer*);
     SDL_Rect swagRect;
+    long long unsigned int score;
     
     SDL_Surface *TSS[5];  // TSS stands for TitleScreenSurfaces
     SDL_Surface *CTSS[5]; // CTSS stands for ConvertedTitleScreenSurfaces
