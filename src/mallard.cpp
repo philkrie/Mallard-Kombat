@@ -94,7 +94,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     SDL_Texture* loadTexture( std::string path );
 
     
-    first_stage_surface = IMG_Load("resources/images/field2.jpg");
+    first_stage_surface = IMG_Load("resources/images/field3.jpg");
     first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
     first_stage_texture = SDL_CreateTextureFromSurface(renderer, first_stage_surface);
     
