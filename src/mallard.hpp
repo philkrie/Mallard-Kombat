@@ -7,6 +7,8 @@
 #include <SDL2/SDL_image.h>
 
 #include <iostream>
+#include <chrono>
+#include <random>
 
 class Mallard {
 public:
@@ -53,14 +55,14 @@ public:
     
     //bools for the first stage
     bool footballVisible;
-
+    bool beaverVisible;
+    
     double yspeed;
     double xspeed;
     
     // bools for which screen is visible
     bool title_visible;
     bool first_stage_visible;
-    
     // render functions
     void render_title_screen();
     void render_first_stage();
@@ -69,6 +71,9 @@ public:
     void jump();
     void shootFootball();
     void renderFootball();
+    
+    // beaver functions
+    int beaverRespawn();
     
     //collision function
     bool didCollide(SDL_Rect, SDL_Rect);
