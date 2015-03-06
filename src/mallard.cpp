@@ -237,7 +237,9 @@ void Mallard::update(){
             footballScalar.y = 1000;
             // ^ need to hide the footballScalar so it doesn't
             // mess around with where the beaver currently is
-            score += 420;
+            if (gameBreaker > 0) {
+                score += 420;
+            }
             std::string tempscore = std::to_string(score);
             swag = renderText(tempscore, font_name, font_color, 72, renderer);
             beaverScalar.y = beaverRespawn();
