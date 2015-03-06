@@ -89,6 +89,7 @@ public:
     
     // beaver functions
     int beaverRespawn();
+    int beaverStartPoint;
     
     //collision function
     bool didCollide(SDL_Rect, SDL_Rect);
