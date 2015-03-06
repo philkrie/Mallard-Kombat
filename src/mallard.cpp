@@ -9,6 +9,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     exit = false;
     
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize SDL2
+
     
 
 
@@ -125,6 +126,7 @@ void Mallard::input(){
                 SDL_RenderClear(renderer);
                 Mix_PlayChannel(-1, quack, 0);
                 first_stage_visible = true;
+                SDL_ShowCursor(0);
             }
             if (on_quit && title_visible) {
                 exit = true;
