@@ -263,7 +263,6 @@ void Mallard::update(){
             //exit = true;
         }
         
-        //beaverScalar.y = 50 * sin(beaverCount*PI/90);
         beaverScalar.y = 240 + 50 * sin(beaverScalar.x * PI/30);
     }
 }
