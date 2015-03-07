@@ -10,8 +10,16 @@
 #include <chrono>
 #include <random>
 #include <cmath>
+#include <string>
+
+#include "beaver.hpp"
+#include "duck.hpp"
+#include "util.hpp"
 
 #define PI 3.141592653
+
+class Beaver;
+class Duck;
 
 class Mallard {
 public:
@@ -19,41 +27,42 @@ public:
     static const int SCREEN_WIDTH;
     static const int SCREEN_HEIGHT;
     
+    Mallard(int argc, char *argv[]);
+    void execute();
+    void input();
+    void update();
+    void render();
+    void clean_up();
+    
+
     // Window and renderer
     SDL_Window* window;
     SDL_Renderer *renderer;
-    std::string path; // path to the image files
-    
-    // font things
-    TTF_Font *font;
+
+    // path to the image files
+    std::string path; 
+
+    // gameobjects
+    Duck *duck;
+    Beaver *benny;
+        
+    // TTF Font Library
     SDL_Color font_color;
     std::string font_name;
     SDL_Texture *swag;
-    SDL_Surface *surfswag;
-    SDL_Texture *renderText(const std::string&, const std::string&, SDL_Color, int, SDL_Renderer*);
     SDL_Rect swagRect;
-    long long unsigned int score;
-    
-    SDL_Surface *TSS[5];  // TSS stands for TitleScreenSurfaces
-    SDL_Surface *CTSS[5]; // CTSS stands for ConvertedTitleScreenSurfaces
-    SDL_Texture *TST[5];  // TST stands for TitleSurfaceTextures
-
-    SDL_Surface *DSS[4];  // DSS stands for DuckScreenSurfaces
-    SDL_Surface *CDSS[4]; // CDSS stands for ConvertedDuckScreenSurfaces
-    SDL_Texture *DST[4];  // DST stands for DuckSurfaceTextures
+   
     
     SDL_Surface *first_stage_surface;
     SDL_Texture *first_stage_texture;
     
     SDL_Surface *footballSurface;
     SDL_Texture *footballTexture;
+
+    SDL_Texture *TST[5];
     
-    SDL_Surface *beaverSurface;
-    SDL_Texture *beaverTexture;
+   
     
-    SDL_Rect footballScalar;
-    SDL_Rect beaverScalar;
-    SDL_Rect duckScalar;
     // bools for the title screen
     
     bool on_start;
@@ -63,12 +72,11 @@ public:
     bool jumping;
     void getBools(int, int);
     int count;
-    int beaverCount;
+    long long unsigned int score;
+    bool exit;
     
     //bools for the first stage
-    bool footballVisible;
     bool beaverVisible;
-    bool isDuckDead;
     double yspeed;
     double xspeed;
     
@@ -95,20 +103,10 @@ public:
     // ^ this is necessary for the game to run
     
     // class objects
-    Duck duck;
-    Beaver beaver;
-    
+   
     // Sounds
-    
     Mix_Chunk *quack;
     
-    Mallard(int argc, char *argv[]);
-    void execute();
-    void input();
-    void update();
-    void render();
-    void clean_up();
-    bool exit;
 };
 
 #endif

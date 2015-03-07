@@ -1,7 +1,6 @@
 #ifndef BEAVER_HPP_
 #define BEAVER_HPP_
 
-#include "mallard.hpp"
 
 #include <SDL2/SDL.h>                       // SDL library
 #include <SDL2/SDL_ttf.h>                   // SDL font library

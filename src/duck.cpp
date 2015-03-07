@@ -7,10 +7,12 @@
 #include "duck.hpp"
 #include "mallard.hpp"
 
-Duck::Duck(int new_x, int new_y){
-    x = new_x;
-    y = new_y;
-    
+Duck::Duck(){
+    duckScalar.x = 0;
+    duckScalar.y = 350;
+    isDuckDead = false;
+    yspeed = 0;
+    collision = false;
 }
 
 int Duck::get_x(){
@@ -25,19 +27,6 @@ void Duck::set_y(int new_y){
     y = new_y;
 }
 
-void Duck::set_yspeed(int new_y){
-    y += new_y;
-    
-    if (y < 0)
-        y = 0;
-}
-
-void Duck::set_xspeed(int new_x){
-    x += new_x;
-    if (x < 0)
-        x = 0;
-}
-
 void Duck::jump(){
     int speed = 20;
     duckScalar.y -= speed;
@@ -48,23 +37,34 @@ void Duck::jump(){
     }
 }
 
-void Duck::renderDuck(){
+void Duck::shootFootball(){
+    // initial position of the football
+    // near the duck's mouth
+    footballVisible = true;
+    footballScalar.x = duckScalar.x+70;
+    footballScalar.y = duckScalar.y+10;
+    footballScalar.w = 30;
+    footballScalar.h = 30;
+}
+
+void Duck::renderDuck(SDL_Renderer *ren, int count){
     if (footballVisible) {
         footballScalar.x +=10;
-        SDL_RenderCopy(renderer, footballTexture, NULL, &footballScalar);
-        SDL_RenderCopy(renderer, DST[1], NULL, &duckScalar);
-        if (footballScalar.x > 640 || didCollide(footballScalar, beaverScalar)){
+        SDL_RenderCopy(ren, footballTexture, NULL, &footballScalar);
+        SDL_RenderCopy(ren, DST[1], NULL, &duckScalar);
+        if (footballScalar.x > 640 || collision){
             footballVisible = false;
+            collision = false;
         }
     }
     else if (isDuckDead) {
-        SDL_RenderCopy(renderer, DST[3], NULL, &duckScalar);
+        SDL_RenderCopy(ren, DST[3], NULL, &duckScalar);
     }
     
     else if (count <= 15){
-        SDL_RenderCopy(renderer, DST[2], NULL, &duckScalar);
+        SDL_RenderCopy(ren, DST[2], NULL, &duckScalar);
     }
     else if (count < 30){
-        SDL_RenderCopy(renderer, DST[0], NULL, &duckScalar);
+        SDL_RenderCopy(ren, DST[0], NULL, &duckScalar);
     }
 }

@@ -1,9 +1,8 @@
 #include "beaver.hpp"
+#include "mallard.hpp"
+
 
 Beaver::Beaver(){
-    beaverSurface = SDL_LoadBMP("resources/images/beaver.bmp");
-    beaverSurface = SDL_ConvertSurfaceFormat(beaverSurface, SDL_PIXELFORMAT_RGBA8888, 0);
-    beaverTexture = SDL_CreateTextureFromSurface(Mallard::renderer, beaverSurface);
     beaverVisible = true;
     beaverScalar.x = 500;
     beaverScalar.y = 370;
