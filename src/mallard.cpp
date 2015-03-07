@@ -184,16 +184,6 @@ void Mallard::input(){
             switch (event.key.keysym.sym) {
                 case SDLK_p:
                     paused = true;
-                case SDLK_UP:
-                    if (duckScalar.y != 0){
-                        duckScalar.y -= 50;
-                    }
-                    break;
-                case SDLK_DOWN:
-                    if (duckScalar.y != 400){
-                        duckScalar.y += 50;
-                    }
-                    break;
                 case SDLK_SPACE:
                     if (!footballVisible) {
                         Mix_PlayChannel(-1, quack, 0);
@@ -256,15 +246,11 @@ void Mallard::update(){
          * warning: to solve it, and i really don't care at the moment
          */
         if (didCollide(duckScalar, beaverScalar)) {
-            gameBreaker++;
-        }
-        
-        if (didCollide(duckScalar, beaverScalar) && gameBreaker > 1) {
             swag = renderText("YOU FUCKING LOSER, YOU LOST", font_name, font_color, 72, renderer);
             isDuckDead = true;
-            swagRect.w = 500;
-            //exit = true;
+            swagRect.w = 500;        
         }
+    
         
         beaverScalar.y = 240 + 50 * sin(beaverScalar.x * PI/30);
     }
@@ -347,7 +333,7 @@ void Mallard::render_first_stage(){
             footballVisible = false;
         }
     }
-    if (isDuckDead) {
+    else if (isDuckDead) {
         SDL_RenderCopy(renderer, DST[3], NULL, &duckScalar);
     }
     
@@ -389,7 +375,7 @@ bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )
     rightA = a.x + a.w;
     topA = a.y;
     bottomA = a.y + a.h;
-    
+
     //Calculate the sides of rect B
     leftB = b.x;
     rightB = b.x + b.w;
@@ -397,22 +383,22 @@ bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )
     bottomB = b.y + b.h;
     //If any of the sides from A are outside of B
     
-    if( bottomA <= topB )
+    if( topA <= bottomB )
     {
         return false;
     }
     
-    if( topA >= bottomB )
+    if( bottomA >= topB )
     {
         return false;
     }
     
-    if( rightA <= leftB )
+    if( leftA <= rightB )
     {
         return false;
     }
     
-    if( leftA >= rightB )
+    if( rightA >= leftB )
     {
         return false;
     }
