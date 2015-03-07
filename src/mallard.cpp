@@ -14,7 +14,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     
     
     // Create an application window with the following settings:
-    this->window = SDL_CreateWindow( "MALLARD KOMBAT",   // window title
+    this->window = SDL_CreateWindow( "MALLARD KOMBAT",         // window title
                                     SDL_WINDOWPOS_UNDEFINED,   // initial x position
                                     SDL_WINDOWPOS_UNDEFINED,   // initial y position
                                     SCREEN_WIDTH,              // width,  in pixels
@@ -203,21 +203,7 @@ void Mallard::input(){
         }
         
     }
-    if(jumping){
-        if (duckScalar.y <= 350){
-            duckScalar.y -= yspeed;
-            yspeed--;
-        }
-        if (duckScalar.y > 350){
-            duckScalar.y = 350;
-            jumping = false;
-        }
-        
-        if (duckScalar.y == 0){
-            jumping = false;
-        }
-    }
-    
+
 }
 
 

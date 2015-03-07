@@ -27,15 +27,23 @@ public:
     void set_xspeed(int new_x);
     void set_yspeed(int new_y);
     
-    SDL_Surface *duckSurface;
-    SDL_Texture *duckTexture;
+    
+    SDL_Surface *DSS[4];  // DSS stands for DuckScreenSurfaces
+    SDL_Surface *CDSS[4]; // CDSS stands for ConvertedDuckScreenSurfaces
+    SDL_Texture *DST[4];  // DST stands for DuckSurfaceTextures
+    
     SDL_Rect duckScalar;
+    SDL_Rect footballScalar;
+
     void jump();
     void renderDuck();
     void shootFootball();
     void renderFootball();
     
     Mix_Chunk *quack;
+    
+    bool isDuckDead;
+
     
 };
 

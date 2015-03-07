@@ -36,16 +36,14 @@ public:
     
     SDL_Surface *TSS[5];  // TSS stands for TitleScreenSurfaces
     SDL_Surface *CTSS[5]; // CTSS stands for ConvertedTitleScreenSurfaces
-    SDL_Texture *TST[5];  // TST stands for TextureSurface
+    SDL_Texture *TST[5];  // TST stands for TitleSurfaceTextures
 
-    SDL_Surface *DSS[4];  // TSS stands for TitleScreenSurfaces
-    SDL_Surface *CDSS[4]; // CTSS stands for ConvertedTitleScreenSurfaces
-    SDL_Texture *DST[4];  // TST stands for TextureSurface
+    SDL_Surface *DSS[4];  // DSS stands for DuckScreenSurfaces
+    SDL_Surface *CDSS[4]; // CDSS stands for ConvertedDuckScreenSurfaces
+    SDL_Texture *DST[4];  // DST stands for DuckSurfaceTextures
     
     SDL_Surface *first_stage_surface;
     SDL_Texture *first_stage_texture;
-    SDL_Surface *duckSurface;
-    SDL_Texture *duckTexture;
     
     SDL_Surface *footballSurface;
     SDL_Texture *footballTexture;
@@ -95,6 +93,10 @@ public:
     bool didCollide(SDL_Rect, SDL_Rect);
     int gameBreaker;
     // ^ this is necessary for the game to run
+    
+    // class objects
+    Duck duck;
+    Beaver beaver;
     
     // Sounds
     

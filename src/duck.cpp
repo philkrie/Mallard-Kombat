@@ -10,6 +10,7 @@
 Duck::Duck(int new_x, int new_y){
     x = new_x;
     y = new_y;
+    
 }
 
 int Duck::get_x(){
@@ -44,5 +45,26 @@ void Duck::jump(){
     for (int i = 0; i < 20; i++) {
         duckScalar.y += speed;
         speed++;
+    }
+}
+
+void Duck::renderDuck(){
+    if (footballVisible) {
+        footballScalar.x +=10;
+        SDL_RenderCopy(renderer, footballTexture, NULL, &footballScalar);
+        SDL_RenderCopy(renderer, DST[1], NULL, &duckScalar);
+        if (footballScalar.x > 640 || didCollide(footballScalar, beaverScalar)){
+            footballVisible = false;
+        }
+    }
+    else if (isDuckDead) {
+        SDL_RenderCopy(renderer, DST[3], NULL, &duckScalar);
+    }
+    
+    else if (count <= 15){
+        SDL_RenderCopy(renderer, DST[2], NULL, &duckScalar);
+    }
+    else if (count < 30){
+        SDL_RenderCopy(renderer, DST[0], NULL, &duckScalar);
     }
 }
