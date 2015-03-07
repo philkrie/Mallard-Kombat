@@ -37,7 +37,7 @@ public:
     SDL_Surface *TSS[5];  // TSS stands for TitleScreenSurfaces
     SDL_Surface *CTSS[5]; // CTSS stands for ConvertedTitleScreenSurfaces
     SDL_Texture *TST[5];  // TST stands for TextureSurface
-
+    
     SDL_Surface *DSS[4];  // TSS stands for TitleScreenSurfaces
     SDL_Surface *CDSS[4]; // CTSS stands for ConvertedTitleScreenSurfaces
     SDL_Texture *DST[4];  // TST stands for TextureSurface
@@ -88,7 +88,8 @@ public:
     void renderFootball();
     
     // beaver functions
-    int beaverRespawn();
+    void beaverRespawn();
+    int beaverStartPoint;
     
     //collision function
     bool didCollide(SDL_Rect, SDL_Rect);

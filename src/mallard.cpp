@@ -10,7 +10,6 @@ Mallard::Mallard(int argc, char* argv[]) {
     exit = false;
     
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize SDL2
-
     
     
     
@@ -92,7 +91,6 @@ Mallard::Mallard(int argc, char* argv[]) {
     }
     //Loads individual image as texture
     SDL_Texture* loadTexture( std::string path );
-
     
     first_stage_surface = IMG_Load("resources/images/field3.jpg");
     first_stage_surface = SDL_ConvertSurfaceFormat(first_stage_surface, SDL_PIXELFORMAT_RGBA8888, 0);
@@ -123,6 +121,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     title_visible = true;
     paused = false;
     gameBreaker = false;
+    beaverStartPoint = 240;
 }
 
 void Mallard::getBools(int x, int y){
@@ -160,7 +159,6 @@ void Mallard::input(){
                 SDL_RenderClear(renderer);
                 Mix_PlayChannel(-1, quack, 0);
                 first_stage_visible = true;
-                SDL_ShowCursor(0);
             }
             if (on_quit && title_visible) {
                 exit = true;
@@ -241,9 +239,11 @@ void Mallard::update(){
             // ^ need to hide the footballScalar so it doesn't
             // mess around with where the beaver currently is
             score += 420;
-            std::string tempscore = std::to_string(score);
+            std::string tempscore = "Score: ";
+            tempscore += std::to_string(score);
+            swagRect.w = 150;
             swag = renderText(tempscore, font_name, font_color, 72, renderer);
-            beaverScalar.y = beaverRespawn();
+            beaverRespawn();
             beaverScalar.x += 50;
         }
         beaverScalar.x -= 1;
@@ -266,7 +266,7 @@ void Mallard::update(){
             //exit = true;
         }
         
-        beaverScalar.y = 240 + 50 * sin(beaverScalar.x * PI/30);
+        beaverScalar.y = beaverStartPoint + 50 * sin(beaverScalar.x * PI/30);
     }
 }
 
@@ -347,7 +347,7 @@ void Mallard::render_first_stage(){
             footballVisible = false;
         }
     }
-    if (isDuckDead) {
+    else if (isDuckDead) {
         SDL_RenderCopy(renderer, DST[3], NULL, &duckScalar);
     }
     
@@ -367,11 +367,11 @@ void Mallard::render_first_stage(){
     SDL_RenderPresent(renderer);
 }
 
-int Mallard::beaverRespawn(){
+void Mallard::beaverRespawn(){
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
-    std::uniform_int_distribution<int> distribution(200,350);
-    return distribution(generator);
+    std::uniform_int_distribution<int> distribution(50,430);
+    beaverStartPoint = distribution(generator);
 }
 
 bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )
