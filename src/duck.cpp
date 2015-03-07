@@ -6,45 +6,26 @@
 
 #include "duck.hpp"
 #include "mallard.hpp"
+#include "beaver.hpp"
+
 
 Duck::Duck(){
     duckScalar.x = 0;
     duckScalar.y = 350;
-    isDuckDead = false;
-    yspeed = 0;
+    isDead = false;
+    footballVisible = false;
     collision = false;
 }
 
-int Duck::get_x(){
-    return x;
-}
-
-int Duck::get_y(){
-    return y;
-}
-
-void Duck::set_y(int new_y){
-    y = new_y;
-}
-
-void Duck::jump(){
-    int speed = 20;
-    duckScalar.y -= speed;
-    speed--;
-    for (int i = 0; i < 20; i++) {
-        duckScalar.y += speed;
-        speed++;
-    }
-}
 
 void Duck::shootFootball(){
     // initial position of the football
     // near the duck's mouth
-    footballVisible = true;
     footballScalar.x = duckScalar.x+70;
     footballScalar.y = duckScalar.y+10;
     footballScalar.w = 30;
     footballScalar.h = 30;
+    footballVisible = true;
 }
 
 void Duck::renderDuck(SDL_Renderer *ren, int count){
@@ -57,7 +38,7 @@ void Duck::renderDuck(SDL_Renderer *ren, int count){
             collision = false;
         }
     }
-    else if (isDuckDead) {
+    else if (isDead) {
         SDL_RenderCopy(ren, DST[3], NULL, &duckScalar);
     }
     

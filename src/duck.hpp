@@ -11,42 +11,34 @@
 #include <SDL2/SDL_ttf.h>                   // SDL font library
 #include <SDL2/SDL_mixer.h>                 // SDL sound library
 #include <SDL2/SDL_image.h>
-
 class Beaver;
 
 class Duck{
-private:
-    int x;
-    int y;
-    int xspeed;
-    int yspeed;
 public:
     Duck();
-    int get_x();
-    int get_y();
-    void set_x(int new_x);
-    void set_y(int new_y);
-    void set_xspeed(int new_x);
-    void set_yspeed(int new_y);
-    
+    ~Duck();
+    SDL_Surface *DSS[4];  // DSS stands for DuckScreenSurfaces
+    SDL_Surface *CDSS[4]; // CDSS stands for ConvertedDuckScreenSurfaces
     SDL_Texture *DST[4];  // DST stands for DuckSurfaceTextures
-    SDL_Texture* footballTexture;
     
+    
+    SDL_Surface *footballSurface;
+    SDL_Texture *footballTexture;
     SDL_Rect duckScalar;
     SDL_Rect footballScalar;
 
-
     void jump();
-    void renderDuck(SDL_Renderer*, int);
+    void renderDuck(SDL_Renderer *, int);
     void shootFootball();
+    void renderFootball();
+    
     bool footballVisible;
     bool collision;
-
-    
     Mix_Chunk *quack;
     
-    bool isDuckDead;
+    bool isDead;
 
+    
 };
 
 

@@ -1,13 +1,15 @@
+/*
+ * Duck class definitions
+ * Created by Casey Chesshir
+ * March 7, 2015
+ */
 #include "beaver.hpp"
-#include "mallard.hpp"
 
-
-Beaver::Beaver(){
+Beaver::Beaver(int x, int y){
+    beaverScalar.x = x;
+    beaverScalar.y = y;
+    spawnPoint = y;
     beaverVisible = true;
-    beaverScalar.x = 500;
-    beaverScalar.y = 370;
-    beaverCount = 0;
-    spawnPoint = 240;
 }
 
 void Beaver::respawn(){
