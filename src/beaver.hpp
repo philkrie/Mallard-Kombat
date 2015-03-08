@@ -22,12 +22,15 @@ class Beaver{
 public:
     Beaver(int, int);
     ~Beaver();
-    SDL_Surface *beaverSurface;
+    
     SDL_Texture *beaverTexture;
     SDL_Rect beaverScalar;
+    SDL_Texture *beaverFootball;
+    SDL_Rect beaverFootballScalar;
     
     int spawnPoint;
     bool beaverVisible;
+    bool hasFootball;
     void respawn();
     void renderBeaver(SDL_Renderer *);
 };

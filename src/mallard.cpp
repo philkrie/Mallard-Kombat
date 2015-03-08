@@ -5,8 +5,8 @@
 #include <stdlib.h>
 
 /* Screen resolution */
-int Mallard::SCREEN_WIDTH = 640;
-int Mallard::SCREEN_HEIGHT = 480;
+int Mallard::SCREEN_WIDTH = 1280;
+int Mallard::SCREEN_HEIGHT = 720;
 double Mallard::xcor = SCREEN_WIDTH / 640;
 double Mallard::ycor = SCREEN_HEIGHT/ 480;
 
@@ -40,7 +40,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     TTF_Init();
     font_color = {0, 0, 0, 0};
     font_name = "resources/fonts/comic_sans.ttf";
-    swag = renderText("SWAG", font_name, font_color, 72, renderer);
+    swag = renderText("", font_name, font_color, 72, renderer);
     swagRect.x = 100 * xcor;
     swagRect.y = 100 * ycor;
     swagRect.w = 50 * xcor;
@@ -120,6 +120,13 @@ void Mallard::input(){
             if (event.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_p) {
                     paused = false;
+                    if (event.type == SDL_KEYDOWN && first_stage_visible && duck->isDead) {
+                        switch(event.key.keysym.sym){
+                            case SDLK_r:
+                                reset();
+                                break;
+                        }
+                    }
                 }
             }
         }
@@ -143,6 +150,14 @@ void Mallard::input(){
                 exit = true;
             }
         }
+        if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.sym == SDLK_RETURN) {
+                title_visible = false;
+                SDL_RenderClear(renderer);
+                Mix_PlayChannel(-1, quack, 0);
+                first_stage_visible = true;
+            }
+        }
         if (event.type == SDL_QUIT) {
             exit = true;
         }
@@ -152,7 +167,7 @@ void Mallard::input(){
                 duck->duckScalar.y = 0;
             }
             if (duck->duckScalar.y > 400 * ycor) {
-                duck->duckScalar.y = 400 * ycor;
+                //duck->duckScalar.y = 400 * ycor;
             }
         }
         
@@ -213,11 +228,12 @@ void Mallard::update(){
                         gameBreaker++;
                     }
                 
-                    if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar) && gameBreaker > 1 && !duck->isDead) {
+                    if ((didCollide(duck->duckScalar, beaverArray[i]->beaverScalar) && gameBreaker > 1 && !duck->isDead) ||
+                        (beaverArray[i]->hasFootball && beaverArray[i]->beaverScalar.x < 0)){
                         swagRect.x = 100 * xcor;
                         duck->footballScalar.x = 1000 * xcor;
                         duck->footballScalar.y = 1000 * ycor;
-                        swag = renderText("YOU FUCKING LOSER, YOU LOST", font_name, font_color, 72, renderer);
+                        swag = renderText("YOU FUCKING LOSER, YOU LOST (press r to play again)", font_name, font_color, 72, renderer);
                         duck->isDead = true;
                         swagRect.w = 500 * xcor;
                         //exit = true;
@@ -231,7 +247,15 @@ void Mallard::update(){
                             if((rand()%100) + 1 > 50){
                                 int beaver_scaling_factor = 3 * sqrt(pow(xcor,2) + pow(ycor,2));
                                 beaverArray[i] = new Beaver(500 * xcor,200 * ycor);
+                                if((rand()%100 < 10)){
+                                    beaverArray[i]->hasFootball = true;
+                                    beaverArray[i]->beaverFootball = createTexture("resources/images/football.bmp", renderer);
+                                    std::cout << "Just spawned a quarterback beaver" << std::endl;
+                                }
                                 beaverArray[i]->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
+                                //beaverArray[i]->beaverFootballScalar.x = beaverArray[i]->beaverScalar.x + 50;
+                                //beaverArray[i]->beaverFootballScalar.y = beaverArray[i]->beaverScalar.y + 50;
+                                beaverArray[i]->beaverFootballScalar.w = 20*1.5;                                beaverArray[i]->beaverFootballScalar.h = 14*1.5;
                                 beaverArray[i]->spawnPoint = 50 * (rand()%9);
                                 beaverArray[i]->beaverScalar.w = 15*beaver_scaling_factor;
                                 beaverArray[i]->beaverScalar.h = 15*beaver_scaling_factor;
@@ -283,20 +307,18 @@ void Mallard::render_first_stage(){
     duck->duckScalar.h = 24*duck_scaling_factor;
     duck->footballScalar.w = 20*football_scaling_factor;
     duck->footballScalar.h = 14*football_scaling_factor;
-    for (int i=0; i < 5; i++) {
-        //beaverArray[i]->renderBeaver(renderer);
-    }
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
     count++;
   
     duck->renderDuck(renderer, count);
     for(int i = 0; i < 5; i++){
         if (beaverArray[i] != NULL){
+            beaverArray[i]->beaverFootballScalar.x = beaverArray[i]->beaverScalar.x+30;
+            beaverArray[i]->beaverFootballScalar.y = beaverArray[i]->beaverScalar.y+40;
             beaverArray[i]->renderBeaver(renderer);
+
         }
     }
-    
-    
     
     count = count%30;
     
