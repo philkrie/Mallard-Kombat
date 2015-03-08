@@ -37,6 +37,7 @@ void Duck::renderDuck(SDL_Renderer *ren, int count){
             footballVisible = false;
             collision = false;
         }
+        
     }
     else if (isDead) {
         SDL_RenderCopy(ren, DST[3], NULL, &duckScalar);
