@@ -57,7 +57,7 @@ Mallard::Mallard(int argc, char* argv[]) {
         "title_screen",
         "title_screen_start",
         "title_screen_options",
-        "title_screen_credits",
+        "title_screen_hiscores",
         "title_screen_quit",
     };
     // Creating the title screens
