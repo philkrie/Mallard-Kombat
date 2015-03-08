@@ -166,8 +166,8 @@ void Mallard::input(){
             if (duck->duckScalar.y < 0) {
                 duck->duckScalar.y = 0;
             }
-            if (duck->duckScalar.y > 400 * ycor) {
-                //duck->duckScalar.y = 400 * ycor;
+            if (duck->duckScalar.y > (SCREEN_HEIGHT - duck->duckScalar.h) * ycor) {
+                duck->duckScalar.y = (SCREEN_HEIGHT - duck->duckScalar.h) * ycor;
             }
         }
         
@@ -223,7 +223,10 @@ void Mallard::update(){
                         
                     }
                     beaverArray[i]->beaverScalar.x -= 1;
-                    
+                    if (beaverArray[i]->beaverScalar.x < -75) {
+                        beaverArray[i] = NULL;
+                        continue;
+                    }
                     if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar)) {
                         gameBreaker++;
                     }
