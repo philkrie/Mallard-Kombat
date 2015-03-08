@@ -91,7 +91,6 @@ Mallard::Mallard(int argc, char* argv[]) {
     
     beaver->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
     duck->isDead = false;
->>>>>>> 3f75e8734b4e1c1ddf22249fdc76ae8376b03e11
     count = 0;
     
     SDL_RenderClear(renderer);
@@ -152,7 +151,6 @@ void Mallard::input(){
                     paused = true;
 
                     break;
->>>>>>> 3f75e8734b4e1c1ddf22249fdc76ae8376b03e11
                 case SDLK_SPACE:
                     if (!duck->footballVisible) {
                         Mix_PlayChannel(-1, quack, 0);
@@ -208,7 +206,6 @@ void Mallard::update(){
          * warning: to solve it, and i really don't care at the moment
          */
       
-=======
         if (didCollide(duck->duckScalar, beaver->beaverScalar)) {
             gameBreaker++;
         }
@@ -221,12 +218,10 @@ void Mallard::update(){
             duck->isDead = true;
             swagRect.w = 500;
             //exit = true;
->>>>>>> 3f75e8734b4e1c1ddf22249fdc76ae8376b03e11
         }
     
 
         beaver->beaverScalar.y = beaver->spawnPoint + 50 * sin(beaver->beaverScalar.x * PI/30);
->>>>>>> 3f75e8734b4e1c1ddf22249fdc76ae8376b03e11
     }
 }
 
@@ -277,10 +272,8 @@ void Mallard::render_first_stage(){
     count++;
 
     
-=======
   
     duck->renderDuck(renderer, count);
->>>>>>> 3f75e8734b4e1c1ddf22249fdc76ae8376b03e11
     count = count%30;
     
     SDL_RenderCopy(renderer, swag, NULL, &swagRect);
