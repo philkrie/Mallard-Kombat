@@ -62,8 +62,8 @@ public:
     void render_title_screen();
     void render_first_stage();
     
-    // duck functions
-    void renderDuck();
+    void reset();
+
     
     //collision function
     bool didCollide(SDL_Rect, SDL_Rect);

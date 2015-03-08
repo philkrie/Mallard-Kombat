@@ -33,14 +33,12 @@ Mallard::Mallard(int argc, char* argv[]) {
     font_color = {0, 0, 0, 0};
     font_name = "resources/fonts/comic_sans.ttf";
     
-    swag = renderText("SWAG", font_name, font_color, 72, renderer);
+    swag = renderText("", font_name, font_color, 72, renderer);
     swagRect.x = 100;
     swagRect.y = 100;
     swagRect.w = 50;
     swagRect.h = 50;
     score = 0;
-    
-    
     
     // Sounds
     Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
@@ -77,10 +75,7 @@ Mallard::Mallard(int argc, char* argv[]) {
         std::string filepath = path + DS[i] + ".bmp";
         char *temp = (char*)filepath.c_str();
         duck->DST[i] = createTexture(temp, renderer);
-    }
-    //Loads individual image as texture
-    SDL_Texture* loadTexture( std::string path );
-    
+    }    
     
     first_stage_texture = createTexture("resources/images/field3.jpg", renderer);
     
@@ -110,6 +105,17 @@ void Mallard::input(){
     
     int x, y;
     SDL_Event event;
+    
+    while (paused) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_KEYDOWN) {
+                if (event.key.keysym.sym == SDLK_p) {
+                    paused = false;
+                }
+            }
+        }
+    }
+
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_MOUSEMOTION){
             SDL_GetMouseState(&x, &y);
@@ -142,7 +148,6 @@ void Mallard::input(){
         }
         
         if (event.type == SDL_KEYDOWN && first_stage_visible && !duck->isDead) {
-            
             switch (event.key.keysym.sym) {
                 case SDLK_p:
                     paused = true;
@@ -157,70 +162,56 @@ void Mallard::input(){
                     break;
             }
         }
-    }
+        if (event.type == SDL_KEYDOWN && first_stage_visible && duck->isDead) {
+            switch (event.key.keysym.sym) {
+                case SDLK_r:
+                    reset();
+                    break;
+                }
+        }
+}
 }
 
-
-
 void Mallard::update(){
-    while (paused) {
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_KEYDOWN) {
-                if (event.key.keysym.sym == SDLK_p) {
-                    paused = false;
-                }
-            }
-        }
-    }
-
         if (first_stage_visible && !duck->isDead) {
-        swagRect.x = 400;
-        swagRect.y = 25;
-        swagRect.w = 150;
-        if (didCollide(duck->footballScalar, beaver->beaverScalar)) {
-            duck->footballScalar.x = 1000;
-            duck->footballScalar.y = 1000;
-            // ^ need to hide the footballScalar so it doesn't
-            // mess around with where the beaver currently is
-            score += 420;
-            std::string tempscore = "Score: ";
-            tempscore += std::to_string(score);
+            swagRect.x = 400;
+            swagRect.y = 25;
+            swagRect.w = 150;
+            if (didCollide(duck->footballScalar, beaver->beaverScalar)) {
+                duck->footballScalar.x = 1000;
+                duck->footballScalar.y = 1000;
+                // ^ need to hide the footballScalar so it doesn't
+                // mess around with where the beaver currently is
+                score += 420;
+                std::string tempscore = "Score: ";
+                tempscore += std::to_string(score);
             
-            swag = renderText(tempscore, font_name, font_color, 72, renderer);
-            beaver->respawn();
-            beaver->beaverScalar.x += 50;
-            duck->collision = true;
+                swag = renderText(tempscore, font_name, font_color, 72, renderer);
+                beaver->respawn();
+                beaver->beaverScalar.x += 50;
+                duck->collision = true;
+            }
+            beaver->beaverScalar.x--;
+        
+            if (didCollide(duck->duckScalar, beaver->beaverScalar)) {
+                duck->isDead = true;
+            }
+        
+            if (duck->isDead) {
+                swagRect.x = 100;
+                duck->footballScalar.x = 1000;
+                duck->footballScalar.y = 1000;
+                swag = renderText("YOU FUCKING LOSER, YOU LOST  (press r to play again!)", font_name, font_color, 72, renderer);
+                duck->isDead = true;
+                swagRect.w = 500;
+                //exit = true;
         }
-        beaver->beaverScalar.x -= 1;
-        
-        
-        
-        /*
-         * warning: the following two if statements are incredibly hacky
-         * warning: it is super shitty code but i don't know how else
-         * warning: to solve it, and i really don't care at the moment
-         */
-        if (didCollide(duck->duckScalar, beaver->beaverScalar)) {
-            gameBreaker++;
-        }
-        
-        if (didCollide(duck->duckScalar, beaver->beaverScalar) && gameBreaker > 1 && !duck->isDead) {
-            swagRect.x = 100;
-            duck->footballScalar.x = 1000;
-            duck->footballScalar.y = 1000;
-            swag = renderText("YOU FUCKING LOSER, YOU LOST", font_name, font_color, 72, renderer);
-            duck->isDead = true;
-            swagRect.w = 500;
-            //exit = true;
-        }
-        
         beaver->beaverScalar.y = beaver->spawnPoint + 50 * sin(beaver->beaverScalar.x * PI/30);
     }
 }
 
 void Mallard::render_title_screen(){
-    
+
     if (on_start) {
         SDL_RenderCopy(renderer, TST[1], NULL, NULL);
         SDL_RenderCopy(renderer, swag, NULL, &swagRect);
@@ -318,6 +309,15 @@ bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )
     
     //If none of the sides from A are outside B
     return true;
+}
+
+void Mallard::reset(){
+    score = 0;
+    count = 0;
+    duck -> isDead = false;
+    beaver->respawn();
+    beaver->beaverScalar.x = 500;
+    swag = renderText("", font_name, font_color, 72, renderer);
 }
 
 void Mallard::render(){
