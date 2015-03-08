@@ -18,3 +18,7 @@ void Beaver::respawn(){
     std::uniform_int_distribution<int> distribution(50,430);
     spawnPoint = distribution(generator);
 }
+
+void Beaver::renderBeaver(SDL_Renderer *ren){
+    SDL_RenderCopy(ren, beaverTexture, NULL, &beaverScalar);
+}

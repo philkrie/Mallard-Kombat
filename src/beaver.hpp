@@ -29,6 +29,7 @@ public:
     int spawnPoint;
     bool beaverVisible;
     void respawn();
+    void renderBeaver(SDL_Renderer *);
 };
 
 

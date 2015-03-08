@@ -65,7 +65,12 @@ Mallard::Mallard(int argc, char* argv[]) {
     //TSS stands for TitleScreenSurfaces
     
     for (int i=0; i < 5; i++) {
+        int beaver_scaling_factor = 5;
         beaverArray[i] = new Beaver(500,200);
+        beaverArray[i]->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
+        beaverArray[i]->spawnPoint = 100 * i;
+        beaverArray[i]->beaverScalar.w = 15*beaver_scaling_factor;
+        beaverArray[i]->beaverScalar.h = 15*beaver_scaling_factor;
         std::string filepath = path + TS[i] + ".bmp";
         char *temp = (char*)filepath.c_str();
         TST[i] = createTexture(temp, renderer);
@@ -88,12 +93,11 @@ Mallard::Mallard(int argc, char* argv[]) {
     SDL_Texture* loadTexture( std::string path );
     
     
-    first_stage_texture = createTexture("resources/images/field3.jpg", renderer);
+    first_stage_texture = createTexture("resources/images/field2.jpg", renderer);
     
     duck->footballTexture = createTexture("resources/images/football.bmp", renderer);
     duck->footballVisible = false;
     
-    beaver->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
     duck->isDead = false;
     count = 0;
     
@@ -185,48 +189,42 @@ void Mallard::update(){
         swagRect.y = 25;
         swagRect.w = 150;
             for (int i=0; i < 5; i++) {
-                if (didCollide(duck->footballScalar, beaverArray[i])) {
-                    <#statements#>
+                if (didCollide(duck->footballScalar, beaverArray[i]->beaverScalar)) {
+                    duck->footballScalar.x = 1000;
+                    duck->footballScalar.y = 1000;
+                    // ^ need to hide the footballScalar so it doesn't
+                    // mess around with where the beaver currently is
+                    score += 420;
+                    std::string tempscore = "Score: ";
+                    tempscore += std::to_string(score);
+                    
+                    swag = renderText(tempscore, font_name, font_color, 72, renderer);
+                    beaverArray[i]->respawn();
+                    beaverArray[i]->beaverScalar.x += 50;
+                    duck->collision = true;
                 }
+                beaverArray[i]->beaverScalar.x -= 1;
+                /*
+                 * warning: the following two if statements are incredibly hacky
+                 * warning: it is super shitty code but i don't know how else
+                 * warning: to solve it, and i really don't care at the moment
+                 */
+                if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar)) {
+                    gameBreaker++;
+                }
+                
+                if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar) && gameBreaker > 1 && !duck->isDead) {
+                    swagRect.x = 100;
+                    duck->footballScalar.x = 1000;
+                    duck->footballScalar.y = 1000;
+                    swag = renderText("YOU FUCKING LOSER, YOU LOST", font_name, font_color, 72, renderer);
+                    duck->isDead = true;
+                    swagRect.w = 500;
+                    //exit = true;
+                }
+                
+                beaverArray[i]->beaverScalar.y = beaverArray[i]->spawnPoint + 50 * sin(beaverArray[i]->beaverScalar.x * PI/30);
             }
-        if (didCollide(duck->footballScalar, beaver->beaverScalar)) {
-            duck->footballScalar.x = 1000;
-            duck->footballScalar.y = 1000;
-            // ^ need to hide the footballScalar so it doesn't
-            // mess around with where the beaver currently is
-            score += 420;
-            std::string tempscore = "Score: ";
-            tempscore += std::to_string(score);
-            
-            swag = renderText(tempscore, font_name, font_color, 72, renderer);
-            beaver->respawn();
-            beaver->beaverScalar.x += 50;
-            duck->collision = true;
-        }
-        beaver->beaverScalar.x -= 1;
-        
-        
-        
-        /*
-         * warning: the following two if statements are incredibly hacky
-         * warning: it is super shitty code but i don't know how else
-         * warning: to solve it, and i really don't care at the moment
-         */
-        if (didCollide(duck->duckScalar, beaver->beaverScalar)) {
-            gameBreaker++;
-        }
-        
-        if (didCollide(duck->duckScalar, beaver->beaverScalar) && gameBreaker > 1 && !duck->isDead) {
-            swagRect.x = 100;
-            duck->footballScalar.x = 1000;
-            duck->footballScalar.y = 1000;
-            swag = renderText("YOU FUCKING LOSER, YOU LOST", font_name, font_color, 72, renderer);
-            duck->isDead = true;
-            swagRect.w = 500;
-            //exit = true;
-        }
-        
-        beaver->beaverScalar.y = beaver->spawnPoint + 50 * sin(beaver->beaverScalar.x * PI/30);
     }
 }
 
@@ -259,24 +257,27 @@ void Mallard::render_title_screen(){
 }
 
 
+
 void Mallard::render_first_stage(){
     SDL_ShowCursor(0);
     int duck_scaling_factor = 3;
-    int beaver_scaling_factor = 5;
     //width and height get scaled by scaling_factor
     duck->duckScalar.w = 34*duck_scaling_factor;
     duck->duckScalar.h = 24*duck_scaling_factor;
     
-    
-    beaver->beaverScalar.w = 15*beaver_scaling_factor;
-    beaver->beaverScalar.h = 15*beaver_scaling_factor;
-    
-    
+    for (int i=0; i < 5; i++) {
+        //beaverArray[i]->renderBeaver(renderer);
+    }
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
-    SDL_RenderCopy(renderer, beaver->beaverTexture, NULL, &beaver->beaverScalar);
     count++;
   
     duck->renderDuck(renderer, count);
+    beaverArray[0]->renderBeaver(renderer);
+    beaverArray[1]->renderBeaver(renderer);
+    beaverArray[2]->renderBeaver(renderer);
+    beaverArray[3]->renderBeaver(renderer);
+    beaverArray[4]->renderBeaver(renderer);
+    
     count = count%30;
     
     SDL_RenderCopy(renderer, swag, NULL, &swagRect);
@@ -356,12 +357,12 @@ void Mallard::execute() {
 void Mallard::clean_up(){
     for (int i=0; i < 5; i++) {
         SDL_DestroyTexture(TST[i]);
+        SDL_DestroyTexture(beaverArray[i]->beaverTexture);
     }
     for (int i=0; i < 4; i++) {
         SDL_DestroyTexture(duck->DST[i]);
     }
     SDL_DestroyTexture(first_stage_texture);
-    SDL_DestroyTexture(beaver->beaverTexture);
     SDL_DestroyTexture(duck->footballTexture);
     Mix_CloseAudio();
     SDL_DestroyRenderer(renderer);
