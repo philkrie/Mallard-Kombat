@@ -298,7 +298,7 @@ void Mallard::render_title_screen(){
 
 void Mallard::render_first_stage(){
     SDL_ShowCursor(0);
-    double duck_scaling_factor = 3 * sqrt(pow(xcor,2) + pow(ycor,2));
+    double duck_scaling_factor = 2 * sqrt(pow(xcor,2) + pow(ycor,2));
     double football_scaling_factor = 1 * sqrt(pow(xcor,2) + pow(ycor,2));
     //width and height get scaled by scaling_factor
     duck->duckScalar.w = 34*duck_scaling_factor;
