@@ -5,8 +5,8 @@
 #include <stdlib.h>
 
 /* Screen resolution */
-int Mallard::SCREEN_WIDTH = 1920;
-int Mallard::SCREEN_HEIGHT = 1080;
+int Mallard::SCREEN_WIDTH = 1280;
+int Mallard::SCREEN_HEIGHT = 960;
 int Mallard::xcor = SCREEN_WIDTH / 640;
 int Mallard::ycor = SCREEN_HEIGHT/ 480;
 
