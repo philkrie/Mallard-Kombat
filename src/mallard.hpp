@@ -42,6 +42,8 @@ public:
     
     SDL_Texture *TST[5];  // TST stands for TitleSurfaceTextures
     
+    Beaver *beaverArray[5];
+    
     SDL_Surface *first_stage_surface;
     SDL_Texture *first_stage_texture;
     // bools for the title screen

@@ -1,6 +1,7 @@
 #include "mallard.hpp"
 #include "duck.hpp"
 #include "util.hpp"
+#include <fstream>
 
 /* Screen resolution */
 const int Mallard::SCREEN_WIDTH = 640;
@@ -8,6 +9,11 @@ const int Mallard::SCREEN_HEIGHT = 480;
 
 
 Mallard::Mallard(int argc, char* argv[]) {
+    std::ofstream myfile;
+    myfile.open("resources/text/hiscores.txt", std::ios::app);
+    myfile << "holy balls\n";
+    myfile.close();
+    
     exit = false;
     
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize SDL2
@@ -27,7 +33,6 @@ Mallard::Mallard(int argc, char* argv[]) {
                                   SDL_RENDERER_PRESENTVSYNC );
     
     duck = new Duck();
-    beaver = new Beaver(500, 200);
     
     TTF_Init();
     font_color = {0, 0, 0, 0};
@@ -60,6 +65,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     //TSS stands for TitleScreenSurfaces
     
     for (int i=0; i < 5; i++) {
+        beaverArray[i] = new Beaver(500,200);
         std::string filepath = path + TS[i] + ".bmp";
         char *temp = (char*)filepath.c_str();
         TST[i] = createTexture(temp, renderer);
@@ -178,6 +184,11 @@ void Mallard::update(){
         swagRect.x = 400;
         swagRect.y = 25;
         swagRect.w = 150;
+            for (int i=0; i < 5; i++) {
+                if (didCollide(duck->footballScalar, beaverArray[i])) {
+                    <#statements#>
+                }
+            }
         if (didCollide(duck->footballScalar, beaver->beaverScalar)) {
             duck->footballScalar.x = 1000;
             duck->footballScalar.y = 1000;
