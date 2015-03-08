@@ -1,7 +1,6 @@
 #include "mallard.hpp"
 #include "duck.hpp"
 #include "util.hpp"
-#include <fstream>
 #include <stdlib.h>
 
 /* Screen resolution */
@@ -12,10 +11,7 @@ double Mallard::ycor = SCREEN_HEIGHT/ 480;
 
 
 Mallard::Mallard(int argc, char* argv[]) {
-    std::ofstream myfile;
-    myfile.open("resources/text/hiscores.txt", std::ios::app);
-    myfile << "holy balls\n";
-    myfile.close();
+   
     
     exit = false;
     
@@ -47,6 +43,16 @@ Mallard::Mallard(int argc, char* argv[]) {
     swagRect.h = 50 * ycor;
     score = 0;
     
+    std::string line;
+    file.open("resources/text/hiscores.txt");
+    if (file.is_open()) {
+        for (int i = 0; i < 3; i++){
+            getline (file,line);
+            highscores[i] = std::stoi( line );
+        }
+    }  
+    file.close();  
+
     // Sounds
     Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
     quack = Mix_LoadWAV("resources/sounds/quack.wav");
@@ -94,6 +100,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     count = 0;
     spawnCount = 0;
     
+
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, TST[0], NULL, NULL); // base title screen
     SDL_RenderPresent(renderer);
@@ -236,8 +243,13 @@ void Mallard::update(){
                         swagRect.x = 100 * xcor;
                         duck->footballScalar.x = 1000 * xcor;
                         duck->footballScalar.y = 1000 * ycor;
-                        swag = renderText("YOU FUCKING LOSER, YOU LOST (press r to play again)", font_name, font_color, 72, renderer);
+                        swag = renderText("You lost! Press r to play again", font_name, font_color, 72, renderer);
                         duck->isDead = true;
+                        for (int i=0; i < 3; i++){
+                            std::cout << highscores[i] << std::endl;
+                        }
+
+                        recordScore(score);
                         swagRect.w = 500 * xcor;
                         //exit = true;
                     }
@@ -392,6 +404,44 @@ void Mallard::render(){
     if (first_stage_visible) {
         render_first_stage();
     }
+}
+
+void Mallard::recordScore(int score){    
+    int max = 0;
+    int biggerthan = 3;
+    int temp;
+    int temp2;
+    for (int i = 0; i < 3; i++){
+        if (score > highscores[i]){
+            biggerthan--;
+        }
+    }
+    if (biggerthan < 3){
+        temp = highscores[biggerthan];
+        highscores[biggerthan] = score;
+        if (biggerthan == 0){
+            if (highscores[1] < temp){
+                temp2 = highscores[1];
+                highscores[1] = temp;
+                if (highscores[2] < temp2){
+                    highscores[2] = temp2;
+                }
+            } else if (highscores[2] < temp){
+                highscores[2] = temp;
+            }
+        if (biggerthan == 1){
+            if (highscores[2] < temp){
+                highscores[2] = temp;
+            }
+        }
+    }
+}
+    
+    file.open("resources/text/hiscores.txt");
+    for (int i = 0; i < 3; i++){
+        file << highscores[i] << std::endl;
+    }
+        file.close();
 }
 
 void Mallard::execute() {
