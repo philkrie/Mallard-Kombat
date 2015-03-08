@@ -11,6 +11,6 @@
 #include "beaver.hpp"
 #include "duck.hpp"
 
-Husky::Husky(){
+Husky::Husky(int x, int y){
     
 }
