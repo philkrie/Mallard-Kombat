@@ -22,12 +22,12 @@ class Beaver;
 class Mallard {
 public:
     // Screen resolution
-    static const int SCREEN_WIDTH;
-    static const int SCREEN_HEIGHT;
+    static int SCREEN_WIDTH;
+    static int SCREEN_HEIGHT;
     
-    static const int xcor;
+    static int xcor;
     // resolution correction factors
-    static const int ycor;
+    static int ycor;
     
     // Window and renderer
     SDL_Window* window;
@@ -57,6 +57,7 @@ public:
     bool on_credits;
     bool on_quit;
     void getBools(int, int);
+    int spawnCount;
     int count;
     
     

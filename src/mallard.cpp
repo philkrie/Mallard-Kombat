@@ -2,12 +2,13 @@
 #include "duck.hpp"
 #include "util.hpp"
 #include <fstream>
+#include <stdlib.h>
 
 /* Screen resolution */
-const int Mallard::SCREEN_WIDTH = 1280;
-const int Mallard::SCREEN_HEIGHT = 720;
-const int Mallard::xcor = SCREEN_WIDTH / 640;
-const int Mallard::ycor = SCREEN_HEIGHT/ 480;
+int Mallard::SCREEN_WIDTH = 640;
+int Mallard::SCREEN_HEIGHT = 480;
+int Mallard::xcor = SCREEN_WIDTH / 640;
+int Mallard::ycor = SCREEN_HEIGHT/ 480;
 
 
 Mallard::Mallard(int argc, char* argv[]) {
@@ -65,19 +66,14 @@ Mallard::Mallard(int argc, char* argv[]) {
     // Creating the title screens
     
     //TSS stands for TitleScreenSurfaces
-    
+    srand(time(NULL));
     for (int i=0; i < 5; i++) {
-        int beaver_scaling_factor = 5;
-        beaverArray[i] = new Beaver(500 * xcor,200 * ycor);
-        beaverArray[i]->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
-        beaverArray[i]->spawnPoint = 100 * i * ycor;
-        beaverArray[i]->beaverScalar.w = 15*beaver_scaling_factor;
-        beaverArray[i]->beaverScalar.h = 15*beaver_scaling_factor;
+        beaverArray[i] = NULL;
         std::string filepath = path + TS[i] + ".bmp";
         char *temp = (char*)filepath.c_str();
         TST[i] = createTexture(temp, renderer);
     }
-    
+
     
     std::string DS[4] = {
         "single_duck",
@@ -95,18 +91,20 @@ Mallard::Mallard(int argc, char* argv[]) {
     SDL_Texture* loadTexture( std::string path );
     
     
-    first_stage_texture = createTexture("resources/images/field2.jpg", renderer);
+    first_stage_texture = createTexture("resources/images/field3.jpg", renderer);
     
     duck->footballTexture = createTexture("resources/images/football.bmp", renderer);
     duck->footballVisible = false;
     
     duck->isDead = false;
     count = 0;
+    spawnCount = 0;
     
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, TST[0], NULL, NULL); // base title screen
     SDL_RenderPresent(renderer);
     title_visible = true;
+    first_stage_visible = false;
     paused = false;
     gameBreaker = false;
 }
@@ -187,46 +185,64 @@ void Mallard::update(){
     }
 
         if (first_stage_visible && !duck->isDead) {
-        swagRect.x = 400 * xcor;
-        swagRect.y = 25 * ycor;
-        swagRect.w = 150 * xcor;
+            swagRect.x = 400 * xcor;
+            swagRect.y = 25 * ycor;
+            swagRect.w = 150 * xcor;
             for (int i=0; i < 5; i++) {
-                if (didCollide(duck->footballScalar, beaverArray[i]->beaverScalar)) {
-                    duck->footballScalar.x = 1000 * xcor;
-                    duck->footballScalar.y = 1000 * ycor;
-                    // ^ need to hide the footballScalar so it doesn't
-                    // mess around with where the beaver currently is
-                    score += 420;
-                    std::string tempscore = "Score: ";
-                    tempscore += std::to_string(score);
+                if(beaverArray[i] != NULL){
+                    if (didCollide(duck->footballScalar, beaverArray[i]->beaverScalar)) {
+                        duck->footballScalar.x = 1000 * xcor;
+                        duck->footballScalar.y = 1000 * ycor;
+                        // ^ need to hide the footballScalar so it doesn't
+                        // mess around with where the beaver currently is
+                        score += 420;
+                        std::string tempscore = "Score: ";
+                        tempscore += std::to_string(score);
+                        swag = renderText(tempscore, font_name, font_color, 72, renderer);
+                        if((rand()%100) + 1 > 50){
+                            beaverArray[i]->respawn();
+                            beaverArray[i]->beaverScalar.x += 50 * xcor;
+                            duck->collision = true;
+                        } else {
+                            beaverArray[i] = NULL;
+                            continue;
+                        }
+                        
+                    }
+                    beaverArray[i]->beaverScalar.x -= 1;
                     
-                    swag = renderText(tempscore, font_name, font_color, 72, renderer);
-                    beaverArray[i]->respawn();
-                    beaverArray[i]->beaverScalar.x += 50 * xcor;
-                    duck->collision = true;
-                }
-                beaverArray[i]->beaverScalar.x -= 1;
-                /*
-                 * warning: the following two if statements are incredibly hacky
-                 * warning: it is super shitty code but i don't know how else
-                 * warning: to solve it, and i really don't care at the moment
-                 */
-                if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar)) {
-                    gameBreaker++;
-                }
+                    if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar)) {
+                        gameBreaker++;
+                    }
                 
-                if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar) && gameBreaker > 1 && !duck->isDead) {
-                    swagRect.x = 100 * xcor;
-                    duck->footballScalar.x = 1000 * xcor;
-                    duck->footballScalar.y = 1000 * ycor;
-                    swag = renderText("YOU FUCKING LOSER, YOU LOST", font_name, font_color, 72, renderer);
-                    duck->isDead = true;
-                    swagRect.w = 500 * xcor;
-                    //exit = true;
-                }
+                    if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar) && gameBreaker > 1 && !duck->isDead) {
+                        swagRect.x = 100 * xcor;
+                        duck->footballScalar.x = 1000 * xcor;
+                        duck->footballScalar.y = 1000 * ycor;
+                        swag = renderText("YOU FUCKING LOSER, YOU LOST", font_name, font_color, 72, renderer);
+                        duck->isDead = true;
+                        swagRect.w = 500 * xcor;
+                        //exit = true;
+                    }
+                    beaverArray[i]->beaverScalar.y = beaverArray[i]->spawnPoint + 50 * sin(beaverArray[i]->beaverScalar.x * PI/30);
                 
-                beaverArray[i]->beaverScalar.y = beaverArray[i]->spawnPoint + 50 * sin(beaverArray[i]->beaverScalar.x * PI/30);
+                } else {
+                    spawnCount++;
+                    if (beaverArray[i] == NULL){
+                        if (spawnCount%50 == 0){
+                            if((rand()%100) + 1 > 50){
+                                int beaver_scaling_factor = 5;
+                                beaverArray[i] = new Beaver(500 * xcor,200 * ycor);
+                                beaverArray[i]->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
+                                beaverArray[i]->spawnPoint = 50 * (rand()%9);
+                                beaverArray[i]->beaverScalar.w = 15*beaver_scaling_factor;
+                                beaverArray[i]->beaverScalar.h = 15*beaver_scaling_factor;
+                            }
+                    }
+                }
             }
+
+        }
     }
 }
 
@@ -274,11 +290,13 @@ void Mallard::render_first_stage(){
     count++;
   
     duck->renderDuck(renderer, count);
-    beaverArray[0]->renderBeaver(renderer);
-    beaverArray[1]->renderBeaver(renderer);
-    beaverArray[2]->renderBeaver(renderer);
-    beaverArray[3]->renderBeaver(renderer);
-    beaverArray[4]->renderBeaver(renderer);
+    for(int i = 0; i < 5; i++){
+        if (beaverArray[i] != NULL){
+            beaverArray[i]->renderBeaver(renderer);
+        }
+    }
+    
+    
     
     count = count%30;
     
@@ -359,7 +377,8 @@ void Mallard::execute() {
 void Mallard::clean_up(){
     for (int i=0; i < 5; i++) {
         SDL_DestroyTexture(TST[i]);
-        SDL_DestroyTexture(beaverArray[i]->beaverTexture);
+        if (beaverArray[i] != NULL)
+            SDL_DestroyTexture( beaverArray[i]->beaverTexture);
     }
     for (int i=0; i < 4; i++) {
         SDL_DestroyTexture(duck->DST[i]);
