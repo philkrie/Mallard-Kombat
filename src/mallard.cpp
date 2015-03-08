@@ -11,7 +11,6 @@ Mallard::Mallard(int argc, char* argv[]) {
     exit = false;
     
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize SDL2
-
     
     
     
@@ -80,11 +79,9 @@ Mallard::Mallard(int argc, char* argv[]) {
         duck->DST[i] = createTexture(temp, renderer);
     }
     //Loads individual image as texture
-    SDL_Texture* loadTexture( std::string path );
-
-
-    
+    SDL_Texture* loadTexture( std::string path );    
     first_stage_texture = createTexture("resources/images/field3.jpg", renderer);
+
     
     duck->footballTexture = createTexture("resources/images/football.bmp", renderer);
     duck->footballVisible = false;
@@ -125,7 +122,6 @@ void Mallard::input(){
                 SDL_RenderClear(renderer);
                 Mix_PlayChannel(-1, quack, 0);
                 first_stage_visible = true;
-                SDL_ShowCursor(0);
             }
             if (on_quit && title_visible) {
                 exit = true;
@@ -195,6 +191,7 @@ void Mallard::update(){
             beaver->respawn();
             beaver->beaverScalar.x += 50;
             duck->collision = true;
+
         }
         beaver->beaverScalar.x -= 1;
         
@@ -222,6 +219,7 @@ void Mallard::update(){
     
 
         beaver->beaverScalar.y = beaver->spawnPoint + 50 * sin(beaver->beaverScalar.x * PI/30);
+
     }
 }
 
@@ -280,6 +278,7 @@ void Mallard::render_first_stage(){
     
     SDL_RenderPresent(renderer);
 }
+
 
 bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )
 {

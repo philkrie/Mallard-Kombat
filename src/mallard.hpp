@@ -41,6 +41,7 @@ public:
     // 18 pentillion
     
     SDL_Texture *TST[5];  // TST stands for TitleSurfaceTextures
+
     
     SDL_Surface *first_stage_surface;
     SDL_Texture *first_stage_texture;
@@ -64,7 +65,7 @@ public:
     
     // duck functions
     void renderDuck();
-    
+
     //collision function
     bool didCollide(SDL_Rect, SDL_Rect);
     int gameBreaker;
