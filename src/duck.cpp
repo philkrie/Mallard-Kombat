@@ -30,10 +30,10 @@ void Duck::shootFootball(){
 
 void Duck::renderDuck(SDL_Renderer *ren, int count){
     if (footballVisible) {
-        footballScalar.x +=10;
+        footballScalar.x +=10 * Mallard::xcor;
         SDL_RenderCopy(ren, footballTexture, NULL, &footballScalar);
         SDL_RenderCopy(ren, DST[1], NULL, &duckScalar);
-        if (footballScalar.x > 640 || collision){
+        if (footballScalar.x > 640 * Mallard::xcor || collision){
             footballVisible = false;
             collision = false;
         }
