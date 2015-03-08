@@ -25,9 +25,9 @@ public:
     static int SCREEN_WIDTH;
     static int SCREEN_HEIGHT;
     
-    static int xcor;
+    static double xcor;
     // resolution correction factors
-    static int ycor;
+    static double ycor;
     
     // Window and renderer
     SDL_Window* window;

@@ -5,10 +5,10 @@
 #include <stdlib.h>
 
 /* Screen resolution */
-int Mallard::SCREEN_WIDTH = 1280;
-int Mallard::SCREEN_HEIGHT = 960;
-int Mallard::xcor = SCREEN_WIDTH / 640;
-int Mallard::ycor = SCREEN_HEIGHT/ 480;
+int Mallard::SCREEN_WIDTH = 640;
+int Mallard::SCREEN_HEIGHT = 480;
+double Mallard::xcor = SCREEN_WIDTH / 640;
+double Mallard::ycor = SCREEN_HEIGHT/ 480;
 
 
 Mallard::Mallard(int argc, char* argv[]) {
@@ -229,7 +229,7 @@ void Mallard::update(){
                     if (beaverArray[i] == NULL){
                         if (spawnCount%50 == 0){
                             if((rand()%100) + 1 > 50){
-                                int beaver_scaling_factor = 4 * sqrt(pow(xcor,2) + pow(ycor,2));
+                                int beaver_scaling_factor = 3 * sqrt(pow(xcor,2) + pow(ycor,2));
                                 beaverArray[i] = new Beaver(500 * xcor,200 * ycor);
                                 beaverArray[i]->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
                                 beaverArray[i]->spawnPoint = 50 * (rand()%9);
@@ -281,8 +281,8 @@ void Mallard::render_first_stage(){
     //width and height get scaled by scaling_factor
     duck->duckScalar.w = 34*duck_scaling_factor;
     duck->duckScalar.h = 24*duck_scaling_factor;
-    duck->footballScalar.w = 30*football_scaling_factor;
-    duck->footballScalar.h = 30*football_scaling_factor;
+    duck->footballScalar.w = 20*football_scaling_factor;
+    duck->footballScalar.h = 14*football_scaling_factor;
     for (int i=0; i < 5; i++) {
         //beaverArray[i]->renderBeaver(renderer);
     }
