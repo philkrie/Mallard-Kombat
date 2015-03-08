@@ -22,8 +22,12 @@ class Beaver;
 class Mallard {
 public:
     // Screen resolution
-    static const int SCREEN_WIDTH;
-    static const int SCREEN_HEIGHT;
+    static int SCREEN_WIDTH;
+    static int SCREEN_HEIGHT;
+    
+    static int xcor;
+    // resolution correction factors
+    static int ycor;
     
     // Window and renderer
     SDL_Window* window;
@@ -42,6 +46,8 @@ public:
     
     SDL_Texture *TST[5];  // TST stands for TitleSurfaceTextures
     
+    Beaver *beaverArray[5];
+    
     SDL_Surface *first_stage_surface;
     SDL_Texture *first_stage_texture;
     // bools for the title screen
@@ -51,6 +57,7 @@ public:
     bool on_credits;
     bool on_quit;
     void getBools(int, int);
+    int spawnCount;
     int count;
     
     
