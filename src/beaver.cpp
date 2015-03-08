@@ -15,7 +15,7 @@ Beaver::Beaver(int x, int y){
 void Beaver::respawn(){
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
-    std::uniform_int_distribution<int> distribution(50,430);
+    std::uniform_int_distribution<int> distribution(50 * Mallard::ycor,430 * Mallard::ycor);
     spawnPoint = distribution(generator);
 }
 
