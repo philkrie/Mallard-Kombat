@@ -4,8 +4,10 @@
 #include <fstream>
 
 /* Screen resolution */
-const int Mallard::SCREEN_WIDTH = 640;
-const int Mallard::SCREEN_HEIGHT = 480;
+const int Mallard::SCREEN_WIDTH = 1280;
+const int Mallard::SCREEN_HEIGHT = 720;
+const int Mallard::xcor = SCREEN_WIDTH / 640;
+const int Mallard::ycor = SCREEN_HEIGHT/ 480;
 
 
 Mallard::Mallard(int argc, char* argv[]) {
@@ -39,10 +41,10 @@ Mallard::Mallard(int argc, char* argv[]) {
     font_name = "resources/fonts/comic_sans.ttf";
     
     swag = renderText("SWAG", font_name, font_color, 72, renderer);
-    swagRect.x = 100;
-    swagRect.y = 100;
-    swagRect.w = 50;
-    swagRect.h = 50;
+    swagRect.x = 100 * xcor;
+    swagRect.y = 100 * ycor;
+    swagRect.w = 50 * xcor;
+    swagRect.h = 50 * ycor;
     score = 0;
     
     
@@ -66,9 +68,9 @@ Mallard::Mallard(int argc, char* argv[]) {
     
     for (int i=0; i < 5; i++) {
         int beaver_scaling_factor = 5;
-        beaverArray[i] = new Beaver(500,200);
+        beaverArray[i] = new Beaver(500 * xcor,200 * ycor);
         beaverArray[i]->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
-        beaverArray[i]->spawnPoint = 100 * i;
+        beaverArray[i]->spawnPoint = 100 * i * ycor;
         beaverArray[i]->beaverScalar.w = 15*beaver_scaling_factor;
         beaverArray[i]->beaverScalar.h = 15*beaver_scaling_factor;
         std::string filepath = path + TS[i] + ".bmp";
@@ -110,10 +112,10 @@ Mallard::Mallard(int argc, char* argv[]) {
 }
 
 void Mallard::getBools(int x, int y){
-    on_start = (450 < x && x < 550) && (275 < y && y < 300);
-    on_options = (435 < x && x < 565) && (320 < y && y < 345);
-    on_credits = (435 < x && x < 565) && (365 < y && y < 385);
-    on_quit = (465 < x && x < 535) && (410 < y && y < 430);
+    on_start =   (450 * xcor < x && x < 550 * xcor ) & (275 * ycor < y && y < 300 * ycor);
+    on_options = (435 * xcor < x && x < 565 * xcor ) & (320 * ycor < y && y < 345 * ycor);
+    on_credits = (435 * xcor < x && x < 565 * xcor ) & (365 * ycor < y && y < 385 * ycor);
+    on_quit =    (465 * xcor < x && x < 535 * xcor ) & (410 * ycor < y && y < 430 * ycor);
 }
 
 void Mallard::input(){
@@ -146,8 +148,8 @@ void Mallard::input(){
             if (duck->duckScalar.y < 0) {
                 duck->duckScalar.y = 0;
             }
-            if (duck->duckScalar.y > 400) {
-                duck->duckScalar.y = 400;
+            if (duck->duckScalar.y > 400 * ycor) {
+                duck->duckScalar.y = 400 * ycor;
             }
         }
         
@@ -185,13 +187,13 @@ void Mallard::update(){
     }
 
         if (first_stage_visible && !duck->isDead) {
-        swagRect.x = 400;
-        swagRect.y = 25;
-        swagRect.w = 150;
+        swagRect.x = 400 * xcor;
+        swagRect.y = 25 * ycor;
+        swagRect.w = 150 * xcor;
             for (int i=0; i < 5; i++) {
                 if (didCollide(duck->footballScalar, beaverArray[i]->beaverScalar)) {
-                    duck->footballScalar.x = 1000;
-                    duck->footballScalar.y = 1000;
+                    duck->footballScalar.x = 1000 * xcor;
+                    duck->footballScalar.y = 1000 * ycor;
                     // ^ need to hide the footballScalar so it doesn't
                     // mess around with where the beaver currently is
                     score += 420;
@@ -200,7 +202,7 @@ void Mallard::update(){
                     
                     swag = renderText(tempscore, font_name, font_color, 72, renderer);
                     beaverArray[i]->respawn();
-                    beaverArray[i]->beaverScalar.x += 50;
+                    beaverArray[i]->beaverScalar.x += 50 * xcor;
                     duck->collision = true;
                 }
                 beaverArray[i]->beaverScalar.x -= 1;
@@ -214,12 +216,12 @@ void Mallard::update(){
                 }
                 
                 if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar) && gameBreaker > 1 && !duck->isDead) {
-                    swagRect.x = 100;
-                    duck->footballScalar.x = 1000;
-                    duck->footballScalar.y = 1000;
+                    swagRect.x = 100 * xcor;
+                    duck->footballScalar.x = 1000 * xcor;
+                    duck->footballScalar.y = 1000 * ycor;
                     swag = renderText("YOU FUCKING LOSER, YOU LOST", font_name, font_color, 72, renderer);
                     duck->isDead = true;
-                    swagRect.w = 500;
+                    swagRect.w = 500 * xcor;
                     //exit = true;
                 }
                 

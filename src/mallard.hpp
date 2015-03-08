@@ -25,6 +25,10 @@ public:
     static const int SCREEN_WIDTH;
     static const int SCREEN_HEIGHT;
     
+    static const int xcor;
+    // resolution correction factors
+    static const int ycor;
+    
     // Window and renderer
     SDL_Window* window;
     SDL_Renderer *renderer;
