@@ -5,8 +5,8 @@
 #include <stdlib.h>
 
 /* Screen resolution */
-int Mallard::SCREEN_WIDTH = 1920;
-int Mallard::SCREEN_HEIGHT = 1080;
+int Mallard::SCREEN_WIDTH = 640;
+int Mallard::SCREEN_HEIGHT = 480;
 int Mallard::xcor = SCREEN_WIDTH / 640;
 int Mallard::ycor = SCREEN_HEIGHT/ 480;
 
@@ -280,13 +280,13 @@ void Mallard::render_title_screen(){
 
 void Mallard::render_first_stage(){
     SDL_ShowCursor(0);
-    double duck_scaling_factor = 3 * sqrt(pow(xcor,2) + pow(ycor,2));
+    double duck_scaling_factor = 2 * sqrt(pow(xcor,2) + pow(ycor,2));
     double football_scaling_factor = 1 * sqrt(pow(xcor,2) + pow(ycor,2));
     //width and height get scaled by scaling_factor
     duck->duckScalar.w = 34*duck_scaling_factor;
     duck->duckScalar.h = 24*duck_scaling_factor;
-    duck->footballScalar.w = 30*football_scaling_factor;
-    duck->footballScalar.h = 30*football_scaling_factor;
+    duck->footballScalar.w = 15*football_scaling_factor;
+    duck->footballScalar.h = 15*football_scaling_factor;
     for (int i=0; i < 5; i++) {
         //beaverArray[i]->renderBeaver(renderer);
     }
