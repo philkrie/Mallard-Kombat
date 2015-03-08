@@ -21,7 +21,7 @@ Duck::Duck(){
 void Duck::shootFootball(){
     // initial position of the football
     // near the duck's mouth
-    footballScalar.x = duckScalar.x+70;
+    footballScalar.x = (duckScalar.x+70) * Mallard::xcor;
     footballScalar.y = duckScalar.y+10;
     footballScalar.w = 30;
     footballScalar.h = 30;

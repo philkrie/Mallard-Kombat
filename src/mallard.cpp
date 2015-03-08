@@ -85,7 +85,7 @@ Mallard::Mallard(int argc, char* argv[]) {
         duck->DST[i] = createTexture(temp, renderer);
     }    
     
-    first_stage_texture = createTexture("resources/images/field3.jpg", renderer);
+    first_stage_texture = createTexture("resources/images/field2.jpg", renderer);
     
     duck->footballTexture = createTexture("resources/images/football.bmp", renderer);
     duck->footballVisible = false;
@@ -222,7 +222,7 @@ void Mallard::update(){
                         swagRect.w = 500 * xcor;
                         //exit = true;
                     }
-                    beaverArray[i]->beaverScalar.y = beaverArray[i]->spawnPoint + 50 * sin(beaverArray[i]->beaverScalar.x * PI/30);
+                    beaverArray[i]->beaverScalar.y = beaverArray[i]->spawnPoint + 50 * ycor * sin(beaverArray[i]->beaverScalar.x * PI/30);
                 
                 } else {
                     spawnCount++;
@@ -277,7 +277,7 @@ void Mallard::render_title_screen(){
 void Mallard::render_first_stage(){
     SDL_ShowCursor(0);
     double duck_scaling_factor = 3 * sqrt(pow(xcor,2) + pow(ycor,2));
-    double football_scaling_factor = 1.5 * sqrt(pow(xcor,2) + pow(ycor,2));
+    double football_scaling_factor = 1 * sqrt(pow(xcor,2) + pow(ycor,2));
     //width and height get scaled by scaling_factor
     duck->duckScalar.w = 34*duck_scaling_factor;
     duck->duckScalar.h = 24*duck_scaling_factor;
