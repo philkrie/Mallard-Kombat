@@ -5,8 +5,8 @@
 #include <stdlib.h>
 
 /* Screen resolution */
-int Mallard::SCREEN_WIDTH = 1280;
-int Mallard::SCREEN_HEIGHT = 720;
+int Mallard::SCREEN_WIDTH = 640;
+int Mallard::SCREEN_HEIGHT = 480;
 double Mallard::xcor = SCREEN_WIDTH / 640;
 double Mallard::ycor = SCREEN_HEIGHT/ 480;
 
@@ -253,8 +253,6 @@ void Mallard::update(){
                                     std::cout << "Just spawned a quarterback beaver" << std::endl;
                                 }
                                 beaverArray[i]->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
-                                //beaverArray[i]->beaverFootballScalar.x = beaverArray[i]->beaverScalar.x + 50;
-                                //beaverArray[i]->beaverFootballScalar.y = beaverArray[i]->beaverScalar.y + 50;
                                 beaverArray[i]->beaverFootballScalar.w = 20*1.5;                                beaverArray[i]->beaverFootballScalar.h = 14*1.5;
                                 beaverArray[i]->spawnPoint = 50 * (rand()%9);
                                 beaverArray[i]->beaverScalar.w = 15*beaver_scaling_factor;
@@ -313,8 +311,8 @@ void Mallard::render_first_stage(){
     duck->renderDuck(renderer, count);
     for(int i = 0; i < 5; i++){
         if (beaverArray[i] != NULL){
-            beaverArray[i]->beaverFootballScalar.x = beaverArray[i]->beaverScalar.x+30;
-            beaverArray[i]->beaverFootballScalar.y = beaverArray[i]->beaverScalar.y+40;
+            beaverArray[i]->beaverFootballScalar.x = beaverArray[i]->beaverScalar.x+15;
+            beaverArray[i]->beaverFootballScalar.y = beaverArray[i]->beaverScalar.y+20;
             beaverArray[i]->renderBeaver(renderer);
 
         }
