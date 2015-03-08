@@ -40,7 +40,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     TTF_Init();
     font_color = {0, 0, 0, 0};
     font_name = "resources/fonts/comic_sans.ttf";
-    swag = renderText("SWAG", font_name, font_color, 72, renderer);
+    swag = renderText("", font_name, font_color, 72, renderer);
     swagRect.x = 100 * xcor;
     swagRect.y = 100 * ycor;
     swagRect.w = 50 * xcor;
@@ -208,6 +208,10 @@ void Mallard::update(){
                         
                     }
                     beaverArray[i]->beaverScalar.x -= 1;
+                    if(beaverArray[i] -> beaverScalar.x == -75){
+                        beaverArray[i] = NULL;
+                        continue;
+                    }
                     
                     if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar)) {
                         gameBreaker++;
@@ -217,7 +221,7 @@ void Mallard::update(){
                         swagRect.x = 100 * xcor;
                         duck->footballScalar.x = 1000 * xcor;
                         duck->footballScalar.y = 1000 * ycor;
-                        swag = renderText("YOU FUCKING LOSER, YOU LOST", font_name, font_color, 72, renderer);
+                        swag = renderText("You lose! Press R to play again!", font_name, font_color, 72, renderer);
                         duck->isDead = true;
                         swagRect.w = 500 * xcor;
                         //exit = true;
@@ -311,8 +315,6 @@ bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )
     int topA, topB;
     int bottomA, bottomB;
     
-    
-    
     //Calculate the sides of rect A
     leftA = a.x;
     rightA = a.x + a.w;
@@ -327,24 +329,16 @@ bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )
     //If any of the sides from A are outside of B
     
     if( bottomA <= topB )
-    {
         return false;
-    }
     
     if( topA >= bottomB )
-    {
         return false;
-    }
     
     if( rightA <= leftB )
-    {
         return false;
-    }
     
     if( leftA >= rightB )
-    {
         return false;
-    }
     
     //If none of the sides from A are outside B
     return true;
