@@ -354,8 +354,9 @@ void Mallard::reset(){
     score = 0;
     count = 0;
     duck -> isDead = false;
-    beaver->respawn();
-    beaver->beaverScalar.x = 500;
+    for (int i = 0; i < 5; i ++){
+        beaverArray[i] = NULL;
+    }
     swag = renderText("", font_name, font_color, 72, renderer);
 }
 
