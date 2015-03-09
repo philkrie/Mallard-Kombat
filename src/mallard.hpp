@@ -48,7 +48,7 @@ public:
     SDL_Rect swagRect;
     
     // highscores things
-    SDL_Texture *highTextures[3];
+    SDL_Texture *highTextures[5];
     SDL_Texture *blank;
     SDL_Rect highRect;
     bool scoresVisible;
@@ -88,7 +88,7 @@ public:
     
     void reset();
 
-    int highscores[3];
+    int highscores[5];
     //collision function
     bool didCollide(SDL_Rect, SDL_Rect);
     int gameBreaker;

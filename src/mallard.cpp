@@ -46,7 +46,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     std::string line;
     file.open("resources/text/hiscores.txt");
     if (file.is_open()) {
-        for (int i = 0; i < 3; i++){
+        for (int i = 0; i < 5; i++){
             getline (file,line);
             highscores[i] = std::stoi( line );
         }
@@ -162,7 +162,7 @@ void Mallard::input(){
                 highRect.y = -150;
                 highRect.w = 100;
                 highRect.h = 75;
-                for (int i=0; i<3; i++) {
+                for (int i=0; i<5; i++) {
                     highTextures[i] = renderText(std::to_string(highscores[i]), font_name, font_color, 72, renderer);
                 }
                 
@@ -329,7 +329,7 @@ void Mallard::render_title_screen(){
 
 void Mallard::render_blank_screen(){
     SDL_RenderCopy(renderer, blank, NULL, NULL);
-    for (int i=0; i < 3; i++) {
+    for (int i=0; i < 5; i++) {
         highRect.y+=50;
         SDL_RenderCopy(renderer, highTextures[i], NULL, &highRect);
     }
@@ -426,15 +426,15 @@ void Mallard::render(){
 void Mallard::recordScore(int score){
     // Check if current score belongs on the high score list
         // If so, swap with the last entry of the array
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
                 if (highscores[i] < score) {
-                        highscores[3-1] = score;
+                        highscores[5-1] = score;
                 }
         }
        
         //  Model the array with using a vector and sort
-        std::vector<int> scores_vec (highscores, highscores+3);
-        std::sort (scores_vec.begin(), scores_vec.begin()+3);
+        std::vector<int> scores_vec (highscores, highscores+5);
+        std::sort (scores_vec.begin(), scores_vec.begin()+5);
        
     // Iterate through vector and write to hiscores.txt
     file.open("resources/text/hiscores.txt");
