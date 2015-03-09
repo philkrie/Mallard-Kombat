@@ -13,6 +13,10 @@
 #include <chrono>
 #include <random>
 #include <cmath>
+#include <fstream>
+#include <vector>
+#include <algorithm>
+
 
 #define PI 3.141592653
 
@@ -29,6 +33,9 @@ public:
     // resolution correction factors
     static double ycor;
     
+    std::fstream file;
+
+
     // Window and renderer
     SDL_Window* window;
     SDL_Renderer *renderer;
@@ -77,10 +84,12 @@ public:
     void render_title_screen();
     void render_first_stage();
     void render_blank_screen();
+
+    void recordScore(int);
     
     void reset();
 
-    
+    int highscores[3];
     //collision function
     bool didCollide(SDL_Rect, SDL_Rect);
     int gameBreaker;
