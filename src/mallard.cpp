@@ -3,6 +3,7 @@
 #include "util.hpp"
 #include <stdlib.h>
 
+
 /* Screen resolution */
 int Mallard::SCREEN_WIDTH = 640;
 int Mallard::SCREEN_HEIGHT = 480;
@@ -245,10 +246,6 @@ void Mallard::update(){
                         duck->footballScalar.y = 1000 * ycor;
                         swag = renderText("You lost! Press r to play again", font_name, font_color, 72, renderer);
                         duck->isDead = true;
-                        for (int i=0; i < 3; i++){
-                            std::cout << highscores[i] << std::endl;
-                        }
-
                         recordScore(score);
                         swagRect.w = 500 * xcor;
                         //exit = true;
@@ -406,42 +403,29 @@ void Mallard::render(){
     }
 }
 
-void Mallard::recordScore(int score){    
-    int max = 0;
-    int biggerthan = 3;
-    int temp;
-    int temp2;
-    for (int i = 0; i < 3; i++){
-        if (score > highscores[i]){
-            biggerthan--;
-        }
-    }
-    if (biggerthan < 3){
-        temp = highscores[biggerthan];
-        highscores[biggerthan] = score;
-        if (biggerthan == 0){
-            if (highscores[1] < temp){
-                temp2 = highscores[1];
-                highscores[1] = temp;
-                if (highscores[2] < temp2){
-                    highscores[2] = temp2;
+void Mallard::recordScore(int score){
+    // Check if current score belongs on the high score list
+        // If so, swap with the last entry of the array
+        for (int i = 0; i < 3; i++) {
+                if (highscores[i] < score) {
+                        highscores[3-1] = score;
                 }
-            } else if (highscores[2] < temp){
-                highscores[2] = temp;
-            }
-        if (biggerthan == 1){
-            if (highscores[2] < temp){
-                highscores[2] = temp;
-            }
         }
-    }
-}
-    
+       
+        //  Model the array with using a vector and sort
+        std::vector<int> scores_vec (highscores, highscores+3);
+        std::sort (scores_vec.begin(), scores_vec.begin()+3);
+       
+    // Iterate through vector and write to hiscores.txt
     file.open("resources/text/hiscores.txt");
-    for (int i = 0; i < 3; i++){
-        file << highscores[i] << std::endl;
+
+    int i = 0;
+    for (std::vector<int>::reverse_iterator rit = scores_vec.rbegin(); rit != scores_vec.rend(); ++rit) {
+            file << *rit << std::endl;
+            highscores[i] = *rit;
+            i++;
     }
-        file.close();
+            file.close();
 }
 
 void Mallard::execute() {

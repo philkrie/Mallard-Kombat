@@ -14,6 +14,8 @@
 #include <random>
 #include <cmath>
 #include <fstream>
+#include <vector>
+#include <algorithm>
 
 
 #define PI 3.141592653
