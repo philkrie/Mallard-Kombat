@@ -21,8 +21,6 @@ public:
     SDL_Surface *CDSS[4]; // CDSS stands for ConvertedDuckScreenSurfaces
     SDL_Texture *DST[4];  // DST stands for DuckSurfaceTextures
     
-    
-    SDL_Surface *footballSurface;
     SDL_Texture *footballTexture;
     SDL_Rect duckScalar;
     SDL_Rect footballScalar;

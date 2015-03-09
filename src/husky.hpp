@@ -1,12 +1,13 @@
-/*
- * Duck class definitions
- * Created by Casey Chesshir
- * March 7, 2015
- */
-#ifndef BEAVER_HPP_
-#define BEAVER_HPP_
+//
+//  husky.hpp
+//  
+//
+//  Created by Casey Chesshir on 3/8/15.
+//
+//
 
-#include "mallard.hpp"
+#ifndef HUSKY_HPP_
+#define HUSKY_HPP_
 
 #include <SDL2/SDL.h>                       // SDL library
 #include <SDL2/SDL_ttf.h>                   // SDL font library
@@ -18,24 +19,18 @@
 #include <random>
 #include <cmath>
 
-class Beaver{
+class Husky{
 public:
-    Beaver(int, int);
-    ~Beaver();
+    Husky(int, int);
+    ~Husky();
     
-    SDL_Texture *beaverTexture;
-    SDL_Rect beaverScalar;
+    SDL_Texture *huskyTexture;
+    SDL_Rect huskyScalar;
     SDL_Texture *beaverFootball;
-    SDL_Rect beaverFootballScalar;
     
     int spawnPoint;
-    bool beaverVisible;
     bool hasFootball;
     void respawn();
-    void renderBeaver(SDL_Renderer *);
+    void renderHusky(SDL_Renderer *);
 };
-
-
-
-
-#endif
+#endif /* defined(____husky__) */
