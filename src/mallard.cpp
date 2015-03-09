@@ -101,6 +101,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     first_stage_visible = false;
     paused = false;
     gameBreaker = false;
+    scoresVisible = false;
 }
 
 void Mallard::getBools(int x, int y){
@@ -149,10 +150,10 @@ void Mallard::input(){
             if (on_highscores && title_visible) {
                 scoresVisible = true;
                 SDL_RenderClear(renderer);
-                highRect.x = 100;
-                highRect.y = 100;
+                highRect.x = 400;
+                highRect.y = -150;
                 highRect.w = 100;
-                highRect.h = 50;
+                highRect.h = 75;
                 std::ifstream ifs ("resources/text/high_scores.txt", std::ifstream::in);
                 for (int i=0; i<5; i++) {
                     getline(ifs,highscores[i]);
@@ -322,7 +323,7 @@ void Mallard::render_title_screen(){
 void Mallard::render_blank_screen(){
     SDL_RenderCopy(renderer, blank, NULL, NULL);
     for (int i=0; i < 5; i++) {
-        highRect.y+=30;
+        highRect.y+=50;
         SDL_RenderCopy(renderer, highTextures[i], NULL, &highRect);
     }
     SDL_RenderPresent(renderer);
