@@ -155,17 +155,15 @@ void Mallard::input(){
                 first_stage_visible = true;
             }
             if (on_highscores && title_visible) {
+                std::string line;
                 scoresVisible = true;
                 SDL_RenderClear(renderer);
                 highRect.x = 400;
                 highRect.y = -150;
                 highRect.w = 100;
                 highRect.h = 75;
-                std::ifstream ifs ("resources/text/highscores.txt", std::ifstream::in);
-                for (int i=0; i<5; i++) {
-                    getline(ifs,highscores[i]);
-                    highTextures[i] = renderText(highscores[i], font_name, font_color, 72, renderer);
-                    std::cout << highscores[i] << std::endl;
+                for (int i=0; i<3; i++) {
+                    highTextures[i] = renderText(std::to_string(highscores[i]), font_name, font_color, 72, renderer);
                 }
                 
             }
@@ -259,12 +257,8 @@ void Mallard::update(){
                         swagRect.x = 100 * xcor;
                         duck->footballScalar.x = 1000 * xcor;
                         duck->footballScalar.y = 1000 * ycor;
-<<<<<<< HEAD
 
-                        swag = renderText("YOU FUCKING LOSER, YOU LOST (press r to play again)", font_name, font_color, 72, renderer);
-=======
                         swag = renderText("You lost! Press r to play again", font_name, font_color, 72, renderer);
->>>>>>> 89583da7db5fa363bb6f47a870c8d01cd5bec1af
                         duck->isDead = true;
                         recordScore(score);
                         swagRect.w = 500 * xcor;
@@ -335,7 +329,7 @@ void Mallard::render_title_screen(){
 
 void Mallard::render_blank_screen(){
     SDL_RenderCopy(renderer, blank, NULL, NULL);
-    for (int i=0; i < 5; i++) {
+    for (int i=0; i < 3; i++) {
         highRect.y+=50;
         SDL_RenderCopy(renderer, highTextures[i], NULL, &highRect);
     }

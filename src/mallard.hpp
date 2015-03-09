@@ -48,8 +48,7 @@ public:
     SDL_Rect swagRect;
     
     // highscores things
-    std::string highscores[5];
-    SDL_Texture *highTextures[5];
+    SDL_Texture *highTextures[3];
     SDL_Texture *blank;
     SDL_Rect highRect;
     bool scoresVisible;
