@@ -14,7 +14,7 @@ double Mallard::ycor = SCREEN_HEIGHT/ 480;
 Mallard::Mallard(int argc, char* argv[]) {
     std::ofstream myfile;
     myfile.open("resources/text/hiscores.txt", std::ios::app);
-    myfile << "holy balls\n";
+    //myfile << "holy balls\n";
     myfile.close();
     
     exit = false;
@@ -86,7 +86,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     }    
     
     first_stage_texture = createTexture("resources/images/field2.jpg", renderer);
-    
+    blank = createTexture("resources/images/blank.bmp", renderer);
     duck->footballTexture = createTexture("resources/images/football.bmp", renderer);
     duck->footballVisible = false;
     
@@ -106,7 +106,7 @@ Mallard::Mallard(int argc, char* argv[]) {
 void Mallard::getBools(int x, int y){
     on_start =   (450 * xcor < x && x < 550 * xcor ) & (275 * ycor < y && y < 300 * ycor);
     on_options = (435 * xcor < x && x < 565 * xcor ) & (320 * ycor < y && y < 345 * ycor);
-    on_credits = (435 * xcor < x && x < 565 * xcor ) & (365 * ycor < y && y < 385 * ycor);
+    on_highscores = (435 * xcor < x && x < 565 * xcor ) & (365 * ycor < y && y < 385 * ycor);
     on_quit =    (465 * xcor < x && x < 535 * xcor ) & (410 * ycor < y && y < 430 * ycor);
 }
 
@@ -145,6 +145,21 @@ void Mallard::input(){
                 SDL_RenderClear(renderer);
                 Mix_PlayChannel(-1, quack, 0);
                 first_stage_visible = true;
+            }
+            if (on_highscores && title_visible) {
+                scoresVisible = true;
+                SDL_RenderClear(renderer);
+                highRect.x = 100;
+                highRect.y = 100;
+                highRect.w = 100;
+                highRect.h = 50;
+                std::ifstream ifs ("resources/text/high_scores.txt", std::ifstream::in);
+                for (int i=0; i<5; i++) {
+                    getline(ifs,highscores[i]);
+                    highTextures[i] = renderText(highscores[i], font_name, font_color, 72, renderer);
+                    std::cout << highscores[i] << std::endl;
+                }
+                
             }
             if (on_quit && title_visible) {
                 exit = true;
@@ -270,7 +285,9 @@ void Mallard::update(){
 }
 
 void Mallard::render_title_screen(){
-
+    if (scoresVisible) {
+        render_blank_screen();
+    }
     if (on_start) {
         SDL_RenderCopy(renderer, TST[1], NULL, NULL);
         SDL_RenderCopy(renderer, swag, NULL, &swagRect);
@@ -281,10 +298,15 @@ void Mallard::render_title_screen(){
         SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }
-    else if (on_credits) {
+    else if (on_highscores) {
+        if (scoresVisible) {
+            render_blank_screen();
+            title_visible = false;
+        }else{
         SDL_RenderCopy(renderer, TST[3], NULL, NULL);
         SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
+        }
     }
     else if (on_quit) {
         SDL_RenderCopy(renderer, TST[4], NULL, NULL);
@@ -297,6 +319,14 @@ void Mallard::render_title_screen(){
     }
 }
 
+void Mallard::render_blank_screen(){
+    SDL_RenderCopy(renderer, blank, NULL, NULL);
+    for (int i=0; i < 5; i++) {
+        highRect.y+=30;
+        SDL_RenderCopy(renderer, highTextures[i], NULL, &highRect);
+    }
+    SDL_RenderPresent(renderer);
+}
 
 
 void Mallard::render_first_stage(){

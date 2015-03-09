@@ -40,6 +40,13 @@ public:
     SDL_Texture *swag;
     SDL_Rect swagRect;
     
+    // highscores things
+    std::string highscores[5];
+    SDL_Texture *highTextures[5];
+    SDL_Texture *blank;
+    SDL_Rect highRect;
+    bool scoresVisible;
+    
     long long unsigned int score;
     // max score is 18,446,744,073,709,551,615
     // 18 pentillion
@@ -54,7 +61,7 @@ public:
     
     bool on_start;
     bool on_options;
-    bool on_credits;
+    bool on_highscores;
     bool on_quit;
     void getBools(int, int);
     int spawnCount;
@@ -65,9 +72,11 @@ public:
     bool title_visible;
     bool first_stage_visible;
     bool paused;
+    
     // render functions
     void render_title_screen();
     void render_first_stage();
+    void render_blank_screen();
     
     void reset();
 
