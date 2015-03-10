@@ -159,7 +159,7 @@ void Mallard::input(){
                 scoresVisible = true;
                 SDL_RenderClear(renderer);
                 highRect.x = 400;
-                highRect.y = -150;
+                highRect.y = -170;
                 highRect.w = 100;
                 highRect.h = 75;
                 for (int i=0; i<5; i++) {
@@ -259,7 +259,8 @@ void Mallard::update(){
                 
                 if ((didCollide(duck->duckScalar, beaverArray[i]->beaverScalar) && gameBreaker > 1 && !duck->isDead) ||
                     (beaverArray[i]->hasFootball && beaverArray[i]->beaverScalar.x < 0)){
-                    swagRect.x = 100 * xcor;
+                    swagRect.x = 20 * xcor;
+                    swagRect.w = 450 * xcor;
                     duck->footballScalar.x = 1000 * xcor;
                     duck->footballScalar.y = 1000 * ycor;
                     
@@ -334,6 +335,17 @@ void Mallard::render_title_screen(){
 
 void Mallard::render_blank_screen(){
     SDL_RenderCopy(renderer, blank, NULL, NULL);
+    SDL_Rect temp;
+    temp.x = 50 * xcor;
+    temp.y = 50 * ycor;
+    temp.w = 400 * xcor;
+    temp.h = 72 * ycor;
+    SDL_Texture *tempswag = renderText("Here are the top five recorded scores:", font_name, font_color, 72, renderer);
+    SDL_RenderCopy(renderer, tempswag, NULL, &temp);
+    temp.y += 350;
+    temp.w = 550 * xcor;
+    tempswag = renderText("You may return back to the main menu by pressing Enter", font_name, font_color, 72, renderer);
+    SDL_RenderCopy(renderer, tempswag, NULL, &temp);
     for (int i=0; i < 5; i++) {
         highRect.y+=50;
         SDL_RenderCopy(renderer, highTextures[i], NULL, &highRect);
