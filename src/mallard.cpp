@@ -12,7 +12,7 @@ double Mallard::xcor = SCREEN_WIDTH / 640;
 double Mallard::ycor = SCREEN_HEIGHT/ 480;
 
 
-Mallard::Mallard(int argc, char* argv[]) {    
+Mallard::Mallard(int argc, char* argv[]) {
     exit = false;
     
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize SDL2
@@ -50,9 +50,9 @@ Mallard::Mallard(int argc, char* argv[]) {
             getline (file,line);
             highscores[i] = std::stoi( line );
         }
-    }  
-    file.close();  
-
+    }
+    file.close();
+    
     // Sounds
     Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
     quack = Mix_LoadWAV("resources/sounds/quack.wav");
@@ -76,7 +76,7 @@ Mallard::Mallard(int argc, char* argv[]) {
         char *temp = (char*)filepath.c_str();
         TST[i] = createTexture(temp, renderer);
     }
-
+    
     
     std::string DS[4] = {
         "single_duck",
@@ -89,7 +89,7 @@ Mallard::Mallard(int argc, char* argv[]) {
         std::string filepath = path + DS[i] + ".bmp";
         char *temp = (char*)filepath.c_str();
         duck->DST[i] = createTexture(temp, renderer);
-    }    
+    }
     
     first_stage_texture = createTexture("resources/images/field2.jpg", renderer);
     blank = createTexture("resources/images/blank.bmp", renderer);
@@ -100,7 +100,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     count = 0;
     spawnCount = 0;
     
-
+    
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, TST[0], NULL, NULL); // base title screen
     SDL_RenderPresent(renderer);
@@ -139,7 +139,7 @@ void Mallard::input(){
             }
         }
     }
-
+    
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_MOUSEMOTION){
             SDL_GetMouseState(&x, &y);
@@ -171,20 +171,19 @@ void Mallard::input(){
                 exit = true;
             }
         }
-        if (event.type == SDL_KEYDOWN && !scoresVisible) {
-            if (event.key.keysym.sym == SDLK_RETURN) {
+        if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.sym == SDLK_RETURN && title_visible) {
                 title_visible = false;
                 SDL_RenderClear(renderer);
                 Mix_PlayChannel(-1, quack, 0);
                 first_stage_visible = true;
             }
+            if (event.key.keysym.sym == SDLK_RETURN && scoresVisible) {
+                title_visible = true;
+                SDL_RenderClear(renderer);
+                scoresVisible = false;
+            }
         }
-	if (event.type == SDL_KEYDOWN && scoresVisible){
-		if (event.key.keysym.sym == SDLK_RETURN) {
-			title_visible = true;
-			SDL_RenderClear(renderer);
-			scoresVisible = false;
-	}
         if (event.type == SDL_QUIT) {
             exit = true;
         }
@@ -218,83 +217,82 @@ void Mallard::input(){
                 case SDLK_r:
                     reset();
                     break;
-                }
+            }
         }
-}
-}
+    }
 }
 
 void Mallard::update(){
-        if (first_stage_visible && !duck->isDead) {
-            swagRect.x = 400 * xcor;
-            swagRect.y = 25 * ycor;
-            swagRect.w = 150 * xcor;
-            for (int i=0; i < 5; i++) {
-                if(beaverArray[i] != NULL){
-                    if (didCollide(duck->footballScalar, beaverArray[i]->beaverScalar)) {
-                        duck->footballScalar.x = 1000 * xcor;
-                        duck->footballScalar.y = 1000 * ycor;
-                        // ^ need to hide the footballScalar so it doesn't
-                        // mess around with where the beaver currently is
-                        score += 420;
-                        std::string tempscore = "Score: ";
-                        tempscore += std::to_string(score);
-                        swag = renderText(tempscore, font_name, font_color, 72, renderer);
-                        if((rand()%100) + 1 > 50){
-                            beaverArray[i]->respawn();
-                            beaverArray[i]->beaverScalar.x += 50 * xcor;
-                            duck->collision = true;
-                        } else {
-                            beaverArray[i] = NULL;
-                            continue;
-                        }
-                        
-                    }
-                    beaverArray[i]->beaverScalar.x -= 1;
-                    if (beaverArray[i]->beaverScalar.x < -75) {
+    if (first_stage_visible && !duck->isDead) {
+        swagRect.x = 400 * xcor;
+        swagRect.y = 25 * ycor;
+        swagRect.w = 150 * xcor;
+        for (int i=0; i < 5; i++) {
+            if(beaverArray[i] != NULL){
+                if (didCollide(duck->footballScalar, beaverArray[i]->beaverScalar)) {
+                    duck->footballScalar.x = 1000 * xcor;
+                    duck->footballScalar.y = 1000 * ycor;
+                    // ^ need to hide the footballScalar so it doesn't
+                    // mess around with where the beaver currently is
+                    score += 420;
+                    std::string tempscore = "Score: ";
+                    tempscore += std::to_string(score);
+                    swag = renderText(tempscore, font_name, font_color, 72, renderer);
+                    if((rand()%100) + 1 > 50){
+                        beaverArray[i]->respawn();
+                        beaverArray[i]->beaverScalar.x += 50 * xcor;
+                        duck->collision = true;
+                    } else {
                         beaverArray[i] = NULL;
                         continue;
                     }
-                    if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar)) {
-                        gameBreaker++;
-                    }
+                    
+                }
+                beaverArray[i]->beaverScalar.x -= 1;
+                if (beaverArray[i]->beaverScalar.x < -75) {
+                    beaverArray[i] = NULL;
+                    continue;
+                }
+                if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar)) {
+                    gameBreaker++;
+                }
                 
-                    if ((didCollide(duck->duckScalar, beaverArray[i]->beaverScalar) && gameBreaker > 1 && !duck->isDead) ||
-                        (beaverArray[i]->hasFootball && beaverArray[i]->beaverScalar.x < 0)){
-                        swagRect.x = 100 * xcor;
-                        duck->footballScalar.x = 1000 * xcor;
-                        duck->footballScalar.y = 1000 * ycor;
-
-                        swag = renderText("You lost! Press r to play again", font_name, font_color, 72, renderer);
-                        duck->isDead = true;
-                        recordScore(score);
-                        swagRect.w = 500 * xcor;
-                        //exit = true;
-                    }
-                    beaverArray[i]->beaverScalar.y = beaverArray[i]->spawnPoint + 50 * ycor * sin(beaverArray[i]->beaverScalar.x * PI/30);
+                if ((didCollide(duck->duckScalar, beaverArray[i]->beaverScalar) && gameBreaker > 1 && !duck->isDead) ||
+                    (beaverArray[i]->hasFootball && beaverArray[i]->beaverScalar.x < 0)){
+                    swagRect.x = 100 * xcor;
+                    duck->footballScalar.x = 1000 * xcor;
+                    duck->footballScalar.y = 1000 * ycor;
+                    
+                    swag = renderText("You lost! Press r to play again", font_name, font_color, 72, renderer);
+                    duck->isDead = true;
+                    recordScore(score);
+                    swagRect.w = 500 * xcor;
+                    //exit = true;
+                }
+                beaverArray[i]->beaverScalar.y = beaverArray[i]->spawnPoint + 50 * ycor * sin(beaverArray[i]->beaverScalar.x * PI/30);
                 
-                } else {
-                    spawnCount++;
-                    if (beaverArray[i] == NULL){
-                        if (spawnCount%50 == 0){
-                            if((rand()%100) + 1 > 50){
-                                int beaver_scaling_factor = 3 * sqrt(pow(xcor,2) + pow(ycor,2));
-                                beaverArray[i] = new Beaver(500 * xcor,200 * ycor);
-                                if((rand()%100 < 10)){
-                                    beaverArray[i]->hasFootball = true;
-                                    beaverArray[i]->beaverFootball = createTexture("resources/images/football.bmp", renderer);
-                                    std::cout << "Just spawned a quarterback beaver" << std::endl;
-                                }
-                                beaverArray[i]->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
-                                beaverArray[i]->beaverFootballScalar.w = 20*1.5;                                beaverArray[i]->beaverFootballScalar.h = 14*1.5;
-                                beaverArray[i]->spawnPoint = 50 * (rand()%9);
-                                beaverArray[i]->beaverScalar.w = 15*beaver_scaling_factor;
-                                beaverArray[i]->beaverScalar.h = 15*beaver_scaling_factor;
+            } else {
+                spawnCount++;
+                if (beaverArray[i] == NULL){
+                    if (spawnCount%50 == 0){
+                        if((rand()%100) + 1 > 50){
+                            int beaver_scaling_factor = 3 * sqrt(pow(xcor,2) + pow(ycor,2));
+                            beaverArray[i] = new Beaver(500 * xcor,200 * ycor);
+                            if((rand()%100 < 10)){
+                                beaverArray[i]->hasFootball = true;
+                                beaverArray[i]->beaverFootball = createTexture("resources/images/football.bmp", renderer);
+                                std::cout << "Just spawned a quarterback beaver" << std::endl;
                             }
+                            beaverArray[i]->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
+                            beaverArray[i]->beaverFootballScalar.w = 20*1.5;                                beaverArray[i]->beaverFootballScalar.h = 14*1.5;
+                            beaverArray[i]->spawnPoint = 50 * (rand()%9);
+                            beaverArray[i]->beaverScalar.w = 15*beaver_scaling_factor;
+                            beaverArray[i]->beaverScalar.h = 15*beaver_scaling_factor;
+                        }
                     }
                 }
             }
-
+            
         }
     }
 }
@@ -318,9 +316,9 @@ void Mallard::render_title_screen(){
             render_blank_screen();
             title_visible = false;
         }else{
-        SDL_RenderCopy(renderer, TST[3], NULL, NULL);
-        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
-        SDL_RenderPresent(renderer);
+            SDL_RenderCopy(renderer, TST[3], NULL, NULL);
+            SDL_RenderCopy(renderer, swag, NULL, &swagRect);
+            SDL_RenderPresent(renderer);
         }
     }
     else if (on_quit) {
@@ -351,19 +349,19 @@ void Mallard::render_first_stage(){
     //width and height get scaled by scaling_factor
     duck->duckScalar.w = 34*duck_scaling_factor;
     duck->duckScalar.h = 24*duck_scaling_factor;
-
+    
     duck->footballScalar.w = 20*football_scaling_factor;
     duck->footballScalar.h = 14*football_scaling_factor;
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
     count++;
-  
+    
     duck->renderDuck(renderer, count);
     for(int i = 0; i < 5; i++){
         if (beaverArray[i] != NULL){
             beaverArray[i]->beaverFootballScalar.x = beaverArray[i]->beaverScalar.x+15;
             beaverArray[i]->beaverFootballScalar.y = beaverArray[i]->beaverScalar.y+20;
             beaverArray[i]->renderBeaver(renderer);
-
+            
         }
     }
     
@@ -432,27 +430,27 @@ void Mallard::render(){
 
 void Mallard::recordScore(int score){
     // Check if current score belongs on the high score list
-        // If so, swap with the last entry of the array
-        for (int i = 0; i < 5; i++) {
-                if (highscores[i] < score) {
-                        highscores[5-1] = score;
-                }
+    // If so, swap with the last entry of the array
+    for (int i = 0; i < 5; i++) {
+        if (highscores[i] < score) {
+            highscores[5-1] = score;
         }
-       
-        //  Model the array with using a vector and sort
-        std::vector<int> scores_vec (highscores, highscores+5);
-        std::sort (scores_vec.begin(), scores_vec.begin()+5);
-       
+    }
+    
+    //  Model the array with using a vector and sort
+    std::vector<int> scores_vec (highscores, highscores+5);
+    std::sort (scores_vec.begin(), scores_vec.begin()+5);
+    
     // Iterate through vector and write to hiscores.txt
     file.open("resources/text/hiscores.txt");
-
+    
     int i = 0;
     for (std::vector<int>::reverse_iterator rit = scores_vec.rbegin(); rit != scores_vec.rend(); ++rit) {
-            file << *rit << std::endl;
-            highscores[i] = *rit;
-            i++;
+        file << *rit << std::endl;
+        highscores[i] = *rit;
+        i++;
     }
-            file.close();
+    file.close();
 }
 
 void Mallard::execute() {
