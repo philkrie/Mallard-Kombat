@@ -1,7 +1,7 @@
 #include "util.hpp"
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_image.h>
 
 SDL_Texture* createTexture(const char* path, SDL_Renderer *ren){
     SDL_Surface *temp = IMG_Load(path);

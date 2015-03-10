@@ -1,10 +1,10 @@
 #ifndef MALLARD_HPP
 #define MALLARD_HPP
 
-#include <SDL2/SDL.h>                       // SDL library
+#include <SDL2/SDL.h>   
+#include <SDL2/SDL_image.h>                    // SDL library
 #include <SDL2/SDL_ttf.h>                   // SDL font library
 #include <SDL2/SDL_mixer.h>                 // SDL sound library
-#include <SDL2/SDL_image.h>
 #include "duck.hpp"
 #include "beaver.hpp"
 #include "util.hpp"
