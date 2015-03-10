@@ -171,7 +171,7 @@ void Mallard::input(){
                 exit = true;
             }
         }
-        if (event.type == SDL_KEYDOWN) {
+        if (event.type == SDL_KEYDOWN && !scoresVisible) {
             if (event.key.keysym.sym == SDLK_RETURN) {
                 title_visible = false;
                 SDL_RenderClear(renderer);
@@ -179,6 +179,12 @@ void Mallard::input(){
                 first_stage_visible = true;
             }
         }
+	if (event.type == SDL_KEYDOWN && scoresVisible){
+		if (event.key.keysym.sym == SDLK_RETURN) {
+			title_visible = true;
+			SDL_RenderClear(renderer);
+			scoresVisible = false;
+	}
         if (event.type == SDL_QUIT) {
             exit = true;
         }
@@ -214,6 +220,7 @@ void Mallard::input(){
                     break;
                 }
         }
+}
 }
 }
 
