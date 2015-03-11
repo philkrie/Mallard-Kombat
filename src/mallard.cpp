@@ -124,6 +124,9 @@ void Mallard::input(){
     SDL_Event event;
     
     while (paused) {
+        /* Need to create a temporary texture for the pause text.
+         * Also checking for the necessary keys on the pause screen.
+         */
         SDL_Texture *pauseTexture = renderText("Paused. Press Enter for main menu", font_name, font_color, 72, renderer);
         SDL_Rect pauseRect;
         pauseRect.x = 10;
@@ -162,6 +165,9 @@ void Mallard::input(){
     
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_MOUSEMOTION){
+            /* If the mouse moves, then we need to get its state.
+             * Check where it is on the screen, return bools.
+             */
             SDL_GetMouseState(&x, &y);
             getBools(x,y);
         }
@@ -325,6 +331,7 @@ void Mallard::update(){
 }
 
 void Mallard::render_title_screen(){
+    // make sure the cursor is showing on title screen
     SDL_ShowCursor(1);
     if (scoresVisible) {
         render_blank_screen();
@@ -382,6 +389,7 @@ void Mallard::render_blank_screen(){
 
 
 void Mallard::render_first_stage(){
+    // hide the cursor during the game 
     SDL_ShowCursor(0);
     double duck_scaling_factor = 2 * sqrt(pow(xcor,2) + pow(ycor,2));
     double football_scaling_factor = 1 * sqrt(pow(xcor,2) + pow(ycor,2));
