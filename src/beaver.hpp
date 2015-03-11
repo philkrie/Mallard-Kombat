@@ -7,6 +7,7 @@
 #define BEAVER_HPP_
 
 #include "mallard.hpp"
+#include "enemy.hpp"
 
 #include <SDL2/SDL.h>                       // SDL library
 #include <SDL2/SDL_ttf.h>                   // SDL font library
@@ -18,21 +19,15 @@
 #include <random>
 #include <cmath>
 
-class Beaver{
+class Beaver: public Enemy {
 public:
     Beaver(int, int);
     ~Beaver();
     
-    SDL_Texture *beaverTexture;
-    SDL_Rect beaverScalar;
-    SDL_Texture *beaverFootball;
-    SDL_Rect beaverFootballScalar;
-    
     int spawnPoint;
-    bool beaverVisible;
-    bool hasFootball;
     void respawn();
-    void renderBeaver(SDL_Renderer *);
+    void render(SDL_Renderer *);
+    void move();
 };
 
 

@@ -24,11 +24,12 @@ public:
     int spawnPoint;
     bool hasFootball;
     SDL_Rect enemyScalar;
-    SDL_Rect beaverFootballScalar;
+    SDL_Rect footballScalar;
     SDL_Texture *enemyTexture;
-    SDL_Texture *beaverFootball;
+    SDL_Texture *footballTexture;
     virtual void respawn() = 0;
-    virtual void renderEnemy(SDL_Renderer *) = 0;
+    virtual void render(SDL_Renderer *) = 0;
+    virtual void move() = 0;
 };
 
 #endif
