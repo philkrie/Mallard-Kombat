@@ -309,7 +309,7 @@ void Mallard::update(){
                     if (spawnCount%50 == 0){
                         int chance = rand()%100;
                         if(chance >= 0 & chance < 40){
-                            enemyArray[i] = new Beaver(500 * xcor,200 * ycor);
+                            enemyArray[i] = new Beaver(500 * xcor,50 * ycor * (rand()%9));
                             if(chance < 10){
                                 std::cout << "spawned QB" << std::endl;
                                 enemyArray[i]->hasFootball = true;
@@ -323,16 +323,15 @@ void Mallard::update(){
                             enemyArray[i]->enemyScalar.h = 15*scaling_factor;
                         }
                         else if(chance >= 40 & chance < 75){
-                            enemyArray[i] = new Husky(500 * xcor,200 * ycor);
+                            enemyArray[i] = new Husky(500 * xcor, 50 * ycor * (rand()%9));
                             enemyArray[i]->enemyTexture = huskySkin;
                             enemyArray[i]->spawnPoint = 50 * (rand()%9);
                             enemyArray[i]->enemyScalar.w = 15*scaling_factor;
                             enemyArray[i]->enemyScalar.h = 15*scaling_factor;
                         }
                         else if(chance >= 75 & chance < 100){
-                            enemyArray[i] = new Trojan(500 * xcor,200 * ycor);
+                            enemyArray[i] = new Trojan(500 * xcor, 50 * ycor * (rand()%9));
                             enemyArray[i]->enemyTexture = trojanSkin;
-                            enemyArray[i]->spawnPoint = 50 * (rand()%9);
                             enemyArray[i]->enemyScalar.w = 15*scaling_factor;
                             enemyArray[i]->enemyScalar.h = 30*scaling_factor;
                         }
