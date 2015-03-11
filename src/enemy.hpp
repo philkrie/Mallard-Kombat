@@ -21,7 +21,6 @@
 
 class Enemy{
 public:
-    int spawnPoint;
     bool hasFootball;
     SDL_Rect enemyScalar;
     SDL_Rect footballScalar;
@@ -31,5 +30,6 @@ public:
     virtual void render(SDL_Renderer *) = 0;
     virtual void move() = 0;
 };
+
 
 #endif

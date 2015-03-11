@@ -49,6 +49,7 @@ public:
     std::string font_name;
     SDL_Texture *swag;
     SDL_Rect swagRect;
+    SDL_Rect pauseRect;
     
     // highscores things
     SDL_Texture *highTextures[5];
@@ -70,6 +71,8 @@ public:
     SDL_Texture *huskySkin;
     SDL_Texture *trojanSkin;
     SDL_Texture *footballSkin;
+    SDL_Texture *pauseTexture;
+    SDL_Texture *losingText;
     // bools for the title screen
     
     bool on_start;

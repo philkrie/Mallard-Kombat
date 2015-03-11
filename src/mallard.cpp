@@ -42,6 +42,13 @@ Mallard::Mallard(int argc, char* argv[]) {
     swagRect.w = 50 * xcor;
     swagRect.h = 50 * ycor;
     score = 0;
+
+    pauseTexture = renderText("Paused. Press Enter for main menu", font_name, font_color, 72, renderer);
+    losingText = renderText("Or press f to return to the main menu.", font_name, font_color, 72, renderer);
+    pauseRect.x = 10;
+    pauseRect.y = swagRect.y;
+    pauseRect.w = 350;
+    pauseRect.h = swagRect.h;
     
     std::string line;
     file.open("resources/text/hiscores.txt");
@@ -129,18 +136,14 @@ void Mallard::input(){
     SDL_Event event;
     
     while (paused) {
-        /* Need to create a temporary texture for the pause text.
-         * Also checking for the necessary keys on the pause screen.
-         */
-        SDL_Texture *pauseTexture = renderText("Paused. Press Enter for main menu", font_name, font_color, 72, renderer);
-        SDL_Rect pauseRect;
-        pauseRect.x = 10;
-        pauseRect.y = swagRect.y;
-        pauseRect.w = 350;
-        pauseRect.h = swagRect.h;
+
         SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderCopy(renderer, pauseTexture, NULL, &pauseRect);
         SDL_RenderPresent(renderer);
+        /* Need to create a temporary texture for the pause text.
+         * Also checking for the necessary keys on the pause screen.
+         */
+
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_p) {
@@ -232,6 +235,7 @@ void Mallard::input(){
             switch (event.key.keysym.sym) {
                 case SDLK_p:
                     paused = true;
+
                     break;
                 case SDLK_SPACE:
                     if (!duck->footballVisible) {
@@ -323,14 +327,12 @@ void Mallard::update(){
                             enemyArray[i]->enemyTexture = beaverSkin;
                             enemyArray[i]->footballScalar.w = 20*1.5;                                
                             enemyArray[i]->footballScalar.h = 14*1.5;
-                            enemyArray[i]->spawnPoint = 50 * (rand()%9);
                             enemyArray[i]->enemyScalar.w = 15*scaling_factor;
                             enemyArray[i]->enemyScalar.h = 15*scaling_factor;
                         }
                         else if(chance >= 40 & chance < 75){
                             enemyArray[i] = new Husky(500 * xcor, 50 * ycor * (rand()%9));
                             enemyArray[i]->enemyTexture = huskySkin;
-                            enemyArray[i]->spawnPoint = 50 * (rand()%9);
                             enemyArray[i]->enemyScalar.w = 15*scaling_factor;
                             enemyArray[i]->enemyScalar.h = 15*scaling_factor;
                         }
@@ -435,13 +437,12 @@ void Mallard::render_first_stage(){
     
     SDL_RenderCopy(renderer, swag, NULL, &swagRect);
     if (duck->isDead) {
-        SDL_Texture *temp = renderText("Or press f to return to the main menu.", font_name, font_color, 72, renderer);
         SDL_Rect tempRect;
         tempRect.x = 20*xcor;
         tempRect.y = (swagRect.y + 50) * ycor;
         tempRect.w = 500;
         tempRect.h = swagRect.h;
-        SDL_RenderCopy(renderer, temp, NULL, &tempRect);
+        SDL_RenderCopy(renderer, losingText, NULL, &tempRect);
     }
     SDL_RenderPresent(renderer);
 }
@@ -501,6 +502,7 @@ void Mallard::render(){
     if (first_stage_visible) {
         render_first_stage();
     }
+
 }
 
 void Mallard::recordScore(int score){

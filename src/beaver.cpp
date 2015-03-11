@@ -9,7 +9,6 @@
 Beaver::Beaver(int x, int y){
     enemyScalar.x = x;
     enemyScalar.y = y;
-    spawnPoint = y;
     hasFootball = false;
 }
 
