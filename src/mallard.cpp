@@ -544,16 +544,24 @@ void Mallard::execute() {
 }
 
 void Mallard::clean_up(){
+    //Delete titlescreen textures and enemy textures
     for (int i=0; i < 5; i++) {
         SDL_DestroyTexture(TST[i]);
         if (enemyArray[i] != NULL)
-            SDL_DestroyTexture( enemyArray[i]->enemyTexture);
+            SDL_DestroyTexture(enemyArray[i]->enemyTexture);
     }
+    //Destroy duck textures
     for (int i=0; i < 4; i++) {
         SDL_DestroyTexture(duck->DST[i]);
     }
     SDL_DestroyTexture(first_stage_texture);
     SDL_DestroyTexture(duck->footballTexture);
+    SDL_DestroyTexture(beaverSkin);
+    SDL_DestroyTexture(huskySkin);
+    SDL_DestroyTexture(trojanSkin);
+    SDL_DestroyTexture(footballSkin);
+    SDL_DestroyTexture(pauseTexture);
+    SDL_DestroyTexture(losingText);
     Mix_CloseAudio();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
