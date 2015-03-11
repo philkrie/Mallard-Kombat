@@ -1,14 +1,35 @@
 //
-//  trojan.h
+//  husky.hpp
 //  
 //
 //  Created by Casey Chesshir on 3/8/15.
 //
 //
 
-#ifndef ____trojan__
-#define ____trojan__
+#ifndef TROJAN_HPP_
+#define TROJAN_HPP_
 
-#include <stdio.h>
+#include "enemy.hpp"
+#include "mallard.hpp"
 
-#endif /* defined(____trojan__) */
+#include <SDL2/SDL.h>                       // SDL library
+#include <SDL2/SDL_ttf.h>                   // SDL font library
+#include <SDL2/SDL_mixer.h>                 // SDL sound library
+#include <SDL2/SDL_image.h>
+
+#include <iostream>
+#include <chrono>
+#include <random>
+#include <cmath>
+
+class Trojan: public Enemy{
+public:
+    Trojan(int, int);
+    ~Trojan();
+   
+    int spawnPoint;
+    void respawn();
+    void render(SDL_Renderer *);
+    void move();
+};
+#endif /* defined(____husky__) */

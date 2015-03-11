@@ -57,6 +57,11 @@ Mallard::Mallard(int argc, char* argv[]) {
     Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
     quack = Mix_LoadWAV("resources/sounds/quack.wav");
     
+    beaverSkin = createTexture("resources/images/beaver.bmp", renderer);
+    huskySkin = createTexture("resources/images/husky.bmp", renderer);
+    trojanSkin = createTexture("resources/images/trojan.bmp", renderer);
+    footballSkin = createTexture("resources/images/football.bmp", renderer);
+
     path = "resources/images/";
     //TS stands for TitleScreens
     std::string TS[5] = {
@@ -71,7 +76,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     //TSS stands for TitleScreenSurfaces
     srand(time(NULL));
     for (int i=0; i < 5; i++) {
-        beaverArray[i] = NULL;
+        enemyArray[i] = NULL;
         std::string filepath = path + TS[i] + ".bmp";
         char *temp = (char*)filepath.c_str();
         TST[i] = createTexture(temp, renderer);
@@ -254,8 +259,8 @@ void Mallard::update(){
         swagRect.y = 25 * ycor;
         swagRect.w = 150 * xcor;
         for (int i=0; i < 5; i++) {
-            if(beaverArray[i] != NULL){
-                if (didCollide(duck->footballScalar, beaverArray[i]->beaverScalar)) {
+            if(enemyArray[i] != NULL){
+                if (didCollide(duck->footballScalar, enemyArray[i]->enemyScalar)) {
                     duck->footballScalar.x = 1000 * xcor;
                     duck->footballScalar.y = 1000 * ycor;
                     // ^ need to hide the footballScalar so it doesn't
@@ -265,56 +270,71 @@ void Mallard::update(){
                     tempscore += std::to_string(score);
                     swag = renderText(tempscore, font_name, font_color, 72, renderer);
                     if((rand()%100) + 1 > 50){
-                        beaverArray[i]->respawn();
-                        beaverArray[i]->beaverScalar.x += 50 * xcor;
+                        enemyArray[i]->respawn();
+                        enemyArray[i]->enemyScalar.x += 50 * xcor;
                         duck->collision = true;
                     } else {
-                        beaverArray[i] = NULL;
+                        delete enemyArray[i];
+                        enemyArray[i] = NULL;
                         continue;
                     }
                     
                 }
-                beaverArray[i]->beaverScalar.x -= 1;
-                if (beaverArray[i]->beaverScalar.x < -75) {
-                    beaverArray[i] = NULL;
+                if (enemyArray[i]->enemyScalar.x < -75) {
+                    delete enemyArray[i];
+                    enemyArray[i] = NULL;
                     continue;
                 }
-                if (didCollide(duck->duckScalar, beaverArray[i]->beaverScalar)) {
-                    gameBreaker++;
-                }
+              
                 
-                if ((didCollide(duck->duckScalar, beaverArray[i]->beaverScalar) && gameBreaker > 1 && !duck->isDead) ||
-                    (beaverArray[i]->hasFootball && beaverArray[i]->beaverScalar.x < 0)){
+                if ((didCollide(duck->duckScalar, enemyArray[i]->enemyScalar) && !duck->isDead) ||
+                    (enemyArray[i]->hasFootball && enemyArray[i]->enemyScalar.x < 0)){
                     swagRect.x = 20 * xcor;
                     swagRect.y = 10 * ycor;
                     swagRect.w = 450 * xcor;
                     duck->footballScalar.x = 1000 * xcor;
                     duck->footballScalar.y = 1000 * ycor;
-                    
                     swag = renderText("You lost! Press r to play again", font_name, font_color, 72, renderer);
                     duck->isDead = true;
                     recordScore(score);
                     swagRect.w = 500 * xcor;
                     //exit = true;
                 }
-                beaverArray[i]->beaverScalar.y = beaverArray[i]->spawnPoint + 50 * ycor * sin(beaverArray[i]->beaverScalar.x * PI/30);
+                enemyArray[i]->move();
                 
             } else {
+                int scaling_factor = 3 * sqrt(pow(xcor,2) + pow(ycor,2));
                 spawnCount++;
-                if (beaverArray[i] == NULL){
+                if (enemyArray[i] == NULL){
                     if (spawnCount%50 == 0){
-                        if((rand()%100) + 1 > 50){
-                            int beaver_scaling_factor = 3 * sqrt(pow(xcor,2) + pow(ycor,2));
-                            beaverArray[i] = new Beaver(500 * xcor,200 * ycor);
-                            if((rand()%100 < 10)){
-                                beaverArray[i]->hasFootball = true;
-                                beaverArray[i]->beaverFootball = createTexture("resources/images/football.bmp", renderer);
+                        int chance = rand()%100;
+                        if(chance >= 0 & chance < 40){
+                            enemyArray[i] = new Beaver(500 * xcor,200 * ycor);
+                            if(chance < 10){
+                                std::cout << "spawned QB" << std::endl;
+                                enemyArray[i]->hasFootball = true;
+                                enemyArray[i]->footballTexture = footballSkin;
                             }
-                            beaverArray[i]->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
-                            beaverArray[i]->beaverFootballScalar.w = 20*1.5;                                beaverArray[i]->beaverFootballScalar.h = 14*1.5;
-                            beaverArray[i]->spawnPoint = 50 * (rand()%9);
-                            beaverArray[i]->beaverScalar.w = 15*beaver_scaling_factor;
-                            beaverArray[i]->beaverScalar.h = 15*beaver_scaling_factor;
+                            enemyArray[i]->enemyTexture = beaverSkin;
+                            enemyArray[i]->footballScalar.w = 20*1.5;                                
+                            enemyArray[i]->footballScalar.h = 14*1.5;
+                            enemyArray[i]->spawnPoint = 50 * (rand()%9);
+                            enemyArray[i]->enemyScalar.w = 15*scaling_factor;
+                            enemyArray[i]->enemyScalar.h = 15*scaling_factor;
+                        }
+                        else if(chance >= 40 & chance < 75){
+                            enemyArray[i] = new Husky(500 * xcor,200 * ycor);
+                            enemyArray[i]->enemyTexture = huskySkin;
+                            enemyArray[i]->spawnPoint = 50 * (rand()%9);
+                            enemyArray[i]->enemyScalar.w = 15*scaling_factor;
+                            enemyArray[i]->enemyScalar.h = 15*scaling_factor;
+                        }
+                        else if(chance >= 75 & chance < 100){
+                            enemyArray[i] = new Trojan(500 * xcor,200 * ycor);
+                            enemyArray[i]->enemyTexture = trojanSkin;
+                            enemyArray[i]->spawnPoint = 50 * (rand()%9);
+                            enemyArray[i]->enemyScalar.w = 15*scaling_factor;
+                            enemyArray[i]->enemyScalar.h = 30*scaling_factor;
                         }
                     }
                 }
@@ -396,11 +416,12 @@ void Mallard::render_first_stage(){
     
     duck->renderDuck(renderer, count);
     for(int i = 0; i < 5; i++){
-        if (beaverArray[i] != NULL){
-            beaverArray[i]->beaverFootballScalar.x = beaverArray[i]->beaverScalar.x+15;
-            beaverArray[i]->beaverFootballScalar.y = beaverArray[i]->beaverScalar.y+20;
-            beaverArray[i]->renderBeaver(renderer);
-            
+        if (enemyArray[i] != NULL){
+            if (enemyArray[i]->hasFootball){
+                enemyArray[i]->footballScalar.x = enemyArray[i]->enemyScalar.x+15;
+                enemyArray[i]->footballScalar.y = enemyArray[i]->enemyScalar.y+20;
+            }
+            enemyArray[i]->render(renderer);   
         }
     }
     
@@ -461,7 +482,8 @@ void Mallard::reset(){
     count = 0;
     duck -> isDead = false;
     for (int i = 0; i < 5; i ++){
-        beaverArray[i] = NULL;
+        delete enemyArray[i];
+        enemyArray[i] = NULL;
     }
     swag = renderText("", font_name, font_color, 72, renderer);
 }
@@ -516,8 +538,8 @@ void Mallard::execute() {
 void Mallard::clean_up(){
     for (int i=0; i < 5; i++) {
         SDL_DestroyTexture(TST[i]);
-        if (beaverArray[i] != NULL)
-            SDL_DestroyTexture( beaverArray[i]->beaverTexture);
+        if (enemyArray[i] != NULL)
+            SDL_DestroyTexture( enemyArray[i]->enemyTexture);
     }
     for (int i=0; i < 4; i++) {
         SDL_DestroyTexture(duck->DST[i]);

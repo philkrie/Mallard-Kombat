@@ -7,7 +7,10 @@
 #include <SDL2/SDL_image.h>
 #include "duck.hpp"
 #include "beaver.hpp"
+#include "trojan.hpp"
 #include "util.hpp"
+#include "husky.hpp"
+#include "enemy.hpp"
 
 #include <iostream>
 #include <chrono>
@@ -59,10 +62,14 @@ public:
     
     SDL_Texture *TST[5];  // TST stands for TitleSurfaceTextures
     
-    Beaver *beaverArray[5];
+    Enemy *enemyArray[5];
     
     SDL_Surface *first_stage_surface;
     SDL_Texture *first_stage_texture;
+    SDL_Texture *beaverSkin;
+    SDL_Texture *huskySkin;
+    SDL_Texture *trojanSkin;
+    SDL_Texture *footballSkin;
     // bools for the title screen
     
     bool on_start;
