@@ -311,7 +311,6 @@ void Mallard::update(){
                         if(chance >= 0 & chance < 40){
                             enemyArray[i] = new Beaver(500 * xcor,50 * ycor * (rand()%9));
                             if(chance < 10){
-                                std::cout << "spawned QB" << std::endl;
                                 enemyArray[i]->hasFootball = true;
                                 enemyArray[i]->footballTexture = footballSkin;
                             }
