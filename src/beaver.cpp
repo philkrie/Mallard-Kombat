@@ -9,15 +9,16 @@
 Beaver::Beaver(int x, int y){
     enemyScalar.x = x;
     enemyScalar.y = y;
-    spawnPoint = y;
     hasFootball = false;
+    midline = y;
 }
 
 void Beaver::respawn(){
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
     std::uniform_int_distribution<int> distribution(50 * Mallard::ycor,Mallard::SCREEN_HEIGHT - 50);
-    spawnPoint = distribution(generator);
+    enemyScalar.y= distribution(generator);
+    midline = enemyScalar.y;
 }
 
 void Beaver::render(SDL_Renderer *ren){
@@ -30,6 +31,6 @@ void Beaver::render(SDL_Renderer *ren){
 }
 
 void Beaver::move(){
-    enemyScalar.y = spawnPoint + 50 * Mallard::ycor * sin(enemyScalar.x * PI/30);
+    enemyScalar.y = midline + 50 * Mallard::ycor *  sin(enemyScalar.x * PI/30);
     enemyScalar.x -= 1;
 }

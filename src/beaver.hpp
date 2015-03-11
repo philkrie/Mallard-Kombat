@@ -24,7 +24,7 @@ public:
     Beaver(int, int);
     ~Beaver();
     
-    int spawnPoint;
+    int midline;
     void respawn();
     void render(SDL_Renderer *);
     void move();

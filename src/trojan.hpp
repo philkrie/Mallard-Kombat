@@ -27,7 +27,6 @@ public:
     Trojan(int, int);
     ~Trojan();
    
-    int spawnPoint;
     void respawn();
     void render(SDL_Renderer *);
     void move();

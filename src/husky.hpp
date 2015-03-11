@@ -27,7 +27,6 @@ public:
     Husky(int, int);
     ~Husky();
    
-    int spawnPoint;
     void respawn();
     void render(SDL_Renderer *);
     void move();
