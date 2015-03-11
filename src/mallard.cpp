@@ -124,6 +124,15 @@ void Mallard::input(){
     SDL_Event event;
     
     while (paused) {
+        SDL_Texture *pauseTexture = renderText("Paused. Press Enter for main menu", font_name, font_color, 72, renderer);
+        SDL_Rect pauseRect;
+        pauseRect.x = 10;
+        pauseRect.y = swagRect.y;
+        pauseRect.w = 350;
+        pauseRect.h = swagRect.h;
+        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
+        SDL_RenderCopy(renderer, pauseTexture, NULL, &pauseRect);
+        SDL_RenderPresent(renderer);
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_p) {
@@ -136,7 +145,18 @@ void Mallard::input(){
                         }
                     }
                 }
+                if (event.key.keysym.sym == SDLK_RETURN) {
+                    paused = false;
+                    reset();
+                    title_visible = true;
+                    first_stage_visible = false;
+                }
             }
+            if (event.type == SDL_QUIT) {
+                paused = false;
+                exit = true;
+            }
+
         }
     }
     
@@ -217,6 +237,12 @@ void Mallard::input(){
                 case SDLK_r:
                     reset();
                     break;
+                case SDLK_f:
+                    reset();
+                    first_stage_visible = false;
+                    title_visible = true;
+                    SDL_DestroyTexture(swag);
+                    break;
             }
         }
     }
@@ -260,6 +286,7 @@ void Mallard::update(){
                 if ((didCollide(duck->duckScalar, beaverArray[i]->beaverScalar) && gameBreaker > 1 && !duck->isDead) ||
                     (beaverArray[i]->hasFootball && beaverArray[i]->beaverScalar.x < 0)){
                     swagRect.x = 20 * xcor;
+                    swagRect.y = 10 * ycor;
                     swagRect.w = 450 * xcor;
                     duck->footballScalar.x = 1000 * xcor;
                     duck->footballScalar.y = 1000 * ycor;
@@ -282,7 +309,6 @@ void Mallard::update(){
                             if((rand()%100 < 10)){
                                 beaverArray[i]->hasFootball = true;
                                 beaverArray[i]->beaverFootball = createTexture("resources/images/football.bmp", renderer);
-                                std::cout << "Just spawned a quarterback beaver" << std::endl;
                             }
                             beaverArray[i]->beaverTexture = createTexture("resources/images/beaver.bmp", renderer);
                             beaverArray[i]->beaverFootballScalar.w = 20*1.5;                                beaverArray[i]->beaverFootballScalar.h = 14*1.5;
@@ -299,6 +325,7 @@ void Mallard::update(){
 }
 
 void Mallard::render_title_screen(){
+    SDL_ShowCursor(1);
     if (scoresVisible) {
         render_blank_screen();
     }
@@ -380,7 +407,15 @@ void Mallard::render_first_stage(){
     count = count%30;
     
     SDL_RenderCopy(renderer, swag, NULL, &swagRect);
-    
+    if (duck->isDead) {
+        SDL_Texture *temp = renderText("Or press f to return to the main menu.", font_name, font_color, 72, renderer);
+        SDL_Rect tempRect;
+        tempRect.x = 20*xcor;
+        tempRect.y = (swagRect.y + 50) * ycor;
+        tempRect.w = 500;
+        tempRect.h = swagRect.h;
+        SDL_RenderCopy(renderer, temp, NULL, &tempRect);
+    }
     SDL_RenderPresent(renderer);
 }
 
