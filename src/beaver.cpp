@@ -4,12 +4,12 @@
  * March 7, 2015
  */
 #include "beaver.hpp"
+#include "mallard.hpp"
 
 Beaver::Beaver(int x, int y){
-    beaverScalar.x = x;
-    beaverScalar.y = y;
+    enemyScalar.x = x;
+    enemyScalar.y = y;
     spawnPoint = y;
-    beaverVisible = true;
     hasFootball = false;
 }
 
@@ -20,11 +20,16 @@ void Beaver::respawn(){
     spawnPoint = distribution(generator);
 }
 
-void Beaver::renderBeaver(SDL_Renderer *ren){
-    SDL_RenderCopy(ren, beaverTexture, NULL, &beaverScalar);
+void Beaver::render(SDL_Renderer *ren){
+    SDL_RenderCopy(ren, enemyTexture, NULL, &enemyScalar);
 
     if (hasFootball) {
-        SDL_RenderCopy(ren, beaverFootball, NULL, &beaverFootballScalar);
+        SDL_RenderCopy(ren, footballTexture, NULL, &footballScalar);
     }
 
+}
+
+void Beaver::move(){
+    enemyScalar.y = spawnPoint + 50 * Mallard::ycor * sin(enemyScalar.x * PI/30);
+    enemyScalar.x -= 1;
 }

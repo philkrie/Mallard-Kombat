@@ -1,16 +1,13 @@
 //
-//  husky.hpp
-//  
+//  enemy.hpp
+//  pure virtual class
 //
 //  Created by Casey Chesshir on 3/8/15.
 //
 //
 
-#ifndef TROJAN_HPP_
-#define TROJAN_HPP_
-
-#include "enemy.hpp"
-#include "mallard.hpp"
+#ifndef ENEMY_HPP
+#define ENEMY_HPP
 
 #include <SDL2/SDL.h>                       // SDL library
 #include <SDL2/SDL_ttf.h>                   // SDL font library
@@ -22,14 +19,17 @@
 #include <random>
 #include <cmath>
 
-class Trojan: public Enemy{
+class Enemy{
 public:
-    Trojan(int, int);
-    ~Trojan();
-   
     int spawnPoint;
-    void respawn();
-    void render(SDL_Renderer *);
-    void move();
+    bool hasFootball;
+    SDL_Rect enemyScalar;
+    SDL_Rect footballScalar;
+    SDL_Texture *enemyTexture;
+    SDL_Texture *footballTexture;
+    virtual void respawn() = 0;
+    virtual void render(SDL_Renderer *) = 0;
+    virtual void move() = 0;
 };
-#endif /* defined(____husky__) */
+
+#endif
