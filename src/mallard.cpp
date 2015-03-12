@@ -88,7 +88,7 @@ Mallard::Mallard(int argc, char* argv[]) {
         char *temp = (char*)filepath.c_str();
         TST[i] = createTexture(temp, renderer);
     }
-    
+    controls = createTexture("resources/images/controls.bmp", renderer);
     
     std::string DS[4] = {
         "single_duck",
@@ -125,7 +125,7 @@ Mallard::Mallard(int argc, char* argv[]) {
 
 void Mallard::getBools(int x, int y){
     on_start =   (450 * xcor < x && x < 550 * xcor ) & (275 * ycor < y && y < 300 * ycor);
-    on_options = (435 * xcor < x && x < 565 * xcor ) & (320 * ycor < y && y < 345 * ycor);
+    on_controls = (435 * xcor < x && x < 565 * xcor ) & (320 * ycor < y && y < 345 * ycor);
     on_highscores = (435 * xcor < x && x < 565 * xcor ) & (365 * ycor < y && y < 385 * ycor);
     on_quit =    (465 * xcor < x && x < 535 * xcor ) & (410 * ycor < y && y < 430 * ycor);
 }
@@ -361,8 +361,8 @@ void Mallard::render_title_screen(){
         SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }
-    else if (on_options) {
-        SDL_RenderCopy(renderer, TST[2], NULL, NULL);
+    else if (on_controls) {
+        SDL_RenderCopy(renderer, controls, NULL, NULL);
         SDL_RenderCopy(renderer, swag, NULL, &swagRect);
         SDL_RenderPresent(renderer);
     }
