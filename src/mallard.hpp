@@ -62,7 +62,7 @@ public:
     // 18 pentillion
     
     SDL_Texture *TST[5];  // TST stands for TitleSurfaceTextures
-    
+    SDL_Texture *controls;
     Enemy *enemyArray[5];
     
     SDL_Surface *first_stage_surface;
@@ -76,7 +76,7 @@ public:
     // bools for the title screen
     
     bool on_start;
-    bool on_options;
+    bool on_controls;
     bool on_highscores;
     bool on_quit;
     void getBools(int, int);
