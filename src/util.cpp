@@ -1,3 +1,5 @@
+/*Created by Phillip Kriegel, contains useful functions*/
+
 #include "util.hpp"
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>

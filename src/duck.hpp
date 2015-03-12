@@ -17,8 +17,6 @@ class Duck{
 public:
     Duck();
     ~Duck();
-    SDL_Surface *DSS[4];  // DSS stands for DuckScreenSurfaces
-    SDL_Surface *CDSS[4]; // CDSS stands for ConvertedDuckScreenSurfaces
     SDL_Texture *DST[4];  // DST stands for DuckSurfaceTextures
     
     SDL_Texture *footballTexture;

@@ -8,7 +8,7 @@
 
 #ifndef HUSKY_HPP_
 #define HUSKY_HPP_
-                    // SDL library
+
 #include "enemy.hpp"
 #include "mallard.hpp"
 

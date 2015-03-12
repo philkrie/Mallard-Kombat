@@ -5,12 +5,12 @@
 #include <SDL2/SDL_image.h>                    // SDL library
 #include <SDL2/SDL_ttf.h>                   // SDL font library
 #include <SDL2/SDL_mixer.h>                 // SDL sound library
+#include "enemy.hpp"
 #include "duck.hpp"
 #include "beaver.hpp"
 #include "trojan.hpp"
-#include "util.hpp"
 #include "husky.hpp"
-#include "enemy.hpp"
+#include "util.hpp"
 
 #include <iostream>
 #include <chrono>
@@ -28,43 +28,45 @@ class Beaver;
 
 class Mallard {
 public:
+    
     // Screen resolution
     static int SCREEN_WIDTH;
     static int SCREEN_HEIGHT;
     
-    static double xcor;
-    // resolution correction factors
-    static double ycor;
-    
+    //fstream used to read the highscore file
     std::fstream file;
 
+    // path to the image files
+    std::string path; 
 
     // Window and renderer
     SDL_Window* window;
     SDL_Renderer *renderer;
-    std::string path; // path to the image files
     
-    // font things
+    // font attributes
     SDL_Color font_color;
     std::string font_name;
-    SDL_Texture *swag;
-    SDL_Rect swagRect;
+    SDL_Texture *text;
+    SDL_Rect textRect;
     SDL_Rect pauseRect;
     
-    // highscores things
+    // highscore management
+    int highscores[5];
     SDL_Texture *highTextures[5];
     SDL_Texture *blank;
     SDL_Rect highRect;
     bool scoresVisible;
     
-    long long unsigned int score;
     // max score is 18,446,744,073,709,551,615
-    // 18 pentillion
+    // 18 pentillion. Try to beat it!
+    long long unsigned int score;
     
-    SDL_Texture *TST[5];  // TST stands for TitleSurfaceTextures
+    // TST stands for TitleSurfaceTextures
+    SDL_Texture *TST[5];
     SDL_Texture *controls;
+
+    //Enemy textures and storage
     Enemy *enemyArray[5];
-    
     SDL_Surface *first_stage_surface;
     SDL_Texture *first_stage_texture;
     SDL_Texture *beaverSkin;
@@ -73,16 +75,15 @@ public:
     SDL_Texture *footballSkin;
     SDL_Texture *pauseTexture;
     SDL_Texture *losingText;
+    int spawnCount;
+    int count;
+
     // bools for the title screen
-    
     bool on_start;
     bool on_controls;
     bool on_highscores;
     bool on_quit;
     void getBools(int, int);
-    int spawnCount;
-    int count;
-    
     
     // bools for which screen is visible
     bool title_visible;
@@ -94,15 +95,14 @@ public:
     void render_first_stage();
     void render_blank_screen();
 
+    //Write score to highscore file
     void recordScore(int);
     
+    //Resets game
     void reset();
 
-    int highscores[5];
     //collision function
     bool didCollide(SDL_Rect, SDL_Rect);
-    int gameBreaker;
-    // ^ this is necessary for the game to run
     
     // class objects
     Duck *duck;

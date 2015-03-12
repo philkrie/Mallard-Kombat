@@ -8,7 +8,7 @@
 #include "mallard.hpp"
 #include "beaver.hpp"
 
-
+//The duck is controlled by the player and fires the football
 Duck::Duck(){
     duckScalar.x = 0;
     duckScalar.y = 350;
@@ -19,10 +19,8 @@ Duck::Duck(){
 
 
 void Duck::shootFootball(){
-    // initial position of the football
-    // near the duck's mouth
-    footballScalar.x = int (duckScalar.x+70 * Mallard::xcor);
-    footballScalar.y = duckScalar.y+20 * Mallard::ycor;
+    footballScalar.x = int (duckScalar.x+70);
+    footballScalar.y = duckScalar.y+20;
     footballScalar.w = 20;
     footballScalar.h = 14;
     footballVisible = true;
@@ -30,10 +28,10 @@ void Duck::shootFootball(){
 
 void Duck::renderDuck(SDL_Renderer *ren, int count){
     if (footballVisible) {
-        footballScalar.x +=10 * Mallard::xcor;
+        footballScalar.x +=10;
         SDL_RenderCopy(ren, footballTexture, NULL, &footballScalar);
         SDL_RenderCopy(ren, DST[1], NULL, &duckScalar);
-        if (footballScalar.x > 640 * Mallard::xcor || collision){
+        if (footballScalar.x > 640|| collision){
             footballVisible = false;
             collision = false;
         }

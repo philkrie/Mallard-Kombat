@@ -1,6 +1,6 @@
 //
 //  enemy.hpp
-//  pure virtual class
+//  pure virtual class that defines all shared attributes by the enemies in the game
 //
 //  Created by Casey Chesshir on 3/8/15.
 //

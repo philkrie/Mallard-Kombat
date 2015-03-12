@@ -9,6 +9,7 @@
 #include "trojan.hpp"
 #include "mallard.hpp"
 
+//Trojan is slow and large
 Trojan::Trojan(int x, int y){
     enemyScalar.x = x;
     enemyScalar.y = y;
@@ -18,7 +19,7 @@ Trojan::Trojan(int x, int y){
 void Trojan::respawn(){
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
-    std::uniform_int_distribution<int> distribution(50 * Mallard::ycor,Mallard::SCREEN_HEIGHT - 50);
+    std::uniform_int_distribution<int> distribution(50,Mallard::SCREEN_HEIGHT - 50);
     enemyScalar.y = distribution(generator);
 }
 

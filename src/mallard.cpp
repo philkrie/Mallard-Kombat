@@ -3,21 +3,14 @@
 #include "util.hpp"
 #include <stdlib.h>
 
-
 /* Screen resolution */
 int Mallard::SCREEN_WIDTH = 640;
 int Mallard::SCREEN_HEIGHT = 480;
-
-double Mallard::xcor = SCREEN_WIDTH / 640;
-double Mallard::ycor = SCREEN_HEIGHT/ 480;
-
 
 Mallard::Mallard(int argc, char* argv[]) {
     exit = false;
     
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize SDL2
-    
-    
     
     // Create an application window with the following settings:
     this->window = SDL_CreateWindow( "MALLARD KOMBAT",         // window title
@@ -31,25 +24,26 @@ Mallard::Mallard(int argc, char* argv[]) {
     renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED |
                                   SDL_RENDERER_PRESENTVSYNC );
     
+    //Create a new Duck object: this is the main character
     duck = new Duck();
     
+    //Initialize fonts, and set color to black, and comic sans as the font
     TTF_Init();
     font_color = {0, 0, 0, 0};
     font_name = "resources/fonts/comic_sans.ttf";
-    swag = renderText("", font_name, font_color, 72, renderer);
-    swagRect.x = 100 * xcor;
-    swagRect.y = 100 * ycor;
-    swagRect.w = 50 * xcor;
-    swagRect.h = 50 * ycor;
-    score = 0;
-
+    text = renderText("", font_name, font_color, 72, renderer);
+    textRect.x = 100;
+    textRect.y = 100;
+    textRect.w = 50;
+    textRect.h = 50;
     pauseTexture = renderText("Paused. Press Enter for main menu", font_name, font_color, 72, renderer);
     losingText = renderText("Or press f to return to the main menu.", font_name, font_color, 72, renderer);
     pauseRect.x = 10;
-    pauseRect.y = swagRect.y - 50;
+    pauseRect.y = textRect.y - 50;
     pauseRect.w = 350;
-    pauseRect.h = swagRect.h;
+    pauseRect.h = textRect.h;
     
+    //Read in highscores stored in hiscores.txt
     std::string line;
     file.open("resources/text/hiscores.txt");
     if (file.is_open()) {
@@ -64,6 +58,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
     quack = Mix_LoadWAV("resources/sounds/quack.wav");
     
+    //Importing and creating textures for game objects
     beaverSkin = createTexture("resources/images/beaver.bmp", renderer);
     huskySkin = createTexture("resources/images/husky.bmp", renderer);
     trojanSkin = createTexture("resources/images/trojan.bmp", renderer);
@@ -79,9 +74,7 @@ Mallard::Mallard(int argc, char* argv[]) {
         "title_screen_quit",
     };
     // Creating the title screens
-    
-    //TSS stands for TitleScreenSurfaces
-    srand(time(NULL));
+
     for (int i=0; i < 5; i++) {
         enemyArray[i] = NULL;
         std::string filepath = path + TS[i] + ".bmp";
@@ -90,6 +83,7 @@ Mallard::Mallard(int argc, char* argv[]) {
     }
     controls = createTexture("resources/images/controls.bmp", renderer);
     
+    //Create duck textures
     std::string DS[4] = {
         "single_duck",
         "double_duck",
@@ -103,58 +97,54 @@ Mallard::Mallard(int argc, char* argv[]) {
         duck->DST[i] = createTexture(temp, renderer);
     }
     
+    //create some more textures
     first_stage_texture = createTexture("resources/images/field2.jpg", renderer);
     blank = createTexture("resources/images/blank.bmp", renderer);
     duck->footballTexture = createTexture("resources/images/football.bmp", renderer);
     duck->footballVisible = false;
     
+    //Initialize some variables, including seeding the random number generator using current computer time
+    srand(time(NULL));
     duck->isDead = false;
     count = 0;
     spawnCount = 0;
+    score = 0;
     
-    
+    //Clear renderer, place the opening screen, and get ready to play!
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, TST[0], NULL, NULL); // base title screen
     SDL_RenderPresent(renderer);
     title_visible = true;
     first_stage_visible = false;
     paused = false;
-    gameBreaker = false;
     scoresVisible = false;
 }
 
+//Determines where mouse pointer is on the title screen
 void Mallard::getBools(int x, int y){
-    on_start =   (450 * xcor < x && x < 550 * xcor ) & (275 * ycor < y && y < 300 * ycor);
-    on_controls = (435 * xcor < x && x < 565 * xcor ) & (320 * ycor < y && y < 345 * ycor);
-    on_highscores = (435 * xcor < x && x < 565 * xcor ) & (365 * ycor < y && y < 385 * ycor);
-    on_quit =    (465 * xcor < x && x < 535 * xcor ) & (410 * ycor < y && y < 430 * ycor);
+    on_start =   (450 < x && x < 550 ) & (275 < y && y < 300);
+    on_controls = (435 < x && x < 565 ) & (320 < y && y < 345);
+    on_highscores = (435 < x && x < 565 ) & (365 < y && y < 385);
+    on_quit =    (465 < x && x < 535 ) & (410 < y && y < 430);
 }
 
+//Controls the input of the user
 void Mallard::input(){
     
     int x, y;
     SDL_Event event;
     
+    //if game is paused
     while (paused) {
 
-        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
+        SDL_RenderCopy(renderer, text, NULL, &textRect);
         SDL_RenderCopy(renderer, pauseTexture, NULL, &pauseRect);
         SDL_RenderPresent(renderer);
-        /* Need to create a temporary texture for the pause text.
-         * Also checking for the necessary keys on the pause screen.
-         */
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_p) {
                     paused = false;
-                    if (event.type == SDL_KEYDOWN && first_stage_visible && duck->isDead) {
-                        switch(event.key.keysym.sym){
-                            case SDLK_r:
-                                reset();
-                                break;
-                        }
-                    }
                 }
                 if (event.key.keysym.sym == SDLK_RETURN) {
                     paused = false;
@@ -167,18 +157,16 @@ void Mallard::input(){
                 paused = false;
                 exit = true;
             }
-
         }
     }
     
+    //During gameplay and title screen
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_MOUSEMOTION){
-            /* If the mouse moves, then we need to get its state.
-             * Check where it is on the screen, return bools.
-             */
             SDL_GetMouseState(&x, &y);
             getBools(x,y);
         }
+        
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             SDL_GetMouseState(&x, &y);
             getBools(x,y);
@@ -226,16 +214,14 @@ void Mallard::input(){
             if (duck->duckScalar.y < 0) {
                 duck->duckScalar.y = 0;
             }
-            if (duck->duckScalar.y > (SCREEN_HEIGHT - duck->duckScalar.h) * ycor) {
-                duck->duckScalar.y = (SCREEN_HEIGHT - duck->duckScalar.h) * ycor;
+            if (duck->duckScalar.y > (SCREEN_HEIGHT - duck->duckScalar.h)) {
+                duck->duckScalar.y = (SCREEN_HEIGHT - duck->duckScalar.h);
             }
         }
-        
         if (event.type == SDL_KEYDOWN && first_stage_visible && !duck->isDead) {
             switch (event.key.keysym.sym) {
                 case SDLK_p:
                     paused = true;
-
                     break;
                 case SDLK_SPACE:
                     if (!duck->footballVisible) {
@@ -256,70 +242,73 @@ void Mallard::input(){
                     reset();
                     first_stage_visible = false;
                     title_visible = true;
-                    SDL_DestroyTexture(swag);
+                    SDL_DestroyTexture(text);
                     break;
             }
         }
     }
 }
 
+//Updates positions of every single object on the screen, every 10ms.
 void Mallard::update(){
     if (first_stage_visible && !duck->isDead) {
-        swagRect.x = 400 * xcor;
-        swagRect.y = 25 * ycor;
-        swagRect.w = 150 * xcor;
+        textRect.x = 400;
+        textRect.y = 25;
+        textRect.w = 150;
         for (int i=0; i < 5; i++) {
             if(enemyArray[i] != NULL){
+                //Updates score and kills enemy if ball hits it
                 if (didCollide(duck->footballScalar, enemyArray[i]->enemyScalar)) {
-                    duck->footballScalar.x = 1000 * xcor;
-                    duck->footballScalar.y = 1000 * ycor;
-                    // ^ need to hide the footballScalar so it doesn't
-                    // mess around with where the beaver currently is
+                    duck->footballScalar.x = 1000;
+                    duck->footballScalar.y = 1000;
                     score += 420;
                     std::string tempscore = "Score: ";
                     tempscore += std::to_string(score);
-                    swag = renderText(tempscore, font_name, font_color, 72, renderer);
+                    text = renderText(tempscore, font_name, font_color, 72, renderer);
+                    //Sometimes enemy dies, sometimes it doesn't and is just hit back
                     if((rand()%100) + 1 > 50){
                         enemyArray[i]->respawn();
-                        enemyArray[i]->enemyScalar.x += 50 * xcor;
+                        enemyArray[i]->enemyScalar.x += 50;
                         duck->collision = true;
                     } else {
                         delete enemyArray[i];
                         enemyArray[i] = NULL;
                         continue;
-                    }
-                    
+                    }   
                 }
+
+                //If enemy without ball leaves screen, it gets reset
                 if (enemyArray[i]->enemyScalar.x < -75) {
                     delete enemyArray[i];
                     enemyArray[i] = NULL;
                     continue;
                 }
               
-                
+                //Check if enemy collides with duck OR football carrying beaver reaches the endzone
                 if ((didCollide(duck->duckScalar, enemyArray[i]->enemyScalar) && !duck->isDead) ||
                     (enemyArray[i]->hasFootball && enemyArray[i]->enemyScalar.x < 0)){
-                    swagRect.x = 20 * xcor;
-                    swagRect.y = 10 * ycor;
-                    swagRect.w = 450 * xcor;
-                    duck->footballScalar.x = 1000 * xcor;
-                    duck->footballScalar.y = 1000 * ycor;
-                    swag = renderText("You lost! Press r to play again", font_name, font_color, 72, renderer);
+                    textRect.x = 20;
+                    textRect.y = 10;
+                    textRect.w = 450;
+                    duck->footballScalar.x = 1000;
+                    duck->footballScalar.y = 1000;
+                    text = renderText("You lost! Press r to play again", font_name, font_color, 72, renderer);
                     duck->isDead = true;
                     recordScore(score);
-                    swagRect.w = 500 * xcor;
+                    textRect.w = 500;
                     //exit = true;
                 }
                 enemyArray[i]->move();
-                
+               
+            //Logic for spawning enemies: there is a spawn counter, every time it reaches 50, chance for enemy to spawn. Each type has a certain chance to spawn as well. 
             } else {
-                int scaling_factor = 3 * sqrt(pow(xcor,2) + pow(ycor,2));
+                int scaling_factor = 4;
                 spawnCount++;
                 if (enemyArray[i] == NULL){
                     if (spawnCount%50 == 0){
                         int chance = rand()%100;
                         if(chance >= 0 & chance < 40){
-                            enemyArray[i] = new Beaver(500 * xcor,50 * ycor * (rand()%9));
+                            enemyArray[i] = new Beaver(500,50 * (rand()%9));
                             if(chance < 10){
                                 enemyArray[i]->hasFootball = true;
                                 enemyArray[i]->footballTexture = footballSkin;
@@ -331,13 +320,13 @@ void Mallard::update(){
                             enemyArray[i]->enemyScalar.h = 15*scaling_factor;
                         }
                         else if(chance >= 40 & chance < 75){
-                            enemyArray[i] = new Husky(500 * xcor, 50 * ycor * (rand()%9));
+                            enemyArray[i] = new Husky(500, 50 * (rand()%9));
                             enemyArray[i]->enemyTexture = huskySkin;
                             enemyArray[i]->enemyScalar.w = 15*scaling_factor;
                             enemyArray[i]->enemyScalar.h = 15*scaling_factor;
                         }
                         else if(chance >= 75 & chance < 100){
-                            enemyArray[i] = new Trojan(500 * xcor, 50 * ycor * (rand()%9));
+                            enemyArray[i] = new Trojan(500, 50 * (rand()%9));
                             enemyArray[i]->enemyTexture = trojanSkin;
                             enemyArray[i]->enemyScalar.w = 15*scaling_factor;
                             enemyArray[i]->enemyScalar.h = 30*scaling_factor;
@@ -345,11 +334,11 @@ void Mallard::update(){
                     }
                 }
             }
-            
         }
     }
 }
 
+//Renders the title screen
 void Mallard::render_title_screen(){
     // make sure the cursor is showing on title screen
     SDL_ShowCursor(1);
@@ -358,48 +347,49 @@ void Mallard::render_title_screen(){
     }
     if (on_start) {
         SDL_RenderCopy(renderer, TST[1], NULL, NULL);
-        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
+        SDL_RenderCopy(renderer, text, NULL, &textRect);
         SDL_RenderPresent(renderer);
     }
     else if (on_controls) {
         SDL_RenderCopy(renderer, controls, NULL, NULL);
-        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
+        SDL_RenderCopy(renderer, text, NULL, &textRect);
         SDL_RenderPresent(renderer);
     }
     else if (on_highscores) {
         if (scoresVisible) {
             render_blank_screen();
             title_visible = false;
-        }else{
+        } else {
             SDL_RenderCopy(renderer, TST[3], NULL, NULL);
-            SDL_RenderCopy(renderer, swag, NULL, &swagRect);
+            SDL_RenderCopy(renderer, text, NULL, &textRect);
             SDL_RenderPresent(renderer);
         }
     }
     else if (on_quit) {
         SDL_RenderCopy(renderer, TST[4], NULL, NULL);
-        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
+        SDL_RenderCopy(renderer, text, NULL, &textRect);
         SDL_RenderPresent(renderer);
-    }else{
+    } else {
         SDL_RenderCopy(renderer, TST[0], NULL, NULL);
-        SDL_RenderCopy(renderer, swag, NULL, &swagRect);
+        SDL_RenderCopy(renderer, text, NULL, &textRect);
         SDL_RenderPresent(renderer);
     }
 }
 
+//Renders the high scores
 void Mallard::render_blank_screen(){
     SDL_RenderCopy(renderer, blank, NULL, NULL);
     SDL_Rect temp;
-    temp.x = 50 * xcor;
-    temp.y = 50 * ycor;
-    temp.w = 400 * xcor;
-    temp.h = 72 * ycor;
-    SDL_Texture *tempswag = renderText("Here are the top five recorded scores:", font_name, font_color, 72, renderer);
-    SDL_RenderCopy(renderer, tempswag, NULL, &temp);
+    temp.x = 50;
+    temp.y = 50;
+    temp.w = 400;
+    temp.h = 72;
+    SDL_Texture *temptext = renderText("Here are the top five recorded scores:", font_name, font_color, 72, renderer);
+    SDL_RenderCopy(renderer, temptext, NULL, &temp);
     temp.y += 350;
-    temp.w = 550 * xcor;
-    tempswag = renderText("You may return back to the main menu by pressing Enter", font_name, font_color, 72, renderer);
-    SDL_RenderCopy(renderer, tempswag, NULL, &temp);
+    temp.w = 550;
+    temptext = renderText("You may return back to the main menu by pressing Enter", font_name, font_color, 72, renderer);
+    SDL_RenderCopy(renderer, temptext, NULL, &temp);
     for (int i=0; i < 5; i++) {
         highRect.y+=50;
         SDL_RenderCopy(renderer, highTextures[i], NULL, &highRect);
@@ -407,21 +397,22 @@ void Mallard::render_blank_screen(){
     SDL_RenderPresent(renderer);
 }
 
-
+//Renders the first stage
 void Mallard::render_first_stage(){
     // hide the cursor during the game 
     SDL_ShowCursor(0);
-    double duck_scaling_factor = 2 * sqrt(pow(xcor,2) + pow(ycor,2));
-    double football_scaling_factor = 1 * sqrt(pow(xcor,2) + pow(ycor,2));
+    double duck_scaling_factor = 3;
+    double football_scaling_factor = 1.5;
+
     //width and height get scaled by scaling_factor
     duck->duckScalar.w = 34*duck_scaling_factor;
     duck->duckScalar.h = 24*duck_scaling_factor;
-    
-    duck->footballScalar.w = 20*football_scaling_factor;
-    duck->footballScalar.h = 14*football_scaling_factor;
+    duck->footballScalar.w = 20 * football_scaling_factor ;
+    duck->footballScalar.h = 14 * football_scaling_factor ;
+
     SDL_RenderCopy(renderer, first_stage_texture, NULL, NULL);
-    count++;
     
+    count++;
     duck->renderDuck(renderer, count);
     for(int i = 0; i < 5; i++){
         if (enemyArray[i] != NULL){
@@ -435,18 +426,19 @@ void Mallard::render_first_stage(){
     
     count = count%30;
     
-    SDL_RenderCopy(renderer, swag, NULL, &swagRect);
+    SDL_RenderCopy(renderer, text, NULL, &textRect);
     if (duck->isDead) {
         SDL_Rect tempRect;
-        tempRect.x = 20*xcor;
-        tempRect.y = (swagRect.y + 50) * ycor;
+        tempRect.x = 20;
+        tempRect.y = textRect.y + 50;
         tempRect.w = 500;
-        tempRect.h = swagRect.h;
+        tempRect.h = textRect.h;
         SDL_RenderCopy(renderer, losingText, NULL, &tempRect);
     }
     SDL_RenderPresent(renderer);
 }
 
+//Checks for collision
 bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )
 {
     //The sides of the rectangles
@@ -468,22 +460,23 @@ bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )
     bottomB = b.y + b.h;
     //If any of the sides from A are outside of B
     
-    if( bottomA <= topB )
+    if( bottomA <= topB + 20 )
         return false;
     
-    if( topA >= bottomB )
+    if( topA >= bottomB + 20 )
         return false;
     
-    if( rightA <= leftB )
+    if( rightA <= leftB + 10 )
         return false;
     
-    if( leftA >= rightB )
+    if( leftA >= rightB + 10 )
         return false;
     
     //If none of the sides from A are outside B
     return true;
 }
 
+//Resets values
 void Mallard::reset(){
     score = 0;
     count = 0;
@@ -492,9 +485,10 @@ void Mallard::reset(){
         delete enemyArray[i];
         enemyArray[i] = NULL;
     }
-    swag = renderText("", font_name, font_color, 72, renderer);
+    text = renderText("", font_name, font_color, 72, renderer);
 }
 
+//Chooses appropriate render function
 void Mallard::render(){
     if (title_visible) {
         render_title_screen();
@@ -505,6 +499,7 @@ void Mallard::render(){
 
 }
 
+//Records the score of the game, places into the high score file if it is high enough
 void Mallard::recordScore(int score){
     // Check if current score belongs on the high score list
     // If so, swap with the last entry of the array
@@ -530,6 +525,7 @@ void Mallard::recordScore(int score){
     file.close();
 }
 
+//Main execution. Loops through input, update, and render, with SDL_Delay in between
 void Mallard::execute() {
     
     while(!exit) {
@@ -543,6 +539,7 @@ void Mallard::execute() {
     std::cout << "successfully Quit" << std::endl;
 }
 
+//Clean up, clean up, everybody do your share!
 void Mallard::clean_up(){
     //Delete titlescreen textures and enemy textures
     for (int i=0; i < 5; i++) {
@@ -562,6 +559,7 @@ void Mallard::clean_up(){
     SDL_DestroyTexture(footballSkin);
     SDL_DestroyTexture(pauseTexture);
     SDL_DestroyTexture(losingText);
+    SDL_DestroyTexture(text);
     Mix_CloseAudio();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
