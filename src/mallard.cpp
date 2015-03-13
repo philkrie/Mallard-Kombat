@@ -460,16 +460,16 @@ bool Mallard::didCollide( SDL_Rect a, SDL_Rect b )
     bottomB = b.y + b.h;
     //If any of the sides from A are outside of B
     
-    if( bottomA <= topB + 20 )
+    if( bottomA <= topB  )
         return false;
     
-    if( topA >= bottomB + 20 )
+    if( topA >= bottomB )
         return false;
     
-    if( rightA <= leftB + 10 )
+    if( rightA <= leftB )
         return false;
     
-    if( leftA >= rightB + 10 )
+    if( leftA >= rightB  )
         return false;
     
     //If none of the sides from A are outside B
